@@ -1,0 +1,262 @@
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #e8f8fd;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+}
+
+body {
+    padding-top: 100px; /* Prevents content from jumping under navbar */
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.nav-item {
+    padding: 0 10px;
+}
+
+.nav-link:hover{
+    color: #007BFF;
+}
+
+#searchbtn{
+    color:#007BFF ;
+    width: fit-content;
+    border-color: transparent;
+}
+
+#searchbtn:hover{
+    border-color: #007BFF;
+    background-color: transparent;
+}
+
+.form-control:hover{
+    border-color: #007BFF;
+}
+
+/* .carousel-button {
+    position: absolute;
+    transform: translateY(-50%);
+    background-color: #e8f8fd;
+    color: rgb(6, 6, 6);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+.carousel-button.left {
+    left: 10px;
+}
+.carousel-button.right {
+    right: 10px;
+} */
+
+/* CSS */
+.carousel-item {
+    position: relative;
+    width: 100%;
+    height: 350px; /* Adjust this to the desired height */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Background images for each carousel item */
+.carousel-item:nth-child(1) {
+    background-image: url('/Assets/Carousal_Image01.png'); /* Replace with your image URL for the first slide */
+}
+
+.carousel-item:nth-child(2) {
+    background-image: url('/Assets/Carousal_Image02.jpeg');
+}
+
+.carousel-item:nth-child(3) {
+    /* background-size: contain; */
+    background-image: url('/Assets/Carousal_Image03.png'); /* Replace with your image URL for the third slide */
+}
+
+/* Repeat as needed for additional slides */
+
+/* Additional styling for carousel content */
+.main-carousel-content {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color:rgba(0, 0, 0, 0.896); /* Ensure text is readable */
+    /* background: rgba(0, 0, 0, 0.5); */
+    padding: 10px;
+    width: 50%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: transparent;
+    filter: invert(0.7); /* Adjust this value to change the icon color */    
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-control-prev-icon:after,
+.carousel-control-next-icon:after {
+    font-size: 20px; /* Adjust the icon size */
+}
+
+
+.modal-backdrop {
+    z-index: -1;
+}
+.card {
+    border-radius: 15px; /* Rounded corners */
+    margin-bottom: 20px; /* Margin between cards */
+    border-color: #007BFF;
+}
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; /* Center content vertically */
+    /* height: 100%; */
+    overflow: hidden; /* Prevent content overflow */
+    padding: 10px; /* Add padding for better spacing */
+}
+.card-body .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    overflow: hidden; /* Prevent content overflow */
+}
+.card-body .row.first-row {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.card-body .row.second-row {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-around;
+    padding: 10px 0;
+    overflow: hidden; /* Prevent content overflow */
+}
+.card-body .row.third-row {
+    display: flex;
+    justify-content: center;
+}
+.sidebar {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    height: fit-content;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-right: 30px; /* Space between sidebar and right content */
+}
+.featured-plans {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.feature-card{
+    margin-bottom: 2rem !important;
+}
+
+
+button {
+    font-size: 1rem; /* Set button size in rem */
+    padding: 0.6rem 1.2rem; /* Button padding in rem */
+}
+
+
+
+.logo-icon {
+    height: 40px; /* Adjust the height */
+    object-fit: contain;
+}
+
+.btn-primary{
+    border-radius: 50px;
+    background-color: #007BFF;
+}
+
+.btn-primary:hover{
+    color:#007BFF;
+    background-color: transparent;
+    border-color: #007BFF;
+}
+
+.card{
+    background: rgba(125, 212, 252, 0.783); 
+    border-radius: 20px;
+    border-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 350px; /* Adjust as needed */
+    max-height: 400px; /* Adjust as needed */
+    margin: auto;
+    overflow: hidden; /* Prevent content overflow */
+    text-align: center; /* Center content */
+}
+
+.text-muted{
+    font-size: 1em;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%; /* Make card full-width on small screens */
+        max-height: 300px; /* Adjust height for smaller screens */
+    }
+
+    .card-body .row.first-row {
+        font-size: 0.7em; /* Adjust font size for smaller screens */
+        margin: 0;
+    }
+
+    .card-body .row.second-row, .row.third-row {
+        flex-direction: column; /* Stack content vertically on small screens */
+        padding: 5px 0;
+    }
+
+    .text-muted{
+        font-size: 0.6em;
+    }
+
+    #rechargeButton {
+        padding: 0.4rem 0.8rem; /* Reduce padding on small screens */
+        font-size: 0.7rem; /* Reduce font size on small screens */
+        max-width: 150px; /* Reduce max width on small screens */
+    }
+}
+
+#recharge{
+    background-color: #007BFF;
+    color: white;
+    font-size: 1rem; /* Set button size in rem */
+}
+#recharge:hover{
+    color: #007BFF;
+    background-color: transparent;
+    border-color: #007BFF;
+}
+
+.card:hover{
+    transform: scale(1.05);
+}

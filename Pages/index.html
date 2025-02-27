@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mobi-Comm</title>
+    <link rel="icon" type="image/png" href="/Assets/mobi-comm-Logo.png">
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/Styles/style.css">
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <nav class="navbar navbar-expand-md navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <img src="/Assets/mobi-comm-Landing.png" alt="Logo" class="logo-icon">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                    <li class="nav-item ml-4">
+                    <a class="nav-link" href="prepaidPlans.html">Prepaid Plans</a>
+                    </li>
+                    <li class="nav-item ml-4">
+                    <a class="nav-link" href="index.html#quick-recharge">Quick Recharge</a>
+                    </li>
+                    <li class="nav-item ml-4">
+                    <a id="offers" class="nav-link">Offers</a>
+                    </li>
+                    <li class="nav-item ml-4">
+                    <a class="nav-link" href="support.html">Help</a>
+                    </li>
+                    <li class="nav-item ml-4">
+                    <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column flex-md-row align-items-center mb-5">
+            <div class="text-white col-md-6">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="fas fa-trophy text-warning mr-2"></i>
+                    <span>5th Consistent Award Winning Year!</span>
+                </div>
+                <h1 class="display-4 font-weight-bold">Stay Connected, Always</h1>
+                <p class="mt-4 lead">Recharge your prepaid mobile in seconds with our fast, secure, and reliable service. Enjoy the best plans and exclusive offers tailored just for you.</p>
+                <button id="explorePlans" class="btn btn-outline-light mt-4">Explore Plans</button>
+            </div>
+        <!-- <div class="col-md-6 mt-4 mt-md-0 d-flex justify-content-center hidden-on-small">
+        <div class="position-relative">
+        <img alt="Mobile recharge illustration" class="img-fluid rounded-lg shadow-lg" src="Assets/freepik__retouch.png"/>
+        </div>
+        </div> -->
+        </div>
+    </div>
+</header>        
+<main class="py-5 mt-0">
+    <div class="container">
+        <h2 class="h3 font-weight-bold mb-5 text-center text-gray-800 p-3">Our Services</h2>
+        <div class="row">
+            <!-- Quick Recharge Form -->
+            <div id="quick-recharge" class="col-md-6 mb-4">
+                <div class="bg-white p-4 rounded-lg shadow-lg h-100">
+                    <h3 class="h4 font-weight-bold mb-4 text-gray-800 text-center">Quick Recharge</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="mobile-number">Mobile Number</label>
+                            <input class="form-control" id="mobile-number" type="text" placeholder="Enter your mobile number">
+                        </div>
+                        <div class="form-group">
+                            <label for="promo-code">Coupon/Promo Code</label>
+                            <div class="d-flex">
+                                <input class="form-control" id="promo-code" type="text" placeholder="Enter coupon/promo code">
+                                <span id="valid-icon" class="valid-icon">✔</span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button id="RechargeBtn" class="btn btn-primary" type="button">Recharge Now</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Plans Carousel -->
+            <div class="col-md-6 mb-4">
+                <div class="bg-white p-4 rounded-lg shadow-lg h-100">
+                    <h3 class="h4 font-weight-bold text-gray-800 text-center">Prepaid Plans</h3>
+                    <div id="plansCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
+                        <div class="carousel-inner" onclick="window.location.href='prepaidPlans.html'" style="cursor: pointer;">
+                            <div class="carousel-item active mt-lg-3">
+                                <div class="p-4 bg-light rounded-lg">
+                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Unlimited Plans</h3>
+                                    <p class="text-gray-700"><strong>₹299</strong></p>
+                                    <p class="text-gray-700">1GB/Day Data + Unlimited Calls</p>
+                                    <p class="text-gray-700">Valid for 28 Days</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item mt-lg-3">
+                                <div class="p-4 bg-light rounded-lg">
+                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Popular Plan</h3>
+                                    <p class="text-gray-700 font-weight-bold"><strong>₹199</strong></p>
+                                    <p class="text-gray-700">2GB/Day Data + Unlimited Calls</p>
+                                    <p class="text-gray-700">Valid for 28 Days</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item mt-lg-3">
+                                <div class="p-4 bg-light rounded-lg">
+                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Yearly Plan</h3>
+                                    <p class="text-gray-700 font-weight-bold"><strong>₹2499</strong></p>
+                                    <p class="text-gray-700">2GB/Day Data + Unlimited Calls</p>
+                                    <p class="text-gray-700">Valid for 365 Days</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#plansCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#plansCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container hero-section">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-center text-lg-left mb-5 mb-lg-0">
+                    <h1 class="hero-title">
+                        Stay Connected &amp; Enjoy Seamless Communication.
+                    </h1>
+                    <p class="hero-text">
+                        Recharge with our mobile prepaid plans for uninterrupted calls, texts, and data. Choose the best plan to stay connected with your loved ones and enjoy the convenience of instant recharges.
+                    </p>
+                    <a class="btn btn-primary hero-button" id="hero-recharge" href="#">
+                        Recharge Now
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img alt="Mobile app interface showing various recharge options" class="img-fluid" src="/Assets/LandingMobile.png"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shortcut Buttons -->
+        <div class="row mt-5"> <!-- Added margin-top -->
+            <div class="col-md-3 text-center mb-4">
+                <button id="Recharge" class="btn btn-primary rounded-circle p-4">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="mt-2">Recharge</div>
+                </button>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <button id="Explore" class="btn btn-success rounded-circle p-4">
+                    <i class="fas fa-search"></i>
+                    <div class="mt-2">Explore Plans</div>
+                </button>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <button id="Help" class="btn btn-warning rounded-circle p-4">
+                    <i class="fas fa-question-circle"></i>
+                    <div class="mt-2">Help</div>
+                </button>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <button id="Offers" class="btn btn-danger rounded-circle p-4">
+                    <i class="fas fa-gift"></i>
+                    <div class="mt-2">Offers</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Why Choose Us Section -->
+        <!-- Why Choose Us Section -->
+<div class="choose-us-container container py-5 my-5">
+    <!-- Centered Header Section -->
+    <div class="choose-us-head text-center mb-3 d-flex flex-column">
+        <h2 class="h2 font-weight-bold  mb-2">Why Choose Us ?</h2>
+        <div class="mx-auto" style="width: 40px; height: 3px; background-color: #007bff; margin-bottom: 20px;"></div>
+        <p class="text-muted col-md-8 mx-auto">Experience premium service that exceeds expectations and delivers value with every transaction.</p>
+    </div>
+    
+    <!-- Feature Cards with Flexbox -->
+    <div class="d-flex flex-wrap justify-content-center">
+        <!-- Card 1 -->
+        <div class="feature-card" style="flex: 1 0 300px; max-width: 350px; margin: 15px;" onclick="window.location.href='index.html#quick-recharge'">
+            <div class="bg-white p-4 rounded-lg shadow-sm h-100 transition-all" style="transition: all 0.3s ease;">
+                <div class="text-center mb-4 align-items-center">
+                    <div class="icon-circle mx-2 mb-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(78, 115, 223, 0.1);">
+                        <i class="fas fa-bolt text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 font-weight-bold text-gray-800 mb-lg-4">Instant Recharge</h3>
+                </div>
+                <p class="text-muted text-center mb-0">Experience lightning-fast mobile recharges with our secure, reliable platform designed for your convenience.</p>
+            </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="feature-card" style="flex: 1 0 300px; max-width: 350px; margin: 15px;" onclick="window.location.href='prepaidPlans.html'">
+            <div class="bg-white p-4 rounded-lg shadow-sm h-100 transition-all" style="transition: all 0.3s ease;">
+                <div class="text-center mb-4 align-items-center">
+                    <div class="icon-circle mx-auto mx-lg-2 mb-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(78, 115, 223, 0.1);">
+                        <i class="fas fa-tags text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 font-weight-bold text-gray-800 mb-lg-4">Curated Plans</h3>
+                </div>
+                <p class="text-muted text-center mb-0">Discover expertly curated plans that deliver optimal value while perfectly aligning with your communication requirements.</p>
+            </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="feature-card" style="flex: 1 0 300px; max-width: 350px; margin: 15px;" onclick="window.location.href='support.html'">
+            <div class="bg-white p-4 rounded-lg shadow-sm h-100 transition-all" style="transition: all 0.3s ease;">
+                <div class="text-center mb-4 align-items-center">
+                    <div class="icon-circle mx-auto mx-lg-2 mb-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(78, 115, 223, 0.1);">
+                        <i class="fas fa-headset text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 font-weight-bold text-gray-800 mb-lg-4">24/7 Dedicated Support</h3>
+                </div>
+                <p class="text-muted text-center mb-0">Our expert support team stands ready around the clock to assist you with personalized, solution-focused service.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+    <div id="FAQ" class="container faq-container mt-4">
+        <div class="faq-card p-4">
+            <h2 class="text-center mb-4">Frequently Asked Questions (FAQs)</h2>
+            <div class="faq-item">
+                <div class="fw-bold">What is a prepaid mobile recharge? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">A prepaid mobile recharge involves adding talk time, data, and/or SMS validity to your mobile number by paying in advance. The services are activated immediately after the recharge is successful.</div>
+            </div>
+            <div class="faq-item">
+                <div class="fw-bold">How do I perform a prepaid recharge? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">You can perform a prepaid recharge by selecting your plan and completing the payment process through UPI, debit/credit card, or net banking via our website or app.</div>
+            </div>
+            <div class="faq-item">
+                <div class="fw-bold">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">Yes, you can recharge any mobile operator, including Airtel, Jio, Vodafone Idea, and more. Choose your operator and plan during the recharge process.</div>
+            </div>
+            <div class="faq-item">
+                <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">If you run out of balance, you will need to recharge again to continue using the services. You can choose a plan with more talk time, data, or validity based on your needs.</div>
+            </div>
+        </div>
+    </div>    
+</main>
+<!-- Footer -->
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Our Services</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Data Plans</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>International Roaming</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Get In Touch</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="#"><p>Facebook</p></a></li>
+                    <li><a class="text-white" href="#"><p>Twitter</p></a></li>
+                    <li><a class="text-white" href="#"><p>Instagram</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Contact Info</h3>
+                <p>123 Telecom Lane, New Delhi, India 688101.</p>
+                <p>123-456-7890/91</p>
+                <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__ text-white" data-cfemail="05767075756a77714571606960666a682b666a68">[email&#160;protected]</a></p>
+            </div>
+        </div>
+        <div class="text-center">
+            <p class="text-muted">© 2023 Telecom. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/Scripts/script.js"></script>
+</body>
+</html>

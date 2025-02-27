@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/Assets/mobi-comm-Logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/Admin/Styles/manageSubscribers.css">
+
+    <!-- Include SweetAlert2 (Add this to your HTML head) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <title>Manage Plans</title>
+
+</head>
+
+
+<body>
+    <header class="header">
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <a class="navbar-brand" href="/Pages/index.html">
+                        <img src="/Assets/mobi-comm.png" alt="Logo" class="logo-icon">
+                    </a>                    
+                </div>
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="managePlans.html">Manage Plans</a></li>
+                            <li class="nav-item"><a class="nav-link" href="manageSubscribers">Manage Subscribers</a></li>
+                            <li class="nav-item"><a class="nav-link" href="support.html">Help</a></li>
+                            <li class="nav-item dropdown px-4 list-unstyled" id="accountMenu">
+                                <a class="nav-link" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user" ></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="./profile">Profile</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="logout()">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>                
+            </div>
+        </div>
+    </header>
+
+    <section class="dashboard-section">
+        <aside class="sidebar" id="sidebar"> 
+                <div class="list-group" id="myList" role="tablist">
+                    <div class="d-flex mx-4 my-2 text-center">
+                        <a class="list-group-item list-group-item-action text-decoration-none" id="list-dashboard-list" data-toggle="list" href="dashboard.html" role="tab" aria-controls="dashboard">
+                            <i class="fas fa-line-chart me-1"></i> Dashboard
+                        </a>
+                    </div>
+                    <div class="d-flex mx-4 my-2 text-center">
+                        <a class="list-group-item list-group-item-action text-decoration-none" id="list-plans-list" data-toggle="list" href="managePlans.html" role="tab" aria-controls="plans">
+                            <i class="fas fa-tools me-1"></i> Manage plans
+                        </a>
+                    </div>
+                    <div class="d-flex mx-4 my-2 text-center">
+                        <a class="list-group-item list-group-item-action active text-decoration-none" id="list-subscribers-list" data-toggle="list" href="#list-subscribers" role="tab" aria-controls="subscribers">
+                            <i class="fas fa-users pt-1 me-1"></i> Manage Subscribers
+                        </a>
+                    </div>
+                    <!-- <div class="d-flex mx-4 my-2 text-center">
+                        <a class="list-group-item list-group-item-action text-decoration-none" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">
+                            <i class="fas fa-circle-user pt-1 me-1"></i> Manage profile
+                        </a>
+                    </div> -->
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content" id="main">
+            <div class="container mt-3 mb-4">
+                <h2 class="text-primary">Manage Subscribers</h2>
+            </div>
+  
+          <div class="tab-content" id="nav-tabContent">
+              <!-- Dashboard Tab -->
+              <div class="tab-pane fade show active" id="list-dashboard" role="tabpanel" aria-labelledby="list-dashboard-list">
+                  <div class="plan-cards">
+                        <div class="card-item-top" style="background-color: #a3e2fd;">
+                            <h2>1K</h2>
+                            <h6>Subscribers</h6>
+                        </div>
+                        <div class="card-item-top" style="background-color: #54a8fb;">
+                            <h2>350</h2>
+                            <h6>Active Plan Users</h6>
+                        </div>
+                        <div class="card-item-top" style="background-color: #a3e2fd;">
+                            <h2>100</h2>
+                            <h6>Inactive Subscribers</h6>
+                        </div>
+                        <div class="card-item-top" style="background-color: #54a8fb;">
+                            <h2>20+</h2>
+                            <h6>New Subscriptions</h6>
+                        </div>
+                    </div>
+
+                    <div class="container mt-5 category-table bg-white">
+                        <h3 class="text-primary mb-4">New Subscribers</h3>
+                        <table id="newUsersTable" class="table p-2">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Mobile Number</th>
+                                    <th>Status</th>
+                                    <th>Current Plan</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-dot active-dot"></span>Rahul Sharma</td>
+                                    <td>+91 9876543219</td>
+                                    <td>Active</td>
+                                    <td>Unlimited Plan</td>
+                                    <td><button class="btn btn-primary view-button">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-dot inactive-dot"></span>Priya Singh</td>
+                                    <td>+91 9876543219</td>
+                                    <td>Inactive</td>
+                                    <td>Data Pack</td>
+                                    <td><button class="btn btn-primary view-button">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-dot active-dot"></span>Amit Kumar</td>
+                                    <td>+91 9876543219</td>
+                                    <td>Active</td>
+                                    <td>Calls Plan</td>
+                                    <td><button class="btn btn-primary view-button">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-dot active-dot"></span>Neha Verma</td>
+                                    <td>+91 9876543219</td>
+                                    <td>Active</td>
+                                    <td>International Roaming</td>
+                                    <td><button class="btn btn-primary view-button">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-dot active-dot"></span>Sachin Desai</td>
+                                    <td>+91 9876543219</td>
+                                    <td>Active</td>
+                                    <td>Top-up Plan</td>
+                                    <td><button class="btn btn-primary view-button">View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="users-container mt-5 bg-white p-4">
+                        <div class="col-md-8">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div class="h3 text-primary">Subscribers</div>
+                            </div>
+                            <ul class="nav nav-pills mb-3" id="userTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="active-users-tab" data-bs-toggle="pill" data-bs-target="#active-users" type="button" role="tab">Active Users</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="inactive-users-tab" data-bs-toggle="pill" data-bs-target="#inactive-users" type="button" role="tab">Inactive Users</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="blocked-users-tab" data-bs-toggle="pill" data-bs-target="#blocked-users" type="button" role="tab">Blocked Users</button>
+                                </li>
+                            </ul>
+                        </div>
+            
+                            <!-- Tab Content -->
+                            <div class="tab-content" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="active-users" role="tabpanel">
+                                    <table id="subscribersTable" class="table subscriberTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Mobile</th>
+                                                <th>Current Plan</th>
+                                                <th>Last Recharge</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activeUsersTable"></tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="inactive-users" role="tabpanel">
+                                    <table id="subscribersTable" class="table subscriberTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Mobile</th>
+                                                <th>Current Plan</th>
+                                                <th>Last Recharge</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inactiveUsersTable"></tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="blocked-users" role="tabpanel">
+                                    <table id="subscribersTable" class="table subscriberTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Mobile</th>
+                                                <th>Current Plan</th>
+                                                <th>Last Recharge</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="blockedUsersTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+              </div>
+
+                    <div class="modal fade" id="subscriberModal" tabindex="-1" aria-labelledby="subscriberModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="subscriberModalLabel">Subscriber Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Name:</strong> <span id="subscriberName"></span></p>
+                                    <p><strong>Mobile Number:</strong> <span id="subscriberMobile"></span></p>
+                                    <p><strong>Plan Expiry:</strong> <span id="subscriberExpiry"></span></p>
+                
+                                    <section class="transaction-details mt-4">
+                                        <h3 class="h5 mb-3"><strong>Recharge History</strong></h3>
+                                        <div id="rechargeHistory" class="space-y-4">
+                                            <!-- Recharge history details will be injected here -->
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="detailsModalLabel">User Details</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p id="userDetails"></p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- Update User Modal -->
+<div class="modal fade" id="updateUserModal" tabindex="-1" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateUserModalLabel">Update User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateUserForm">
+                    <div class="mb-3">
+                        <label for="updateName" class="form-label">Name</label>
+                        <input type="text" id="updateName" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateMobile" class="form-label">Mobile</label>
+                        <input type="text" id="updateMobile" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateEmail" class="form-label">Email</label>
+                        <input type="email" id="updateEmail" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateStatus" class="form-label">Status</label>
+                        <select id="updateStatus" class="form-control">
+                            <!-- Options will be added dynamically using JavaScript -->
+                        </select>
+                    </div>                    
+                    <div id="unblockMessage" class="alert alert-warning d-none">
+                        <strong>Note:</strong> <span id="unblockUserName"></span> will be marked as <strong>Inactive</strong> after unblocking.
+                    </div>
+                    <div class="mb-3">
+                        <label for="updatePlan" class="form-label">Plan</label>
+                        <input type="text" id="updatePlan" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateLastRecharge" class="form-label">Last Recharge</label>
+                        <input type="text" id="updateLastRecharge" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateExpiry" class="form-label">Expiry</label>
+                        <input type="text" id="updateExpiry" class="form-control" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveUserChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+          </div>
+        </main>
+        <div id="logoutScreen" class="logout-overlay" style="display: none;">
+            <div class="logout-box">
+                <p>Logging out...</p>
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+<footer class="bg-dark text-white py-4 footer-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Our Services</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Data Plans</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>International Roaming</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Get In Touch</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="#"><p>Facebook</p></a></li>
+                    <li><a class="text-white" href="#"><p>Twitter</p></a></li>
+                    <li><a class="text-white" href="#"><p>Instagram</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Contact Info</h3>
+                <p>123 Telecom Lane, New Delhi, India 688101.</p>
+                <p>123-456-7890/91</p>
+                <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__ text-white" data-cfemail="05767075756a77714571606960666a682b666a68">[email&#160;protected]</a></p>
+            </div>
+        </div>
+        <div class="text-center">
+            <p class="text-muted">© 2023 Telecom. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+    <!-- jQuery and Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="/Admin/Scripts/manageSubscribers.js"></script>
+
+</body>
+</html>

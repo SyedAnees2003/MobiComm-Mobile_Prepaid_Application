@@ -1,0 +1,145 @@
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #E8F8FD;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+.form-container h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group{
+    margin-top: 1rem;
+}
+.form-container .form-group label {
+    font-weight: bold;
+}
+.form-container .form-control {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+}
+.form-container .form-control:focus {
+    border-color: black;
+    box-shadow: none;
+}
+.form-container .btn-submit {
+    background-color: #007BFF;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+}
+.form-container .btn-submit:hover {
+    color:#007BFF;
+    background-color: transparent;
+    border-color: #007BFF;
+}
+.logo-icon {
+    height: 40px; /* Adjust the height */
+    object-fit: contain;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+}
+body {
+    padding-top: 70px; /* Prevents content from jumping under navbar */
+}
+
+.btn-submit{
+    width: 50%;
+}
+.navbar-nav {
+    display: flex; 
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 100%;
+}
+
+.nav-item {
+    padding: 0 10px;
+}
+.nav-link:hover{
+    color: #007BFF !important;
+}
+.form-fill{
+    background-color: white;
+}
+
+.faq-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.faq-card {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.faq-item {
+    display: flex;
+    flex-direction: column; /* Stack question and answer vertically */
+    margin-bottom: 15px;
+}
+
+.fw-bold {
+    font-size: 18px; /* Larger font size for better readability */
+    color: black;  /* Text color remains black */
+    padding: 10px 0; /* Add padding for spacing */
+    background-color: #e0f7fa; /* Background color for the question */
+    border-radius: 5px;
+    cursor: pointer; /* Make it clickable */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-icon {
+    font-size: 18px;
+    color: black;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.faq-answer {
+    display: none;
+    margin-top: 5px;
+    font-size: 16px; /* Larger font size for answer */
+    color: black; /* Text color remains black */
+    padding: 10px 0;
+    background-color: #f9f9f9; /* Light background for the answer */
+    border-radius: 5px;
+}
+
+.faq-item:hover .faq-answer {
+    display: block;
+}
+
+.faq-item:hover .fw-bold {
+    background-color: #b2ebf2; /* Slight color change on hover */
+}
+
+.faq-item .faq-icon {
+    cursor: pointer;
+}
+.btn-submit{
+    justify-content: center;
+}

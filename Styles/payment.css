@@ -1,0 +1,211 @@
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #E8F8FD;
+}
+
+.payment-container, .plan-summary {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.payment-container {
+    background-color: #e0f7fa;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.btn-custom {
+    border: none;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 40%;
+    margin: 0 auto;
+}
+
+.btn-primary:hover{
+    color: #007BFF;
+    background-color: transparent;
+}
+
+.btn-danger:hover{
+    color: red;
+    background-color: transparent;
+}
+.plan-summary {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.container {
+    margin-top: 30px;
+}
+
+.payment-summary {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.faq-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.faq-card {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.faq-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.fw-bold {
+    font-size: 18px;
+    color: black;
+    padding: 10px 0;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-icon {
+    font-size: 18px;
+    color: black;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.faq-answer {
+    display: none;
+    margin-top: 5px;
+    font-size: 16px;
+    color: black;
+    padding: 10px 0;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.faq-item:hover .faq-answer {
+    display: block;
+}
+
+.faq-item:hover .fw-bold {
+    background-color: #b2ebf2;
+}
+
+.faq-item .faq-icon {
+    cursor: pointer;
+}
+
+.logo-icon {
+    height: 40px;
+    object-fit: contain;
+}
+
+.upi-options, .bank-options {
+    display: none;
+    margin-top: 10px;
+}
+
+.upi-provider, .bank-list {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.upi-provider:hover{
+    background-color: #b2dbf2;
+}
+
+.bank-list:hover{
+    background-color: #b2dbf2;
+}
+
+img {
+    /* width: 50px; */
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+}
+body {
+    padding-top: 70px; /* Prevents content from jumping under navbar */
+}
+
+.nav-link{
+    color: black;
+}
+.nav-link:hover{
+    color: #007BFF;
+}
+/* Success icon container */
+.success-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.5s ease, transform 1s ease; /* Smooth transition */
+}
+
+/* The success tick icon */
+.success-tick {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Message under the success icon */
+.success-message {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Class to show the success icon and text */
+.show-success {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Class to make the tick visible */
+.show-success .success-tick {
+    opacity: 1;
+}
+
+/* Class to make the message visible */
+.show-success .success-message {
+    opacity: 1;
+}

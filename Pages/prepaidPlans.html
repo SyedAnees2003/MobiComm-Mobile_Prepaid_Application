@@ -1,0 +1,258 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mobi-Comm</title>
+    <link rel="icon" type="image/png" href="/Assets/mobi-comm-Logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/Styles/prepaidPlans.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+            <div class="container">
+                <a class="navbar-brand" href="/Pages/index.html">
+                    <img src="/Assets/mobi-comm.png" alt="Logo" class="logo-icon">
+                </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse w-100 order-1 dual-collapse2">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item search-bar mt-lg-4">
+                            <form class="form-inline d-flex">
+                                <input class="form-control mr-2" type="search" placeholder="Search">
+                                <button id="searchbtn" class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="prepaidPlans.html">Prepaid Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html#quick-recharge">Quick Recharge</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="Offers" class="nav-link">Offers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="support.html">Help</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="profileLink" class="nav-link" href="#">
+                                <i class="fas fa-user"></i>
+                            </a>
+                        </li>     
+                    </ul>
+                </div>
+            </div>
+        </nav>                
+    </header>    
+    <main class="container my-4">
+        <section class="mb-5">
+            <h2 class="h3 mb-1">Trending plans</h2>
+            <!-- <div class="carousel" id="carousel"> -->
+
+                <section class="main-carousel">
+                    <div id="mobicomCarousel" class="carousel mobicom-carousel slide mt-5 mx-5" data-bs-ride="carousel" data-bs-interval="3000">
+                        <div class="carousel-inner main-carousel-inner bg-white">
+                            <!-- Slide 1 -->
+                            <div class="carousel-item main-carousel-item active">
+                                <div class="main-carousel-content slide-left">
+                                    <h1 class="mainText">Fast, Secure, and Hassle-Free Mobile Recharge!</h1>
+                                    <p class="subText">Recharge your prepaid mobile instantly with Mobicom. Enjoy seamless transactions with multiple payment options.</p>
+                                </div>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="carousel-item main-carousel-item">
+                                <div class="main-carousel-content slide-right">
+                                    <h1 class="mainText">Recharge & Unleash your limits</h1>
+                                    <p class="subText">Get the best OTT platform subscriptions with your mobile recharge. Enjoy seamless entertainment anytime, anywhere!</p>
+                                </div>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="carousel-item main-carousel-item">
+                                <div class="main-carousel-content slide-left">
+                                    <h1 class="mainText">Stay Organized with Recharge History!</h1>
+                                    <p class="subText">View your past transactions in one place. Track your recharge details anytime with ease.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section class="d-flex mt-5">
+            <!-- Left content (sidebar) -->
+            <div class="col-md-4 mb-4 sidebar">
+                <div class="mb-3">
+                    <input class="form-control" placeholder="Search" type="text"/>
+                </div>
+                <div class="h5 mb-3">Featured for you</div>
+                <div class="featured-plans">
+                    <div class="feature-card card p-3" data-price="₹199" data-data="2GB/day" data-sms="100 SMS" data-calls="Calls: Unlimited local & STD calls" border-radius: 10px">
+                        <div class="card-body">
+                            <div class="row first-row">
+                                <p class="price text-center fw-bold fs-4">₹199</p>
+                            </div>
+                            <div class="row text-center d-flex flex-md-row flex-column">
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">2GB/day</p>
+                                    <p class="text-muted small">Data</p>
+                                </div>
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">100 SMS</p>
+                                    <p class="text-muted small">SMS</p>
+                                </div>
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">Unlimited Calls</p>
+                                    <p class="text-muted small">Calls</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex flex-column align-items-center">
+                                <p class="fw-bold text-muted mb-0">28 Days</p>
+                                <p class="text-muted small">Validity</p>
+                            </div>
+                            <div class="col d-flex flex-column align-items-center">
+                                <p class="fw-bold text-muted mb-0">Netflix</p>
+                                <p class="text-muted small">Benefits</p>
+                            </div>                        
+                        </div>
+                        <div class="row text-center mt-3">
+                            <button class="btn btn-primary w-50 mx-auto" id="rechargeButton">Recharge</button>
+                        </div>
+                    </div>
+                    <div class="card p-3" data-price="₹299" data-data="3GB/day" data-sms="200 SMS" data-calls="Calls: Unlimited local & STD calls">
+                        <div class="card-body">
+                            <div class="row first-row">
+                                <p class="price text-center fw-bold fs-4">₹299</p>
+                            </div>
+                            <div class="row text-center d-flex flex-md-row flex-column">
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">3GB/day</p>
+                                    <p class="text-muted small">Data</p>
+                                </div>
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">200 SMS</p>
+                                    <p class="text-muted small">SMS</p>
+                                </div>
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">Unlimited Calls</p>
+                                    <p class="text-muted small">Calls</p>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">28 Days</p>
+                                    <p class="text-muted small">Validity</p>
+                                </div>
+                                <div class="col d-flex flex-column align-items-center">
+                                    <p class="fw-bold text-muted mb-0">Netflix</p>
+                                    <p class="text-muted small">Benefits</p>
+                                </div>     
+                            </div>
+                            <div class="row text-center mt-3">
+                                <button class="btn btn-primary w-50 mx-auto" id="rechargeButton">Recharge</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right content (plan categories) -->
+            <!-- <div class="container"> -->
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="h5 mb-0">Plan categories</div>
+                    </div>
+                    <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <button aria-controls="pills-popular" aria-selected="true" class="nav-link active" data-bs-target="#pills-popular" data-bs-toggle="pill" id="pills-popular-tab" role="tab" type="button">Popular</button>
+                        <button aria-controls="pills-data" aria-selected="false" class="nav-link" data-bs-target="#pills-data" data-bs-toggle="pill" id="pills-data-tab" role="tab" type="button">Data</button>
+                        <button aria-controls="pills-topup" aria-selected="false" class="nav-link" data-bs-target="#pills-topup" data-bs-toggle="pill" id="pills-topup-tab" role="tab" type="button">Top-up</button>
+                        <button aria-controls="pills-calls" aria-selected="false" class="nav-link" data-bs-target="#pills-calls" data-bs-toggle="pill" id="pills-calls-tab" role="tab" type="button">Calls</button>
+                        <button aria-controls="pills-unlimited" aria-selected="false" class="nav-link" data-bs-target="#pills-unlimited" data-bs-toggle="pill" id="pills-unlimited-tab" role="tab" type="button">Unlimited</button>
+                    </div>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div aria-labelledby="pills-popular-tab" class="tab-pane fade show active" id="pills-popular" role="tabpanel">
+                            <div class="row g-3"></div>
+                        </div>
+                        <div aria-labelledby="pills-data-tab" class="tab-pane fade" id="pills-data" role="tabpanel">
+                            <div class="row g-3"></div>
+                        </div>
+                        <div aria-labelledby="pills-topup-tab" class="tab-pane fade" id="pills-topup" role="tabpanel">
+                            <div class="row g-3"></div>
+                        </div>
+                        <div aria-labelledby="pills-calls-tab" class="tab-pane fade" id="pills-calls" role="tabpanel">
+                            <div class="row g-3"></div>
+                        </div>
+                        <div aria-labelledby="pills-unlimited-tab" class="tab-pane fade" id="pills-unlimited" role="tabpanel">
+                            <div class="row g-3"></div>
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+        
+        </section>
+    </main>
+    
+    <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="planDetailsModalLabel">Plan Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalPrice">Price: </p>
+                    <p id="modalData">Data: </p>
+                    <p id="modalSms">SMS: </p>
+                    <p id="modalCalls">Calls: </p>
+                    <p id="modalCategory"></p> <!-- Added category field -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="recharge" class="btn btn-primary">Recharge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Our Services</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>Data Plans</p></a></li>
+                    <li><a class="text-white" href="prepaidPlans.html"><p>International Roaming</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Get In Touch</h3>
+                <ul class="list-unstyled">
+                    <li><a class="text-white" href="#"><p>Facebook</p></a></li>
+                    <li><a class="text-white" href="#"><p>Twitter</p></a></li>
+                    <li><a class="text-white" href="#"><p>Instagram</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h5 font-weight-bold mb-3">Contact Info</h3>
+                <p>123 Telecom Lane, New Delhi, India 688101.</p>
+                <p>123-456-7890/91</p>
+                <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__ text-white" data-cfemail="05767075756a77714571606960666a682b666a68">[email&#160;protected]</a></p>
+            </div>
+        </div>
+        <div class="text-center">
+            <p class="text-muted">© 2023 Telecom. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/Scripts/prepaidPlans.js"></script>
+</body>
+</html>

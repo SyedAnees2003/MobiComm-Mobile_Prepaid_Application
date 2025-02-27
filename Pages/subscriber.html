@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mobi-Comm</title>
+    <link rel="icon" type="image/png" href="/Assets/mobi-comm-Logo.png">    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/Styles/subscriber.css">
+</head>
+<body class="">
+    <!-- 🔹 Navbar at the top -->
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <img src="/Assets/mobi-comm.png" alt="Logo" class="logo-icon">
+                </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse w-100 order-1 dual-collapse2 pt-1">
+                    <ul class="navbar-nav my-3">
+                        <li class="nav-item search-bar mt-lg-1">
+                            <form class="form-inline d-flex">
+                                <input class="form-control mr-2" type="search" placeholder="Search">
+                                <button id="searchbtn" class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="prepaidPlans.html">Prepaid Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html#quick-recharge">Quick Recharge</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="nav-offers" class="nav-link">Offers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="support.html">Help</a>
+                        </li>
+                        <div class="profile-dropdown mx-4">
+                            <i class="fa-solid fas fa-user profile-icon"></i>
+                            <div class="dropdown-content">
+                                <a class="nav-link" href="profile.html">My Profile</a>
+                            </div>
+                        </div>   
+                    </ul>
+                </div>
+            </div>
+        </nav>                
+    </header>
+
+    <!-- 🔹 Sidebar & Main Content Section -->
+    <div class="content-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="d-flex justify-content-between align-items-center text-center">
+                <div class="h4 font-weight-bold mb-4">Services</div>
+            </div>
+            <ul class="list-unstyled">
+                <li class="mt-4"><a class="sidebar-link" href="profile.html#recharge-history-div">My Transactions</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="prepaidPlans.html">Prepaid Plans</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="profile.html">Support Requests</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="support.html">Help</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="profile.html">Profile</a></li>
+            </ul>
+        </aside>
+
+        <button class="toggleSidebarBtn" id="toggleSidebarBtn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <main class="main-content">
+            <div class="mobile-container bg-white shadow-sm">
+                <h3>Mobile Number</h3>
+                <span>current user</span>
+                <input type="text" id="loggedInMobile" readonly /> <!-- Input field for mobile number -->
+                <button id="changeMobileNumberBtn">Change</button>            
+            </div>
+            <!-- Active Plan Section -->
+            <div class="d-flex flex-column align-items-center">
+                <section class="active-plan-card shadow" style="background: linear-gradient(to right, #007BFF, rgb(0, 200, 255)); border-radius: 10px; padding: 20px; max-width: 600px; width: 100%;">
+                    <div class="text-center">
+                        <h4 class="font-weight-bold mb-2 text-white">Active Plan</h4>
+                    </div>
+                    <div class="text-center plan-details" style="margin: 0 auto; max-width: 50%; align-items: center; justify-content: center;">
+                        <div class="my-3">
+                            <h5 class="text-white">Plan Name: <bold id="planName">Unlimited Plan</bold></h5>
+                        </div>
+                        <div>
+                            <h5 class="text-white">Plan Details:</h5>
+                            <div class="border p-3" style="background-color: rgba(255, 255, 255, 0.8); border-radius: 10px;">
+                                <!-- Price Section (Heading Style) -->
+                                <div class="row justify-content-center">
+                                    <h3 class="fw-bold fs-3 text-primary" id="planPrice">₹799</h3>
+                                </div>
+                                
+                                <!-- Plan Details in Rows (First row with Plan, Validity, Data) -->
+                                <div class="row text-center d-flex flex-md-row flex-column mb-3">
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark" id="planData">3GB/day</p>
+                                        <p class="text-muted small">Data</p>
+                                    </div>
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark" id="planValidity">56 Days Validity</p>
+                                        <p class="text-muted small">Validity</p>
+                                    </div>
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark">10 GB</p>
+                                        <p class="text-muted small">Data</p>
+                                    </div>
+                                </div>
+                                <!-- Second row with SMS, Calls, Benefits -->
+                                <div class="row text-center d-flex flex-md-row flex-column mb-3">
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark" id="planSMS">Unlimited SMS</p>
+                                        <p class="text-muted small">SMS</p>
+                                    </div>
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark" id="planCalls">Unlimited Calls</p>
+                                        <p class="text-muted small">Calls</p>
+                                    </div>
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold mb-0 text-dark">Free Netflix</p>
+                                        <p class="text-muted small">Benefits</p>
+                                    </div>
+                                </div>
+                                <!-- Expiry Information -->
+                                <div>
+                                    <p class="text-dark">Expiry on: <strong id="expiryDate">2025-02-28</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>         
+            
+            <!-- Shortcuts Section -->
+            <div class="row mt-5 shortcut"> <!-- Added margin-top -->
+                <div class="col-md-3 text-center mb-4">
+                    <button id="Recharge" class="btn rounded-circle p-4 shortcut-btn">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div class="fw-bold">Recharge</div>
+                    </button>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <button id="Explore" class="btn rounded-circle p-4 shortcut-btn">
+                        <i class="fas fa-search"></i>
+                        <div class="fw-bold">Explore Plans</div>
+                    </button>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <button id="Help" class="btn rounded-circle p-4 shortcut-btn">
+                        <i class="fas fa-question-circle"></i>
+                        <div class="fw-bold">Help</div>
+                    </button>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <button id="Offers" class="btn rounded-circle p-4 shortcut-btn">
+                        <i class="fas fa-gift"></i>
+                        <div class="fw-bold">Offers</div>
+                    </button>
+                </div>
+            </div>
+
+            <body class="bg-white text-dark">
+                <div class="container py-5">
+                  <div class="text-center mb-5">
+                  </div>
+                    <div class="row">
+                      <div class="col-md-4 mb-4">
+                        <div class="card border shadow-sm">
+                          <div class="card-body">
+                            <h3 class="font-weight-bold text-center">Basic Plan</h3>
+                            <p class="text-muted">Starting at</p>
+                            <p class="price text-primary">₹199<span>.00</span><small>/mo</small></p>
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
+                                <li class="mb-3"><i class="fas fa-rss mr-2"></i> 1.5 GB data/day</li>
+                                <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
+                                <li><i class="fas fa-signal mr-2"></i> High-speed 4G network</li>
+                            </ul>
+                          </div>
+                          <div class="card-footer bg-white border-0">
+                              <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 mb-4">
+                          <div class="card border shadow-sm">
+                              <div class="card-body">
+                                  <h3 class="font-weight-bold text-center">Value Plan</h3>
+                                  <p class="text-muted">20 GB Data</p>
+                                  <p class="price text-primary">₹349<span>.00</span><small>/mo</small></p>
+                                  <p class="text-muted">Includes 50 SMS/day</p>
+                                  <ul class="list-unstyled">
+                                      <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
+                                      <li class="mb-3"><i class="fas fa-rss mr-2"></i> 2.5 GB data/day</li>
+                                      <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
+                                      <li><i class="fas fa-signal mr-2"></i> High-speed 5G network</li>
+                                  </ul>
+                              </div>
+                              <div class="card-footer bg-white border-0">
+                                  <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-4 mb-4">
+                          <div class="card border shadow-sm">
+                              <div class="card-body">
+                                  <h3 class="font-weight-bold text-center">Premium Plan</h3>
+                                  <p class="text-muted">50 GB Data</p>
+                                  <p class="price text-primary">₹499<span>.00</span><small>/mo</small></p>
+                                  <p class="text-muted">Includes 100 SMS/day</p>
+                                  <ul class="list-unstyled">
+                                      <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
+                                      <li class="mb-3"><i class="fas fa-rss mr-2"></i> 3.5 GB data/day</li>
+                                      <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
+                                      <li><i class="fas fa-signal mr-2"></i> High-speed 5G network</li>
+                                  </ul>
+                              </div>
+                              <div class="card-footer bg-white border-0">
+                                  <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>      
+                </div>      
+            </body>      
+
+        <footer class="bg-dark text-white py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h3 class="h5 font-weight-bold mb-3">Our Services</h3>
+                        <ul class="list-unstyled">
+                            <li><a class="text-white" href="prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
+                            <li><a class="text-white" href="prepaidPlans.html"><p>Data Plans</p></a></li>
+                            <li><a class="text-white" href="prepaidPlans.html"><p>International Roaming</p></a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="h5 font-weight-bold mb-3">Get In Touch</h3>
+                        <ul class="list-unstyled">
+                            <li><a class="text-white" href="#"><p>Facebook</p></a></li>
+                            <li><a class="text-white" href="#"><p>Twitter</p></a></li>
+                            <li><a class="text-white" href="#"><p>Instagram</p></a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="h5 font-weight-bold mb-3">Contact Info</h3>
+                        <p>123 Telecom Lane, New Delhi, India 688101.</p>
+                        <p>123-456-7890/91</p>
+                        <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__ text-white" data-cfemail="05767075756a77714571606960666a682b666a68">[email&#160;protected]</a></p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-muted">© 2023 Telecom. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <!-- Mobile Change Modal -->
+    <div class="modal fade" id="changeMobileModal" tabindex="-1" aria-labelledby="changeMobileLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeMobileLabel">Change Mobile Number</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="newMobileNumber" class="form-label">Enter New Mobile Number:</label>
+                    <input type="text" id="newMobileNumber" class="form-control" placeholder="Enter mobile number" />
+                    <p id="errorMessage" class="text-danger mt-2" style="display:none;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="confirmChangeBtn" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="logoutScreen" class="logout-overlay">
+        <div class="logout-box">
+            <p>Logging out...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/Scripts/subscriber.js"></script>
+</body>
+</html>
