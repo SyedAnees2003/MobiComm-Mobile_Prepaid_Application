@@ -39,10 +39,4 @@ Currently, customers rely on third-party platforms for mobile recharges, limitin
 
 ## Author  
 **Syed Anees J**  
-*Email: aneesjha3@gmail.com*  
-## License  
-This project is for **placement interview review** purposes and is not licensed for commercial use.  
-
----
-
-You can modify **your name, email, GitHub, and LinkedIn details** before uploading to GitHub. Let me know if you need any tweaks! 🚀
+*Email: aneesjha3@gmail.com*
