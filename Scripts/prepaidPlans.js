@@ -151,11 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Check if the user is logged in
                 const token = sessionStorage.getItem('rechargeToken') === 'true';
+                console.log("token: ",token);
                 
                 if (token) {
                     const modal = new bootstrap.Modal(document.getElementById('planDetailsModal'));
                     modal.show();
-                    sessionStorage.setItem('rechargeToken', 'false');
                     return;
                 } 
 

@@ -41,10 +41,26 @@
                         <li class="nav-item">
                             <a class="nav-link" href="support.html">Help</a>
                         </li>
+                        <!-- Notification Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" id="notificationDropdown"style="display: none;" role="button">
+                                <i class="fa fa-solid fa-bell"></i>
+                                <span id="notificationBadge" class="badge rounded-pill bg-danger position-absolute start-100 translate-middle">3</span>
+                            </a>
+
+                            <!-- Popover Content -->
+                            <div id="notificationMenu" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="width: 300px; display: none;">
+                                <h6 class="dropdown-header">Notifications</h6>
+                                <div id="notificationList">
+                                    <!-- Notifications will be dynamically added here -->
+                                </div>
+                        </li>
+
                         <div class="profile-dropdown mx-4">
                             <i class="fa-solid fas fa-user profile-icon"></i>
                             <div class="dropdown-content">
                                 <a class="nav-link" href="profile.html">My Profile</a>
+                                <a class="nav-link" href="#" id="logoutBtn">Logout</a>
                             </div>
                         </div>   
                     </ul>
@@ -60,11 +76,11 @@
                 <div class="h4 font-weight-bold mb-4">Services</div>
             </div>
             <ul class="list-unstyled">
+                <li class="mt-4"><a class="sidebar-link" href="profile.html">My Profile</a></li>
                 <li class="mt-4"><a class="sidebar-link" href="profile.html#recharge-history-div">My Transactions</a></li>
-                <li class="mt-4"><a class="sidebar-link" href="prepaidPlans.html">Prepaid Plans</a></li>
                 <li class="mt-4"><a class="sidebar-link" href="profile.html">Support Requests</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="prepaidPlans.html">Prepaid Plans</a></li>
                 <li class="mt-4"><a class="sidebar-link" href="support.html">Help</a></li>
-                <li class="mt-4"><a class="sidebar-link" href="profile.html">Profile</a></li>
             </ul>
         </aside>
 

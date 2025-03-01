@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mobi-Comm</title>
+    <link rel="icon" type="image/png" href="/Assets/mobi-comm-Logo.png">    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/Styles/notifications.css">
+</head>
+<body class="">
+    <!-- 🔹 Navbar at the top -->
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+            <div class="container">
+                <div class="d-flex align-items-center w-25">
+                    <button class="btn btn-outline-primary me-3" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                </div>
+                <a class="navbar-brand" href="index.html">
+                    <img src="/Assets/mobi-comm.png" alt="Logo" class="logo-icon">
+                </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse w-100 order-1 dual-collapse2 pt-1">
+                    <ul class="navbar-nav my-3">
+                        <li class="nav-item search-bar mt-lg-1">
+                            <form class="form-inline d-flex">
+                                <input class="form-control mr-2" type="search" placeholder="Search">
+                                <button id="searchbtn" class="btn btn-outline-dark" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="subscriber.html">User Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="support.html">Help</a>
+                        </li>
+                        <!-- Notification Dropdown -->
+                        <div class="profile-dropdown mx-4">
+                            <i class="fa-solid fas fa-user profile-icon"></i>
+                            <div class="dropdown-content">
+                                <a class="nav-link" href="profile.html">My Profile</a>
+                                <a class="nav-link" href="#" id="logoutBtn">Logout</a>
+                            </div>
+                        </div>   
+                    </ul>
+                </div>
+            </div>
+        </nav>                
+    </header>
+
+    <!-- 🔹 Sidebar & Main Content Section -->
+    <div class="content-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="d-flex justify-content-between align-items-center text-center">
+                <div class="h4 font-weight-bold mb-4">Services</div>
+            </div>
+            <ul class="list-unstyled">
+                <li class="mt-4"><a class="sidebar-link" href="profile.html">My Profile</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="profile.html#recharge-history-div">My Transactions</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="profile.html">Support Requests</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="prepaidPlans.html">Prepaid Plans</a></li>
+                <li class="mt-4"><a class="sidebar-link" href="support.html">Help</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Section 1: Unread Notifications -->
+            <section class="mb-5">
+                <h2 class="mb-4">Unread Notifications</h2>
+                <div id="unreadNotifications">
+                    <!-- Unread notifications will be dynamically inserted here -->
+                    <p class="text-muted">Loading unread notifications...</p>
+                </div>
+            </section>
+        
+            <!-- Section 2: All Notifications -->
+            <section>
+                <h2 class="mb-4">All Notifications</h2>
+                <div id="allNotifications">
+                    <!-- All notifications will be dynamically inserted here -->
+                    <p class="text-muted">Loading all notifications...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/Scripts/notifications.js"></script>
+
+</body>
+</html>

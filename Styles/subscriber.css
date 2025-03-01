@@ -372,3 +372,37 @@ margin-left: 0;
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+#notificationMenu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.notification-item {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-header{
+    font-size: medium;
+    color: darkslategray;
+}
+
+.view-btn {
+    font-size: 12px;
+    padding: 2px 6px;
+    border: #007BFF solid 1px;
+}
+
+.view-btn:hover{
+    color: #007BFF;
+}

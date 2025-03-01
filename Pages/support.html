@@ -20,7 +20,7 @@
                     </a>                    
                 </div>
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
@@ -28,15 +28,44 @@
                             <li class="nav-item"><a class="nav-link" href="prepaidPlans.html">Prepaid Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.html">Quick Recharge</a></li>
                             <li class="nav-item"><a id="nav-offers" class="nav-link">Offers</a></li>
-                            <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                            <li class="nav-item">
+                                <a id="profileLink" class="nav-link" href="#">
+                                    <i class="fas fa-user"></i>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </nav>                
             </div>
         </div>
-    </header> 
-    <div class="form-container my-4">
-        <h1>Connect with us</h1>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero-section py-3">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-md-6 text-center">
+                    <img src="/Assets/SupportPage.png" alt="Support Hero Image" class="img-fluid" style="max-width: 100%; height: auto;">
+                </div>
+                <div class="col-md-6">
+                    <h1 class="display-6">Welcome to</h1>
+                    <h1 class="display-3">Support & Help</h1>
+                    <p class="lead">We're here to help! Whether you have a question, need assistance, or want to explore our FAQs, we've got you covered.</p>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav mt-2 container section-title justify-content-evenly">
+        <a class="nav-link active me-5" href="#" onclick="showSection('connect', this)">Connect with Us</a>
+        <a class="nav-link " href="#" onclick="showSection('faq', this)">FAQs</a>
+    </nav>
+
+    <!-- Connect with Us Section (Default Visible) -->
+    <section id="connect" class="form-container my-4 container">
+        <h1 class="display-5 text-center">Connect with Us</h1>
         <p class="text-center font-weight-bold mb-4">Any queries? Simply write to us.</p>
         <form class="form-fill p-5 shadow">
             <div class="form-group">
@@ -52,12 +81,12 @@
                 <input type="email" class="form-control" id="email" required>
             </div>
             <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" class="form-control" id="subject">
+                <label for="subject">Subject<span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="subject" required>
             </div>
             <div class="form-group">
-                <label for="query">Describe your query or concern in detail<span style="color: red;">*</span></label>
-                <textarea class="form-control" id="query" rows="4" required></textarea>
+                <label for="query">Describe your query or concern in detail</label>
+                <textarea class="form-control" id="query" rows="4"></textarea>
             </div>
             <div class="form-group">
                 <label for="document">Upload document</label>
@@ -68,10 +97,17 @@
                 <button type="submit" class="btn btn-submit btn-block">Submit</button>
             </div>
         </form>
-    </div>
-    <div id="FAQ" class="container faq-container mt-4">
+    </section>
+
+    <!-- FAQs Section (Hidden by Default) -->
+    <section id="faq" class="container faq-container mt-4" style="display: none;">
+        <div class="container">
+            <h5 class="display-6 text-center mb-5">
+                Got queries?<br>Check FAQs for answers
+            </h5>
+        </div>
         <div class="faq-card p-4">
-            <h2 class="text-center mb-4">Frequently Asked Questions (FAQs)</h2>
+            <h2 class="text-center my-lg-5 my-md-3">Frequently Asked Questions (FAQs)</h2>
             <div class="faq-item">
                 <div class="fw-bold">What is a prepaid mobile recharge? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">A prepaid mobile recharge involves adding talk time, data, and/or SMS validity to your mobile number by paying in advance. The services are activated immediately after the recharge is successful.</div>
@@ -88,7 +124,7 @@
                 <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">If you run out of balance, you will need to recharge again to continue using the services. You can choose a plan with more talk time, data, or validity based on your needs.</div>
             </div>
-            <div class="text-center h5 my-2" >
+            <div class="text-center h5 my-2">
                 <a href="#" id="see-more-link" onclick="showMoreFAQs()">See more</a>
             </div>
             <div id="more-faqs" style="display: none;">
@@ -110,7 +146,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -128,6 +165,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    

@@ -1,0 +1,212 @@
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #eff7fa;
+}
+.header {
+    border-bottom: 1px solid #e2e2e2;
+}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 100;
+    transition: top 0.3s ease-in-out;
+}
+body {
+    padding-top: 70px; /* Prevents content from jumping under navbar */
+}
+
+.header .user-icon {
+    background-color: #ccc;
+    color: white;
+}
+.header .user-name {
+    color: #007bff;
+}
+.header .help {
+    color: #666;
+}
+.profile-header {
+    border-bottom: 1px solid #e2e2e2;
+}
+.profile-header .profile-pic {
+    background-color: #ccc;
+    color: white;
+}
+.profile-header .camera-icon {
+    background-color: #007bff;
+    color: white;
+}
+.nav-link.active {
+    color: #007bff !important;
+    border-bottom: 2px solid #007bff;
+}
+.nav-link {
+    color: #666;
+}
+.nav-link:hover {
+    color: #007bff;
+}
+.section-title {
+    font-weight: 300;
+}
+.contact-details h3, .transaction-details h3, .account-details h3 {
+    color: #666;
+}
+
+.recharge-history-section{
+    border-radius: 10px;
+}
+
+th{
+    color: #007BFF;
+}
+
+td{
+    padding-top: 30px !important;
+}
+
+#rechargeHistory{
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+
+.dataTables_paginate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px; /* Adds space above pagination */
+}
+
+.dataTables_paginate .paginate_button {
+    margin: 0 5px; /* Adds space between buttons */
+    padding: 6px 12px; /* Adjust button size */
+    border-radius: 5px; /* Round the corners */
+    border: 1px solid #c3c2c2; /* Optional border */
+}
+
+.paginate_button:hover{
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.hidden {
+    display: none;
+}
+.faq-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.faq-card {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.faq-item {
+    display: flex;
+    flex-direction: column; /* Stack question and answer vertically */
+    margin-bottom: 15px;
+}
+
+.fw-bold {
+    font-size: 18px; /* Larger font size for better readability */
+    color: black;  /* Text color remains black */
+    padding: 10px 0; /* Add padding for spacing */
+    background-color: #e0f7fa; /* Background color for the question */
+    border-radius: 5px;
+    cursor: pointer; /* Make it clickable */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-icon {
+    font-size: 18px;
+    color: black;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.faq-answer {
+    display: none;
+    margin-top: 5px;
+    font-size: 16px; /* Larger font size for answer */
+    color: black; /* Text color remains black */
+    padding: 10px 0;
+    background-color: #f9f9f9; /* Light background for the answer */
+    border-radius: 5px;
+}
+
+.faq-item:hover .faq-answer {
+    display: block;
+}
+
+.faq-item:hover .fw-bold {
+    background-color: #b2ebf2; /* Slight color change on hover */
+}
+
+.faq-item .faq-icon {
+    cursor: pointer;
+}
+.logo-icon {
+    height: 40px;
+    object-fit: contain;
+}
+.nav-link:hover{
+    color:#007BFF !important;
+}
+#logoutBtn:hover{
+    color: #007BFF;
+    background-color: transparent;
+    border-color: #007BFF;
+}
+.logout-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.logout-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.spinner {
+    margin-top: 10px;
+    width: 30px;
+    height: 30px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

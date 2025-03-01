@@ -84,6 +84,8 @@ function checkFormValidity() {
 
 document.getElementById('login-button').addEventListener('click', function (event) {
     event.preventDefault();
+    const email = document.getElementById('username').value.trim();
+    sessionStorage.setItem('loggedInAdmin',email);
     document.location.href = 'dashboard.html';
 });
 

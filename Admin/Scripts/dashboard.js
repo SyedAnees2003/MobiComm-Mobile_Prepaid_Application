@@ -234,11 +234,93 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function showSnackbar() {
-    var snackbar = document.getElementById("snackbar");
-    snackbar.className = "snackbar show";
-    setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+document.addEventListener("DOMContentLoaded", function () {
+    // Add event listeners to all Notify buttons
+    const notifyButtons = document.querySelectorAll(".notify-button");
+    notifyButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            // Get the table row containing the clicked button
+            const row = button.closest("tr");
+
+            // Extract the mobile number and plan expiry date from the row
+            const mobileNumber = row.querySelector("td:nth-child(2)").textContent.trim();
+            const planExpiry = row.querySelector("td:nth-child(3)").textContent.trim();
+
+            // Calculate days left until plan expiry
+            const daysLeft = calculateDaysLeft(planExpiry);
+
+            // Compose the notification message
+            const notificationMessage = `Recharge is expiring soon (${daysLeft} days left)`;
+
+            // Add the notification to the user's notifications
+            addNotificationToUser(mobileNumber, notificationMessage);
+
+            // Show a confirmation snackbar
+            showSnackbar("Notification sent successfully!");
+        });
+    });
+});
+
+// Function to calculate days left until plan expiry
+function calculateDaysLeft(planExpiry) {
+    const expiryDate = new Date(planExpiry.split("/").reverse().join("-")); // Convert to YYYY-MM-DD format
+    const today = new Date();
+    const timeDifference = expiryDate - today; // Difference in milliseconds
+    const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // Convert to days
+    return daysLeft;
 }
+
+// Function to add a notification to the user's notifications
+function addNotificationToUser(mobileNumber, message) {
+    // Find the user in the users array
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(u => u.mobile === mobileNumber);
+
+    if (user) {
+        // Create a new notification
+        const newNotification = {
+            id: `N${Date.now()}`, // Generate a unique ID
+            text: message,
+            seen: false,
+            link: "notifications.html",
+            timestamp: new Date().toISOString() // Add timestamp
+        };
+
+        // Add the notification to the user's notifications
+        const notificationKey = `notifications_${user.mobile}`; // Unique key for user-specific notifications
+        const notifications = JSON.parse(localStorage.getItem(notificationKey)) || [];
+        notifications.push(newNotification);
+
+        // Save the updated notifications back to localStorage
+        localStorage.setItem(notificationKey, JSON.stringify(notifications));
+        console.log(notifications);
+    } else {
+        console.error("User not found.");
+    }
+}
+
+// Function to show a snackbar
+function showSnackbar(message) {
+    const snackbar = document.createElement("div");
+    snackbar.className = "snackbar";
+    snackbar.textContent = message;
+    document.body.appendChild(snackbar);
+
+    // Show the snackbar
+    snackbar.classList.add("show");
+
+    // Hide the snackbar after 3 seconds
+    setTimeout(() => {
+        snackbar.classList.remove("show");
+        snackbar.remove();
+    }, 3000);
+}
+
+// function showSnackbar() {
+//     var snackbar = document.getElementById("snackbar");
+//     snackbar.className = "snackbar show";
+//     setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+// }
 
 
 // Logout Function

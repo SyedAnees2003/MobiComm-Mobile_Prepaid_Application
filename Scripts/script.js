@@ -70,6 +70,7 @@ else {
     // sessionStorage.setItem('isLoggedIn', 'true');
     // Store token in sessionStorage
     sessionStorage.setItem('rechargeToken', 'true');
+    console.log(sessionStorage.getItem('rechargeToken'));
     window.location.href = 'prepaidPlans.html';
 }
 });

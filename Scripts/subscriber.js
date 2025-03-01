@@ -43,6 +43,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 });
 
+document.getElementById('logoutBtn').addEventListener('click', function() {
+    let logoutScreen = document.getElementById('logoutScreen');
+
+    // Show the loading screen
+    logoutScreen.style.display = 'flex';
+
+    setTimeout(function() {
+        sessionStorage.removeItem('isLoggedIn'); // Remove login session
+        logoutScreen.style.display = "none"; // Hide after 2 seconds
+        window.location.href = "login.html"; // Redirect to login page
+    },1500);
+
+});
+
 document.getElementById("changeMobileNumberBtn").addEventListener("click", function () {
     $("#changeMobileModal").modal("show"); // Show Bootstrap modal
 });
@@ -170,3 +184,137 @@ window.addEventListener("scroll", function () {
     lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;  // Prevent negative values
 }, false);
 
+
+
+let notificationList = document.getElementById("notificationList");
+
+
+let notifications = []; // Declare notifications as a global variable
+let loggedInMobile; // Declare loggedInMobile as a global variable
+
+document.addEventListener("DOMContentLoaded", function () {
+    loggedInMobile = sessionStorage.getItem("mobileNumber"); // Assign to global variable
+    const notificationKey = `notifications_${loggedInMobile}`; // Unique key for user-specific notifications
+
+    let notificationMenu = document.getElementById("notificationMenu");
+
+    // Fetch notifications from localStorage
+    notifications = JSON.parse(localStorage.getItem(notificationKey)) || [];
+
+    // Migration: Add timestamp to existing notifications if missing
+    let needsUpdate = false;
+    notifications = notifications.map(n => {
+        if (!n.timestamp) {
+            n.timestamp = new Date().toISOString(); // Add timestamp
+            needsUpdate = true;
+        }
+        return n;
+    });
+
+    // Save updated notifications back to localStorage if migration was performed
+    if (needsUpdate) {
+        localStorage.setItem(notificationKey, JSON.stringify(notifications));
+    }
+
+    // Load notifications
+    loadNotifications();
+
+    // Toggle notification dropdown
+    notificationDropdown.addEventListener("click", function (event) {
+        event.preventDefault();
+        notificationMenu.style.display = notificationMenu.style.display === "block" ? "none" : "block";
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!notificationDropdown.contains(event.target) && !notificationMenu.contains(event.target)) {
+            notificationMenu.style.display = "none";
+        }
+    });
+
+    // Update badge and load user name
+    updateBadge();
+    loadUserName();
+});
+
+// Update badge count
+function updateBadge() {
+    let unseenCount = notifications.filter(n => !n.seen).length;
+    if (unseenCount > 0) {
+        notificationBadge.textContent = unseenCount;
+        notificationBadge.style.display = "inline-block";
+    } else {
+        notificationBadge.style.display = "none";
+    }
+}
+
+// Populate notification list
+function loadNotifications() {
+    // Sort notifications by timestamp (most recent first)
+    const sortedNotifications = notifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    // Limit the number of notifications to display (e.g., 5)
+    const maxNotifications = 5;
+    const limitedNotifications = sortedNotifications.slice(0, maxNotifications);
+
+    // Populate the notification list
+    notificationList.innerHTML = limitedNotifications.map(n => `
+        <div class="notification-item ${n.seen ? 'text-muted' : ''}">
+            <span>${n.text}</span>
+            <div class="text-muted small">${formatTimestamp(n.timestamp)}</div>
+            <a href="${n.link}" class="btn btn-sm view-btn" onclick="markAsRead('${n.id}', event)">View</a>
+        </div>
+    `).join('');
+
+    // Add a "Show All" link if there are more notifications
+    if (notifications.length > maxNotifications) {
+        notificationList.innerHTML += `
+            <div class="text-center mt-2">
+                <a href="notifications.html" class="btn btn-link">Show All</a>
+            </div>
+        `;
+    }
+}
+
+// Helper function to format timestamp
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Format as "10/15/2023, 12:34:56 PM"
+}
+
+// Mark notification as read
+window.markAsRead = function (id, event) { // Add event as a parameter
+    event.preventDefault(); // Prevent default behavior
+    let notification = notifications.find(n => n.id === id);
+    if (notification) {
+        notification.seen = true; // Mark as read
+        saveNotifications(); // Save to localStorage
+        updateBadge(); // Update the badge count
+        loadNotifications(); // Reload the notification list
+    }
+    window.location.href = "notifications.html"; // Redirect to the notification page
+};
+
+// Save notifications to localStorage
+function saveNotifications() {
+    const notificationKey = `notifications_${loggedInMobile}`; // Use global loggedInMobile
+    localStorage.setItem(notificationKey, JSON.stringify(notifications));
+}
+
+function loadUserName() {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    
+    // Get the logged-in mobile number from sessionStorage
+    let loggedInMobile = sessionStorage.getItem("mobileNumber");
+    
+    // Find the user in localStorage
+    let user = users.find(user => user.mobile === loggedInMobile);
+
+    console.log(user);
+    
+    if (user) {
+        document.getElementById("notificationDropdown").style.display = "inline-block"; // Show icon
+    } else {
+        document.getElementById("notificationDropdown").style.display = "none"; // Hide icon
+    }
+}

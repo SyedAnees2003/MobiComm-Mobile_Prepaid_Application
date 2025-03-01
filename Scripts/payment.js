@@ -60,59 +60,6 @@ function togglePaymentInputs() {
     validatePayment();  // Validate after toggling inputs
 }
 
-$('#paymentSuccessModal').on('show.bs.modal', function () {
-    const successContainer = document.querySelector('.success-icon-container');
-    const successTick = document.querySelector('.success-tick');
-    const successMessage = document.querySelector('.success-message');
-
-    // Add the class that triggers the animation
-    successContainer.classList.add('show-success');
-    successTick.classList.add('show-success');
-    successMessage.classList.add('show-success');
-
-    // Generate and display transaction details
-    const transactionId = Math.floor(10000000 + Math.random() * 90000000).toString();
-    const now = new Date();
-    const date = now.toLocaleDateString();
-    const time = now.toLocaleTimeString();
-    const paymentMethod = document.getElementById("paymentMethod").value;
-
-    document.getElementById('transactionId').textContent = transactionId;
-    document.getElementById('transactionDate').textContent = date;
-    document.getElementById('transactionTime').textContent = time;
-    document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
-
-    // Fetch current user mobile number from sessionStorage
-    const loggedInMobile = sessionStorage.getItem("mobileNumber");
-
-    // Get plan details
-    const price = localStorage.getItem('planPrice');
-    const category = localStorage.getItem('planCategory');
-
-    // Create transaction object
-    const transaction = {
-        transactionId,
-        date,
-        time,
-        paymentMethod,
-        price,
-        category,
-        data,
-        sms,
-        calls,
-        mobile: loggedInMobile // Associate with user
-    };
-
-    // Retrieve existing recharge history or create a new array
-    let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-
-    // Add new transaction
-    rechargeHistory.push(transaction);
-
-    // Store updated history in localStorage
-    localStorage.setItem("rechargeHistory", JSON.stringify(rechargeHistory));
-});
-
 function validatePayment() {
     let isValid = false;
     const paymentMethod = document.getElementById("paymentMethod").value;
@@ -145,7 +92,7 @@ function validatePayment() {
 }
 
 // Payment method and UPI provider/bank selection
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
     const paymentMethod = document.getElementById("paymentMethod");
     const upiOptions = document.getElementById("upiOptions");
     const cardInputs = document.getElementById("cardInputs");
@@ -204,16 +151,233 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial validation
     payButton.disabled = true;
 
+
+
     // Handle form submission
+    // document.getElementById("payment-form").addEventListener("submit", function (e) {
+    //     e.preventDefault();
+    //     $('#paymentSuccessModal').modal('show');
+
+    //     $('#paymentSuccessModal').on('show.bs.modal', function () {
+    //         const successContainer = document.querySelector('.success-icon-container');
+    //         const successTick = document.querySelector('.success-tick');
+    //         const successMessage = document.querySelector('.success-message');
+        
+    //         // Add the class that triggers the animation
+    //         successContainer.classList.add('show-success');
+    //         successTick.classList.add('show-success');
+    //         successMessage.classList.add('show-success');
+        
+    //         // Generate and display transaction details
+    //         const transactionId = Math.floor(10000000 + Math.random() * 90000000).toString();
+    //         const now = new Date();
+    //         const date = now.toLocaleDateString();
+    //         const time = now.toLocaleTimeString();
+    //         const paymentMethod = document.getElementById("paymentMethod").value;
+        
+    //         document.getElementById('transactionId').textContent = transactionId;
+    //         document.getElementById('transactionDate').textContent = date;
+    //         document.getElementById('transactionTime').textContent = time;
+    //         document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
+        
+    //         // Fetch current user mobile number from sessionStorage
+    //         const loggedInMobile = sessionStorage.getItem("mobileNumber");
+        
+    //         // Get plan details
+    //         const price = localStorage.getItem('planPrice');
+    //         const category = localStorage.getItem('planCategory');
+        
+    //         // Create transaction object
+    //         const transaction = {
+    //             transactionId,
+    //             date,
+    //             time,
+    //             paymentMethod,
+    //             price,
+    //             category,
+    //             data,
+    //             sms,
+    //             calls,
+    //             mobile: loggedInMobile // Associate with user
+    //         };
+        
+    //         // Retrieve existing recharge history or create a new array
+    //         let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
+        
+    //         // Add new transaction
+    //         rechargeHistory.push(transaction);
+        
+    //         // Store updated history in localStorage
+    //         localStorage.setItem("rechargeHistory", JSON.stringify(rechargeHistory));
+    //     });
+
+    //     sessionStorage.setItem('rechargeToken', 'false');
+
+    //     // Get the buttons
+    //     const downloadBtn = document.getElementById("downloadInvoiceBtn");
+
+    //     // Ensure buttons exist before replacing them
+    //     if (downloadBtn) {
+    //         downloadBtn.replaceWith(downloadBtn.cloneNode(true));
+    //         document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
+    //     } else {
+    //         console.warn("Download Invoice button not found!");
+    //     }
+    //     });
+
     document.getElementById("payment-form").addEventListener("submit", function (e) {
         e.preventDefault();
+        
+        // Generate transaction details
+        const transactionId = Math.floor(10000000 + Math.random() * 90000000).toString();
+        const now = new Date();
+        const date = now.toLocaleDateString();
+        const time = now.toLocaleTimeString();
+        const paymentMethod = document.getElementById("paymentMethod").value;
+    
+        // Fetch current user mobile number from sessionStorage
+        const loggedInMobile = sessionStorage.getItem("mobileNumber");
+    
+        // Get plan details
+        const price = localStorage.getItem('planPrice');
+        const category = localStorage.getItem('planCategory');
+        const data = localStorage.getItem('planData'); // FIX: Retrieve missing values
+        const sms = localStorage.getItem('planSms'); 
+        const calls = localStorage.getItem('planCalls');
+    
+        // Update modal content before showing
+        document.getElementById('transactionId').textContent = transactionId;
+        document.getElementById('transactionDate').textContent = date;
+        document.getElementById('transactionTime').textContent = time;
+        document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
+    
+        // Show success animation by adding class
+        const successContainer = document.querySelector('.success-icon-container');
+        const successTick = document.querySelector('.success-tick');
+        const successMessage = document.querySelector('.success-message');
+        successContainer.classList.add('show-success');
+        successTick.classList.add('show-success');
+        successMessage.classList.add('show-success');
+    
+        // Create transaction object
+        const transaction = {
+            transactionId,
+            date,
+            time,
+            paymentMethod,
+            price,
+            category,
+            data,
+            sms,
+            calls,
+            mobile: loggedInMobile // Associate with user
+        };
+    
+        // Retrieve existing recharge history or create a new array
+        let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
+    
+        // Add new transaction
+        rechargeHistory.push(transaction);
+    
+        // Store updated history in localStorage
+        localStorage.setItem("rechargeHistory", JSON.stringify(rechargeHistory));
+    
+        // Ensure rechargeToken is reset
+        sessionStorage.setItem('rechargeToken', 'false');
+    
+        // Show modal AFTER all updates
         $('#paymentSuccessModal').modal('show');
+    
+        // Ensure buttons exist before replacing them
+        const downloadBtn = document.getElementById("downloadInvoiceBtn");
+        if (downloadBtn) {
+            downloadBtn.replaceWith(downloadBtn.cloneNode(true));
+            document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
+        } else {
+            console.warn("Download Invoice button not found!");
+        }
+    });    
 
-        document.body.style.pointerEvents = "none";
+// });
 
-        setTimeout(function () {
-            $('#paymentSuccessModal').modal('hide'); // Hide the modal
-            window.history.back(); // Navigate back
-        }, 3000);
-    });
-});
+function generateInvoice() {
+    const transactionId = document.getElementById("transactionId").textContent;
+    const userMobile = sessionStorage.getItem("mobileNumber") || "N/A";
+    const date = document.getElementById("transactionDate").textContent;
+    const time = document.getElementById("transactionTime").textContent;
+    const price = localStorage.getItem("planPrice") || "0";
+    const paymentMethod = document.getElementById("transactionPaymentMethod").textContent;
+    const plan = localStorage.getItem("planCategory") || "Custom Plan";
+    const userName = sessionStorage.getItem("userName") || "Unknown User";
+
+    // Call the function to download the invoice
+    downloadInvoice(transactionId, userName, userMobile, date, time, price, paymentMethod, plan);
+}
+
+//Invoice Download
+function downloadInvoice(transactionId, userName, userMobile, date, time, price, paymentMethod, plan) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+    
+        // Load Logo (Replace 'logo.png' with your actual logo URL or Base64 string)
+        const logoPath = "mobi-comm.png"; // Replace with your logo URL or base64
+        const imgWidth = 40, imgHeight = 20;
+
+        const loadImage = new Image();
+        loadImage.src = logoPath;
+        loadImage.onload = function () {
+            const canvas = document.createElement("canvas");
+            canvas.width = loadImage.width;
+            canvas.height = loadImage.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(loadImage, 0, 0);
+            const base64Logo = canvas.toDataURL("image/png");
+
+        // Add Logo
+        doc.addImage(base64Logo, "PNG", 90, 10, imgWidth, imgHeight);
+    
+        // Invoice Title
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text("INVOICE", 90, 40);
+    
+        // Date & Time of Download
+        const currentDate = new Date();
+        const downloadDate = currentDate.toLocaleDateString();
+        const downloadTime = currentDate.toLocaleTimeString();
+    
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Date: ${downloadDate}`, 15, 50);
+        doc.text(`Time: ${downloadTime}`, 160, 50);
+    
+        // Recharge Details in a Table Format
+        const tableData = [
+            ["User Name", userName],
+            ["Mobile Number", userMobile],
+            ["Transaction ID", transactionId],
+            ["Date", date],
+            ["Time", time],
+            ["Amount", "Rs. " +price],
+            ["Payment Method", paymentMethod],
+            ["Plan", plan]
+        ];
+    
+        // AutoTable - Creating Table
+        doc.autoTable({
+            startY: 60, // Position below date & time
+            head: [["Title", "Details"]], // Table Header
+            body: tableData,
+            theme: "grid", // Table style
+            styles: { fontSize: 10 },
+            headStyles: { fillColor: [0, 122, 255] }, // Header Color
+            columnStyles: {
+                0: { fontStyle: "bold", cellWidth: 100 }, // First Column - Bold Titles
+                1: { cellWidth: 100 } // Second Column - Data
+            }
+        });
+    
+        // Save the PDF
+        doc.save(`Invoice_${transactionId}.pdf`);
+    };
+}
