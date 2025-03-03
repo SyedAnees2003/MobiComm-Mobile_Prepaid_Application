@@ -50,12 +50,39 @@
                 <div class="col-md-6">
                     <h1 class="display-6">Welcome to</h1>
                     <h1 class="display-3">Support & Help</h1>
-                    <p class="lead">We're here to help! Whether you have a question, need assistance, or want to explore our FAQs, we've got you covered.</p>
+                    <p class="lead mt-4">We're here to help! Whether you have a question, need assistance, or want to explore our FAQs, we've got you covered.</p>
                 </div>
                 
             </div>
         </div>
     </section>
+
+    <!-- Track My Requests Section -->
+    <div class="container d-flex justify-content-center mt-2 mb-4" id="track-support">
+        <div class="card shadow p-4 track-request-card w-80" onclick="openRequestsModal()">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="h3 mb-2">Track My Requests</h5>
+                <span id="chevronIcon">></span>
+            </div>
+            <hr>
+            <div id="recentRequest" class="text-muted">No recent support request found.</div>
+        </div>
+    </div>
+
+    <!-- Modal for All Support Requests -->
+    <div class="modal fade" id="requestsModal" tabindex="-1" aria-labelledby="requestsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="requestsModalLabel">Your Support Requests</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="allRequests"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Navigation Tabs -->
     <nav class="nav mt-2 container section-title justify-content-evenly">
@@ -169,6 +196,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="/Scripts/support.js"></script>
 </body>
 </html>

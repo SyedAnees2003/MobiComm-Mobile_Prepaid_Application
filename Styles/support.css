@@ -86,6 +86,52 @@ body {
     color: #666;
 }
 
+.track-request-card {
+    width: 80%;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-bottom: 3rem !important;
+    height: 15rem;
+}
+
+.track-request-card:hover {
+    background-color: #f8f9fa;
+}
+
+/* .chevron-icon {
+    font-size: 18px;
+    font-weight: bold;
+} */
+
+/* Style for the chevron icon */
+#chevronIcon {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+/* Rotate the chevron when the modal is open */
+#requestsModal.show #chevronIcon {
+    transform: rotate(90deg);
+}
+
+/* Style for the request cards */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.75em;
+}
+
 .section-title {
     font-weight: 300 !important;
     font-size: larger;

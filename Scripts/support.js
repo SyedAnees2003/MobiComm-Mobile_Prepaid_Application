@@ -122,3 +122,81 @@
         }
         });
     
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadRecentRequest();
+        });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileLink = document.getElementById("profileLink");
+            // Check if the user is logged in
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+            // Update the profile link based on login status
+            if (isLoggedIn) {
+                profileLink.href = "subscriber.html"; // If logged in, go to profile
+            } else {
+                profileLink.href = "login.html"; // If not logged in, go to login
+            }
+        });
+        
+        function loadRecentRequest() {
+            let loggedInMobile = sessionStorage.getItem("mobileNumber"); // Assuming loggedInMobile is stored in session storage
+            let requests = JSON.parse(localStorage.getItem("supportTickets")) || [];
+            let recentRequestDiv = document.getElementById("recentRequest");
+        
+            if (requests.length > 0) {
+                let userRequests = requests.filter(req => req.mobile === loggedInMobile);
+                if (userRequests.length > 0) {
+                    let lastRequest = userRequests[userRequests.length - 1]; // Get most recent request
+                    recentRequestDiv.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                        <h6>ID: ${lastRequest.id}</h6>
+                        <span class="badge bg-${lastRequest.status === 'Open' ? 'primary' : lastRequest.status === 'Pending' ? 'warning' : 'success'}">${lastRequest.status}</span>
+                    </div>
+                    <p class="text-muted">Subject: ${lastRequest.subject}</p>
+                    <p>${new Date(lastRequest.timestamp).toLocaleString()}</p>
+                    `;
+                }
+            }
+        }
+        
+        function openRequestsModal() {
+            const modal = new bootstrap.Modal(document.getElementById("requestsModal"));
+            modal.show();
+            loadAllRequests();
+        }
+        
+        function loadAllRequests() {
+            let loggedInMobile = sessionStorage.getItem("mobileNumber"); // Assuming loggedInMobile is stored in session storage
+            let requests = JSON.parse(localStorage.getItem("supportTickets")) || [];
+            let requestsDiv = document.getElementById("allRequests");
+            requestsDiv.innerHTML = ""; // Clear previous content
+        
+            if (requests.length === 0) {
+                requestsDiv.innerHTML = "<p>No support requests found.</p>";
+                return;
+            }
+        
+            let userRequests = requests.filter(req => req.mobile === loggedInMobile);
+            if (userRequests.length === 0) {
+                requestsDiv.innerHTML = "<p>No support requests found.</p>";
+                return;
+            }
+        
+            userRequests.forEach((req, index) => {
+                let requestCard = document.createElement("div");
+                requestCard.classList.add("card", "shadow", "p-3", "mb-3");
+                requestCard.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>${req.subject}</h5>
+                        <span class="badge bg-${req.status === 'Open' ? 'primary' : req.status === 'Pending' ? 'warning' : 'success'}">${req.status}</span>
+                    </div>
+                    <p class="text-muted small">ID: ${req.id}</p>
+                    <p><strong>Date:</strong> ${new Date(req.timestamp).toLocaleString()}</p>
+                    <p><strong>User:</strong> ${req.user}</p>
+                    <p><strong>Priority:</strong> <span class="badge bg-${req.priority === 'High' ? 'danger' : req.priority === 'Medium' ? 'warning' : 'success'}">${req.priority}</span></p>
+                    <p><strong>Query:</strong> ${req.query}</p>
+                `;
+                requestsDiv.appendChild(requestCard);
+            });
+        }        
