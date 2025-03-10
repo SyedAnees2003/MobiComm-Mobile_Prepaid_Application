@@ -213,3 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.paddingRight = ''; // Remove extra padding (added for scrollbar)
     });
 });
+// Get the button
+var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+// Show the button when scrolling down
+window.onscroll = function() {
+    if (document.documentElement.scrollTop > 400 || document.body.scrollTop > 400) {
+        scrollToTopBtn.style.display = "block";
+    } else {
+        scrollToTopBtn.style.display = "none";
+    }
+};
+
+// Scroll to top when clicked
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}

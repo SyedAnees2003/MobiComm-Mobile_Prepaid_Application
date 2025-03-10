@@ -381,3 +381,19 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
         doc.save(`Invoice_${transactionId}.pdf`);
     };
 }
+// Get the button
+var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+// Show the button when scrolling down
+window.onscroll = function() {
+    if (document.documentElement.scrollTop > 100 || document.body.scrollTop > 100) {
+        scrollToTopBtn.style.display = "block";
+    } else {
+        scrollToTopBtn.style.display = "none";
+    }
+};
+
+// Scroll to top when clicked
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}

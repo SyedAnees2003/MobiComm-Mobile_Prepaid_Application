@@ -76,3 +76,17 @@ window.markAsRead = function (id) {
         displayAllNotifications(notifications);
     }
 };
+const mainContent = document.getElementById("mainContent");
+const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+mainContent.onscroll = function() {
+    if (mainContent.scrollTop > 400) {
+        scrollToTopBtn.style.display = "block";
+    } else {
+        scrollToTopBtn.style.display = "none";
+    }
+};
+
+function scrollToTop() {
+    mainContent.scrollTop = 0;
+}
