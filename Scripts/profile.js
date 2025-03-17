@@ -1,116 +1,322 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    if (!localStorage.getItem("users")) {
-        let users = [
-            { mobile: "7339090778", name: "Syed Anees Jamal", email: "anees@gmail.com", address: "16C KALARAMPATTI MAIN ROAD, Salem Kitchipalayam", customer_id: "CUST1234" },
-            { mobile: "9001234567", name: "John Doe", email: "john.doe@example.com", address: "123 Elm Street, New York", customer_id: "CUST5678" }
-        ];
-        localStorage.setItem("users", JSON.stringify(users));
+    const mobileNumber = sessionStorage.getItem("mobileNumber");
+    if (!mobileNumber) {
+        alert("❌ No user session found. Redirecting to login...");
+        window.location.href = "login.html";
+        return;
     }
 
-    loadUserProfile();
-    loadAccountData();
-    loadUserName();
+    let token = sessionStorage.getItem("userToken");  // ✅ Get token
+    console.log(token);
 
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        let logoutScreen = document.getElementById('logoutScreen');
-
-        // Show the loading screen
-        logoutScreen.style.display = 'flex';
-
-        setTimeout(function() {
-            sessionStorage.removeItem('isLoggedIn'); // Remove login session
-            logoutScreen.style.display = "none"; // Hide after 2 seconds
-            window.location.href = "login.html"; // Redirect to login page
-        },1500);
-
-    });
+    fetchUserProfile(mobileNumber);
+    fetchRechargeHistory(mobileNumber);
+    setupEventListeners();
 });
 
-function loadUserName() {
-    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Get the logged-in mobile number from sessionStorage
-    let loggedInMobile = sessionStorage.getItem("mobileNumber");
+    // ✅ Fetch User Profile from Backend
+    function fetchUserProfile(mobileNumber) {
+        let token = sessionStorage.getItem("userToken");  // ✅ Get token
+        console.log("fecthUser:",token);
 
-    // Find the user in localStorage
-    let user = users.find(user => user.mobile === loggedInMobile);
+        if (!token) {
+            alert("❌ Session expired. Please log in again.");
+            window.location.href = "login.html";
+            return;
+        }
+    
+        fetch(`http://localhost:8083/api/users/${mobileNumber}`, {
+            headers: { "Authorization": `Bearer ${token}` }  // ✅ Send Token
+        })
+        .then(response => {
+            if (response.status === 401) {  // ✅ Unauthorized
+                throw new Error("❌ Session expired.");
+            }
+            return response.json();
+        })
+        .then(user => {
+            document.getElementById("profileHeading").textContent = `${user.firstName} ${user.lastName}`;
+            const lastLoginDate = new Date(user.lastLogin);
+            const formattedLastLogin = lastLoginDate.toLocaleString("en-IN", { 
+                weekday: "short", 
+                year: "numeric", 
+                month: "short", 
+                day: "numeric", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                second: "2-digit"
+            });
+            
+            // ✅ Display formatted last login time
+            document.getElementById("lastLogin").textContent = `Last Login: ${formattedLastLogin}`;
+            document.getElementById("mobileNumberText").textContent = user.mobileNumber;
+            document.getElementById("accountMobile").textContent = user.mobileNumber;
+            let emailElement = document.getElementById("emailText");
+            if (emailElement) {
+                emailElement.textContent = user.email || "Not provided";
+            }
 
+             // ✅ Format DOB Properly
+        let dobElement = document.getElementById("dobText");
+        if (dobElement) {
+            let formattedDOB = user.dob ? new Date(user.dob).toLocaleDateString() : "Not available";
+            dobElement.textContent = formattedDOB;
+        }
+    
+            let addressElement = document.getElementById("addressText");
+            if (addressElement) {
+                addressElement.textContent = user.address || "Not available";
+            }
+    
+            let customerIdElement = document.getElementById("customerIdText");
+            if (customerIdElement) {
+                customerIdElement.textContent = user.userId || "N/A";
+            }
+    
+            let ownerNameElement = document.getElementById("ownerNameText");
+            if (ownerNameElement) {
+                ownerNameElement.textContent = `${user.firstName} ${user.lastName}`;
+            }
+            const address = user.street 
+            ? `${user.street}, ${user.city}, ${user.state}, ${user.zipCode}`
+            : "Not available";
+        document.getElementById("addressText").textContent = address;
+        })
+        .catch(error => { console.error("❌ Error fetching user details:", error); 
+            alert("❌ Session expired. Please log in again.");
+            window.location.href = "login.html";
+         })
+        };
     
 
-    // If user exists, update the profile heading, otherwise default to "User Profile"
-    document.getElementById("profileHeading").textContent = user ? user.name : "User Profile";
-}
+    function fetchRechargeHistory(mobileNumber) {
+        const token = sessionStorage.getItem("userToken");
+        console.log("fecthRecharge", token);
+    
+        if (!token) {
+            alert("❌ Session expired. Please log in again.");
+            window.location.href = "login.html";
+            return;
+        }
+    
+        fetch(`http://localhost:8083/api/users/${mobileNumber}/recharge-history`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,  // ✅ Ensure Bearer format
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => {
+            if (response.status === 401) {
+                alert("❌ Session expired. Please log in again.");
+                sessionStorage.clear();
+                window.location.href = "login.html";
+                return;
+            }
+            if (!response.ok) throw new Error("Failed to fetch recharge history.");
+            return response.json();
+        })
+        .then(rechargeHistory => {
+            displayRechargeHistory(rechargeHistory);
+        })
+        .catch(error => console.error("❌ Error fetching recharge history:", error));
+    }    
 
-function loadUserProfile() {
-    let loggedInMobile = sessionStorage.getItem("mobileNumber");
-    let users = JSON.parse(localStorage.getItem("users"));
 
-    let user = users.find(u => u.mobile === loggedInMobile);
-
-    if (user) {
-        document.getElementById("mobileNumberText").textContent = user.mobile;
-        document.getElementById("mobileNumberInput").value = user.mobile;
-
-        document.getElementById("emailText").textContent = user.email;
-        document.getElementById("emailInput").value = user.email;
-
-        document.getElementById("addressText").textContent = user.address;
-        document.getElementById("addressInput").value = user.address;
-
-        document.getElementById("customerIdText").textContent = user.customer_id;
-        document.getElementById("ownerNameText").textContent = user.name;
-    } else {
-        alert("No user data found for this number.");
+// ✅ Display Recharge History in Table
+function displayRechargeHistory(history) {
+    const historyContainer = document.getElementById("rechargeHistory");
+    if (history.length === 0) {
+        historyContainer.innerHTML = "<p>No recharge history available.</p>";
+        return;
     }
+
+    let tableHTML = `
+        <table class="table" id="historyTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Transaction ID</th>
+                    <th>Amount</th>
+                    <th>Payment Mode</th>
+                    <th>Plan</th>
+                    <th>Download Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    history.forEach(recharge => {
+        const rechargeDate = new Date(recharge.rechargeDate).toLocaleDateString();
+
+        tableHTML += `
+            <tr>
+                <td>${rechargeDate}</td>
+                <td>${recharge.rechargeId}</td>
+                <td>₹${recharge.amount}</td>
+                <td>${recharge.rechargeMode}</td>
+                <td>${recharge.planName} (${recharge.validityDays} days)</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" 
+                        onclick="downloadInvoice(
+                            '${recharge.rechargeId}', 
+                            '${recharge.user.firstName} ${recharge.user.lastName}',
+                            '${sessionStorage.getItem("mobileNumber")}', 
+                            '${new Date(recharge.rechargeDate).toLocaleDateString()}', 
+                            '${new Date(recharge.rechargeDate).toLocaleTimeString()}', 
+                            '${recharge.amount}', 
+                            '${recharge.rechargeMode}', 
+                            '${recharge.planName}')">
+                        <i class="fa fa-download"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tableHTML += `</tbody></table>`;
+    historyContainer.innerHTML = tableHTML;
+
+    // ✅ **Destroy existing DataTable instance before reinitializing**
+    if ($.fn.DataTable.isDataTable("#historyTable")) {
+        $("#historyTable").DataTable().destroy();
+    }
+
+    // ✅ **Reinitialize DataTables AFTER inserting data**
+    $("#historyTable").DataTable({
+        "paging": true,
+        "searching": true, // ✅ Enables search bar
+        "info": true,
+        "responsive": true,
+        "autoWidth": false,
+        "pageLength": 5,
+        "lengthMenu": [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+        "order": [], // ✅ Prevents automatic sorting, keeps your original order
+        "dom": '<"d-flex justify-content-between align-items-center custom-datatable-controls my-4"lf>tip'
+    });
 }
 
-function toggleEditProfile() {
-    // document.getElementById("mobileNumberText").classList.toggle("d-none");
-    // document.getElementById("mobileNumberInput").classList.toggle("d-none");
 
+// ✅ Enable Profile Editing (Now Pre-Fills Existing Data)
+function toggleEditProfile() {
     document.getElementById("emailText").classList.toggle("d-none");
     document.getElementById("emailInput").classList.toggle("d-none");
+
+    // ✅ Pre-fill email input
+    document.getElementById("emailInput").value = document.getElementById("emailText").textContent.trim();
 
     document.getElementById("addressText").classList.toggle("d-none");
     document.getElementById("addressInput").classList.toggle("d-none");
 
-    // Toggle buttons
     document.getElementById("editProfileBtn").classList.toggle("d-none");
     document.getElementById("saveProfileBtn").classList.toggle("d-none");
+
+    
+    // ✅ Pre-fill address fields if they exist
+    const addressText = document.getElementById("addressText").textContent;
+    if (addressText.includes(",")) {
+        const addressParts = addressText.split(", ");
+        document.getElementById("streetInput").value = addressParts[0] || "";
+        document.getElementById("cityInput").value = addressParts[1] || "";
+        document.getElementById("stateInput").value = addressParts[2] || "";
+        document.getElementById("zipInput").value = addressParts[3] || "";
+    }
 }
 
 
-// Save Updated Profile Data
 function saveProfile() {
-    let users = JSON.parse(localStorage.getItem("users"));
-    let loggedInMobile = sessionStorage.getItem("mobileNumber");
+    const mobileNumber = sessionStorage.getItem("mobileNumber");
+    const token = sessionStorage.getItem("userToken");
 
-    let userIndex = users.findIndex(u => u.mobile === loggedInMobile);
-    if (userIndex !== -1) {
-        users[userIndex].mobile = document.getElementById('mobileNumberInput').value;
-        users[userIndex].email = document.getElementById('emailInput').value;
-        users[userIndex].address = document.getElementById('addressInput').value;
-
-        localStorage.setItem("users", JSON.stringify(users));
-        loadUserProfile();
-        toggleEditProfile();
-    } else {
-        alert("Error updating profile.");
+    if (!token) {
+        alert("❌ Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
     }
+
+    const updatedProfile = {
+        email: document.getElementById("emailInput").value
+    };
+
+    // ✅ Extract Address Fields Correctly
+    const street = document.getElementById("streetInput").value.trim();
+    const city = document.getElementById("cityInput").value.trim();
+    const state = document.getElementById("stateInput").value.trim();
+    const zipCode = document.getElementById("zipInput").value.trim();
+
+    if (street || city || state || zipCode) {
+        updatedProfile.address = { street, city, state, zipCode };
+    }
+
+    fetch(`http://localhost:8083/api/users/${mobileNumber}/update-profile`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedProfile)
+    })
+    .then(response => {
+        if (response.status === 401) {
+            throw new Error("❌ Unauthorized. Token expired or invalid.");
+        }
+        if (!response.ok) throw new Error("Failed to update profile.");
+        return response.text(); // ✅ Read response as text (not JSON)
+    })
+    .then(message => {
+        console.log("✅ Server Response:", message);
+        alert(message); // ✅ Show success message
+        fetchUserProfile(mobileNumber);
+        toggleEditProfile();
+    })
+    .catch(error => {
+        console.error("❌ Error updating profile:", error);
+        alert(error.message);
+    });
 }
 
-// Load Account Section Data
-function loadAccountData() {
-    let loggedInMobile = sessionStorage.getItem("mobileNumber");
-    let users = JSON.parse(localStorage.getItem("users"));
 
-    let user = users.find(u => u.mobile === loggedInMobile);
-    if (user) {
-        document.getElementById('accountMobile').textContent = user.mobile;
-        document.getElementById('customerIdText').textContent = user.customer_id;
-        document.getElementById('ownerNameText').textContent = user.name;
+
+// ✅ Setup Event Listeners
+function setupEventListeners() {
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+}
+
+// ✅ Handle Logout
+function handleLogout(event) {
+    event.preventDefault();
+    let logoutScreen = document.getElementById("logoutScreen");
+    logoutScreen.style.display = "flex";
+
+    const token = sessionStorage.getItem("userToken");
+    if (!token) {
+        alert("❌ No active session found.");
+        logoutScreen.style.display = "none";
+        window.location.href = "login.html";
+        return;
     }
+
+    fetch("http://localhost:8083/auth/logout", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(response => {
+        if (!response.ok) return response.text().then(error => { throw new Error(error); });
+        return response.text();
+    })
+    .then(message => {
+        setTimeout(() => {
+            sessionStorage.clear();
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 1500);
+    })
+    .catch(error => {
+        console.error("❌ Logout Error:", error);
+        alert("❌ Logout failed: " + error.message);
+        logoutScreen.style.display = "none";
+    });
 }
 
 // Tab Navigation Between Profile & Account Sections
@@ -125,62 +331,6 @@ function showSection(section, link) {
 }
 
 let filteredHistory = [];
-
-function loadRechargeHistory() {
-    const loggedInMobile = sessionStorage.getItem("mobileNumber");
-    const loggedInName = document.getElementById("profileHeading").textContent;
-    const rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-
-    filteredHistory = rechargeHistory.filter(transaction => transaction.mobile === loggedInMobile);
-    
-    // Reverse the array to show latest transactions first
-    filteredHistory.reverse();
-
-    const historyContainer = document.getElementById("rechargeHistory");
-    historyContainer.innerHTML = ""; // Clear previous content
-
-    if (filteredHistory.length === 0) {
-        historyContainer.innerHTML = "<p>No recharge history available.</p>";
-        return;
-    }
-
-    let tableHTML = `
-        <table class="table" id="historyTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Transaction ID</th>
-                    <th>Amount</th>
-                    <th>Payment Method</th>
-                    <th>Plan</th>
-                    <th>Invoice</th> <!-- New Column for Download -->
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    filteredHistory.forEach(transaction => {
-        tableHTML += `
-            <tr>
-                <td>${transaction.date}</td>
-                <td>${transaction.time}</td>
-                <td>${transaction.transactionId}</td>
-                <td>${transaction.price}</td>
-                <td>${transaction.paymentMethod}</td>
-                <td>${transaction.category}</td>
-                <td>
-                    <button class="btn btn-primary btn-sm" onclick="downloadInvoice('${transaction.transactionId}', '${loggedInName}', '${loggedInMobile}', '${transaction.date}', '${transaction.time}', '${transaction.price}', '${transaction.paymentMethod}', '${transaction.category}')">
-                        <i class="fas fa-download"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
-
-    tableHTML += `</tbody></table>`;
-    historyContainer.innerHTML = tableHTML;
-}
 
 $(document).ready(function () {
     $('#historyTable').DataTable({
@@ -259,11 +409,6 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
     };
 }
       
-
-
-// Load data when page loads
-document.addEventListener("DOMContentLoaded", loadRechargeHistory);
-
 
 let lastScroll = window.scrollY;
 window.addEventListener("scroll", function () {

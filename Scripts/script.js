@@ -66,11 +66,10 @@ else {
     if (mobileNumberError) {
         mobileNumberError.remove();
     }
-    // event.preventDefault();
-    // sessionStorage.setItem('isLoggedIn', 'true');
-    // Store token in sessionStorage
-    sessionStorage.setItem('rechargeToken', 'true');
-    console.log(sessionStorage.getItem('rechargeToken'));
+    const tempToken = "temp_" + Math.random().toString(36).substr(2, 10);
+    sessionStorage.setItem("tempToken", tempToken);
+    sessionStorage.setItem("quickRechargeMobile", mobileNumber);
+    sessionStorage.setItem("mobileNumber",mobileNumber);
     window.location.href = 'prepaidPlans.html';
 }
 });

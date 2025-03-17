@@ -17,6 +17,14 @@ let tickets = [
 
 $(document).ready(function () {
 
+    const token = sessionStorage.getItem("adminToken");
+    
+    if (!token) {
+        // alert("❌ Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
     let recentTickets = [
         { id: 'T1001', user: 'John Doe', email: 'john.doe@example.com', mobile: '9876543210', subject: 'Payment Issue', priority: 'High', status: 'Open' },
         { id: 'T1002', user: 'Jane Smith', email: 'jane.smith@example.com', mobile: '9871234567', subject: 'Account Access', priority: 'Medium', status: 'Pending' },
@@ -318,8 +326,43 @@ function downloadCSV() {
 }
     
 
-function logout(){
-    event.preventDefault();
-    sessionStorage.removeItem('loggedInAdmin');
-    window.location.href='login.html';
+// ✅ Admin Logout Function (With API Integration)
+function logout() {
+    event.preventDefault(); // Prevent default link behavior
+    console.log("🔹 Logging out...");
+
+    const token = sessionStorage.getItem("adminToken");
+
+    if (!token) {
+        alert("❌ No active session found.");
+        logoutScreen.style.display = "none";
+        window.location.href = "login.html";
+        return;
+    }
+
+    fetch("http://localhost:8083/auth/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(error => { throw new Error(error); });
+        }
+        return response.text();
+    })
+    .then(message => {
+        console.log("✅ Logout Successful:", message);
+        sessionStorage.removeItem("adminToken"); // ✅ Remove Token
+        sessionStorage.removeItem("adminRole");  // ✅ Remove Role
+        logoutScreen.style.display = "none";
+        alert("✅ Successfully logged out!");
+        window.location.href = "login.html"; // ✅ Redirect to Login Page
+    })
+    .catch(error => {
+        console.error("❌ Logout Error:", error);
+        alert("❌ Logout failed: " + error.message);
+        logoutScreen.style.display = "none";
+    });
 }

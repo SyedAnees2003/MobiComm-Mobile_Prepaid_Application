@@ -90,77 +90,9 @@
                     <input class="form-control" placeholder="Search" type="text"/>
                 </div>
                 <div class="h5 mb-3">Featured for you</div>
-                <div class="featured-plans">
-                    <div class="feature-card card p-3" data-price="₹199" data-data="2GB/day" data-sms="100 SMS" data-calls="Calls: Unlimited local & STD calls" border-radius: 10px">
-                        <div class="card-body">
-                            <div class="row first-row">
-                                <p class="price text-center fw-bold fs-4">₹199</p>
-                            </div>
-                            <div class="row text-center d-flex flex-md-row flex-column">
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">2GB/day</p>
-                                    <p class="text-muted small">Data</p>
-                                </div>
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">100 SMS</p>
-                                    <p class="text-muted small">SMS</p>
-                                </div>
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">Unlimited Calls</p>
-                                    <p class="text-muted small">Calls</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col d-flex flex-column align-items-center">
-                                <p class="fw-bold text-muted mb-0">28 Days</p>
-                                <p class="text-muted small">Validity</p>
-                            </div>
-                            <div class="col d-flex flex-column align-items-center">
-                                <p class="fw-bold text-muted mb-0">Netflix</p>
-                                <p class="text-muted small">Benefits</p>
-                            </div>                        
-                        </div>
-                        <div class="row text-center mt-3">
-                            <button class="btn btn-primary w-50 mx-auto" id="rechargeButton">Recharge</button>
-                        </div>
-                    </div>
-                    <div class="card p-3" data-price="₹299" data-data="3GB/day" data-sms="200 SMS" data-calls="Calls: Unlimited local & STD calls">
-                        <div class="card-body">
-                            <div class="row first-row">
-                                <p class="price text-center fw-bold fs-4">₹299</p>
-                            </div>
-                            <div class="row text-center d-flex flex-md-row flex-column">
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">3GB/day</p>
-                                    <p class="text-muted small">Data</p>
-                                </div>
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">200 SMS</p>
-                                    <p class="text-muted small">SMS</p>
-                                </div>
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">Unlimited Calls</p>
-                                    <p class="text-muted small">Calls</p>
-                                </div>
-                            </div>
-                        </div>
-                            <div class="row">
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">28 Days</p>
-                                    <p class="text-muted small">Validity</p>
-                                </div>
-                                <div class="col d-flex flex-column align-items-center">
-                                    <p class="fw-bold text-muted mb-0">Netflix</p>
-                                    <p class="text-muted small">Benefits</p>
-                                </div>     
-                            </div>
-                            <div class="row text-center mt-3">
-                                <button class="btn btn-primary w-50 mx-auto" id="rechargeButton">Recharge</button>
-                            </div>
-                    </div>
-                </div>
+                <div class="featured-plans"></div> <!-- Dynamic Content -->
             </div>
+            
             <!-- Right content (plan categories) -->
             <!-- <div class="container"> -->
                 <div class="col-md-8">
@@ -173,22 +105,30 @@
                         <button aria-controls="pills-topup" aria-selected="false" class="nav-link" data-bs-target="#pills-topup" data-bs-toggle="pill" id="pills-topup-tab" role="tab" type="button">Top-up</button>
                         <button aria-controls="pills-calls" aria-selected="false" class="nav-link" data-bs-target="#pills-calls" data-bs-toggle="pill" id="pills-calls-tab" role="tab" type="button">Calls</button>
                         <button aria-controls="pills-unlimited" aria-selected="false" class="nav-link" data-bs-target="#pills-unlimited" data-bs-toggle="pill" id="pills-unlimited-tab" role="tab" type="button">Unlimited</button>
+                        <button class="nav-link" data-bs-target="#pills-entertainment" data-bs-toggle="pill" id="pills-entertainment-tab" role="tab" type="button">Entertainment</button>
+                        <button class="nav-link" data-bs-target="#pills-international" data-bs-toggle="pill" id="pills-international-tab" role="tab" type="button">International</button>
                     </div>
                     <div class="tab-content" id="pills-tabContent">
                         <div aria-labelledby="pills-popular-tab" class="tab-pane fade show active" id="pills-popular" role="tabpanel">
-                            <div class="row g-3"></div>
+                            <div class="row gx-3"></div>
                         </div>
                         <div aria-labelledby="pills-data-tab" class="tab-pane fade" id="pills-data" role="tabpanel">
-                            <div class="row g-3"></div>
+                            <div class="row gx-3"></div>
                         </div>
                         <div aria-labelledby="pills-topup-tab" class="tab-pane fade" id="pills-topup" role="tabpanel">
-                            <div class="row g-3"></div>
+                            <div class="row gx-3"></div>
                         </div>
                         <div aria-labelledby="pills-calls-tab" class="tab-pane fade" id="pills-calls" role="tabpanel">
-                            <div class="row g-3"></div>
+                            <div class="row gx-3"></div>
                         </div>
                         <div aria-labelledby="pills-unlimited-tab" class="tab-pane fade" id="pills-unlimited" role="tabpanel">
-                            <div class="row g-3"></div>
+                            <div class="row gx-3"></div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-entertainment" role="tabpanel" aria-labelledby="pills-entertainment-tab">
+                            <div class="row gx-3"></div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-international" role="tabpanel" aria-labelledby="pills-international-tab">
+                            <div class="row gx-3"></div>
                         </div>
                     </div>
                 </div>
@@ -196,6 +136,13 @@
         
         </section>
     </main>
+
+    <!-- Benefits Modal (Floating Popup) -->
+<div id="benefitsModal" class="benefits-modal shadow p-3">
+    <div id="benefitsContent"></div> <!-- Dynamic OTT Benefit Rows Here -->
+</div>
+
+
     
     <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -210,6 +157,7 @@
                     <p id="modalSms">SMS: </p>
                     <p id="modalCalls">Calls: </p>
                     <p id="modalCategory"></p> <!-- Added category field -->
+                    <div id="modalBenefits" class="d-flex flex-column mt-2"></div> <!-- OTT Benefits Here -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

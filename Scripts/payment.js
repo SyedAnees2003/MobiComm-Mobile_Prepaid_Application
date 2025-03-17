@@ -1,97 +1,59 @@
-let price = localStorage.getItem('planPrice');
-const data = localStorage.getItem('planData');
-const sms = localStorage.getItem('planSms');
-const calls = localStorage.getItem('planCalls');
+document.addEventListener("DOMContentLoaded", function () {
+    const mobileNumber = sessionStorage.getItem("mobileNumber");
+    let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
+    const planId = sessionStorage.getItem("selectedPlanId");  
 
-const summaryPrice = document.getElementById('summaryPrice');
-const summaryData = document.getElementById('summaryData');
-const summarySms = document.getElementById('summarySms');
-const summaryCalls = document.getElementById('summaryCalls');
+    console.log(mobileNumber, token, planId);
 
-if (price && data && sms && calls) {
-    summaryPrice.textContent = `Price: ${price}`;
-    summaryData.textContent = `Data: ${data}`;
-    summarySms.textContent = `SMS: ${sms}`;
-    summaryCalls.textContent = `Calls: ${calls}`;
-} else {
-    summaryPrice.textContent = "No plan selected.";
-}
-
-if (price) {
-    price = parseFloat(price.replace('₹', '').trim());
-
-    if (!isNaN(price)) {
-        document.getElementById('amountLabel').textContent = `Amount: ₹${price.toFixed(2)}`;
-
-        const gst = price * 0.08;  // 8% GST
-        document.getElementById('gstlabel').textContent = `GST(8%): ₹${gst.toFixed(2)}`;
-
-        const total = price + gst;
-        document.getElementById('totalLabel').textContent = `Total Amount: ₹${total.toFixed(2)}`;
-
-        document.getElementById('paymentamount').textContent = `Amount to be paid:  ₹${total.toFixed(2)}`;
-    } else {
-        console.error("Price is not a valid number.");
-    }
-}
-
-let lastScrollTop = 0;
-const navbar = document.querySelector("header");
-
-window.addEventListener("scroll", function () {
-    let currentScroll = window.scrollY;
-
-    if (currentScroll > lastScrollTop) {
-        // Scrolling down → Hide navbar
-        navbar.style.top = "-88px"; // Adjust based on navbar height
-    } else {
-        // Scrolling up → Show navbar
-        navbar.style.top = "0";
+    if (!mobileNumber || !token || !planId) {
+        alert("❌ Session expired or plan not selected. Redirecting to homepage.");
+        window.location.href = "prepaidPlans.html";
+        return;
     }
 
-    lastScrollTop = currentScroll;
+    fetchPlanDetails(planId);
+    setupPaymentListeners();
 });
+
+// ✅ Fetch Plan Details from Backend
+function fetchPlanDetails(planId) {
+    fetch(`http://localhost:8083/api/plans/plan/${planId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to fetch plan details.");
+            return response.json();
+        })
+        .then(plan => {
+            document.getElementById("summaryPrice").textContent = `Price: ₹${plan.price}`;
+            document.getElementById("summaryData").textContent = `Data: ${plan.data}`;
+            document.getElementById("summarySms").textContent = `SMS: ${plan.sms}`;
+            document.getElementById("summaryCalls").textContent = `Calls: ${plan.calls}`;
+            
+            // ✅ Compute & Update Payment Summary
+            updatePaymentSummary(plan.price);
+        })
+        .catch(error => console.error("❌ Error fetching plan details:", error));
+}
+
+// ✅ Update Payment Summary with GST Calculation
+function updatePaymentSummary(planPrice) {
+    const gstPercentage = 8;
+    const gstAmount = (planPrice * gstPercentage) / 100;
+    const totalAmount = planPrice + gstAmount;
+
+    document.getElementById("amountLabel").textContent = `Amount: ₹${planPrice.toFixed(2)}`;
+    document.getElementById("gstlabel").textContent = `GST(8%): ₹${gstAmount.toFixed(2)}`;
+    document.getElementById("totalLabel").textContent = `Total Amount: ₹${totalAmount.toFixed(2)}`;
+    document.getElementById("paymentamount").textContent = `Amount to be paid: ₹${totalAmount.toFixed(2)}`;
+}
 
 function togglePaymentInputs() {
     var paymentMethod = document.getElementById("paymentMethod").value;
     document.getElementById("upiOptions").style.display = (paymentMethod === "upi") ? "block" : "none";
     document.getElementById("cardInputs").style.display = (paymentMethod === "card") ? "block" : "none";
     document.getElementById("bankOptions").style.display = (paymentMethod === "netbanking") ? "block" : "none";
-    validatePayment();  // Validate after toggling inputs
+    // validatePayment();  // Validate after toggling inputs
 }
 
-function validatePayment() {
-    let isValid = false;
-    const paymentMethod = document.getElementById("paymentMethod").value;
-
-    if (paymentMethod === "upi") {
-        isValid = document.querySelector("input[name='upiProvider']:checked") !== null; // Check if any UPI provider is selected
-    }
-        else if (paymentMethod === "card") {
-        const cardNumber = document.getElementById("cardNumber").value.trim();
-        const expiryDate = document.querySelector("input[placeholder='MM/YY']").value.trim();
-        const cvv = document.querySelector("input[placeholder='CVV']").value.trim();
-
-        // Validate card number (16 digits)
-        const isCardNumberValid = /^\d{16}$/.test(cardNumber);
-
-        // Validate expiry date (MM/YY format)
-        const isExpiryDateValid = /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate);
-
-        // Validate CVV (3 or 4 digits)
-        const isCvvValid = /^\d{3,4}$/.test(cvv);
-
-        isValid = isCardNumberValid && isExpiryDateValid && isCvvValid;  
-    }
-    else if (paymentMethod === "netbanking") {
-        isValid = document.querySelector("input[name='bank']:checked") !== null; // Check if any bank is selected
-    }
-
-    const payButton = document.getElementById("payButton");
-    payButton.disabled = !isValid;
-}
-
-// Payment method and UPI provider/bank selection
 // document.addEventListener("DOMContentLoaded", function () {
     const paymentMethod = document.getElementById("paymentMethod");
     const upiOptions = document.getElementById("upiOptions");
@@ -151,167 +113,246 @@ function validatePayment() {
     // Initial validation
     payButton.disabled = true;
 
+function validatePayment() {
+    let isValid = false;
+    const paymentMethod = document.getElementById("paymentMethod").value;
+
+    if (paymentMethod === "upi") {
+        isValid = document.querySelector("input[name='upiProvider']:checked") !== null; // Check if any UPI provider is selected
+    }
+        else if (paymentMethod === "card") {
+        const cardNumber = document.getElementById("cardNumber").value.trim();
+        const expiryDate = document.querySelector("input[placeholder='MM/YY']").value.trim();
+        const cvv = document.querySelector("input[placeholder='CVV']").value.trim();
+
+        // Validate card number (16 digits)
+        const isCardNumberValid = /^\d{16}$/.test(cardNumber);
+
+        // Validate expiry date (MM/YY format)
+        const isExpiryDateValid = /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate);
+
+        // Validate CVV (3 or 4 digits)
+        const isCvvValid = /^\d{3,4}$/.test(cvv);
+
+        isValid = isCardNumberValid && isExpiryDateValid && isCvvValid;  
+    }
+    else if (paymentMethod === "netbanking") {
+        isValid = document.querySelector("input[name='bank']:checked") !== null; // Check if any bank is selected
+        console.log(isValid);
+    }
+
+    const payButton = document.getElementById("payButton");
+    payButton.disabled = !isValid;
+}
+
+// ✅ Handle Payment Submission
+function processPayment() {
+    const mobileNumber = sessionStorage.getItem("mobileNumber");
+    let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
+    const planId = sessionStorage.getItem("selectedPlanId");
+    const paymentMethod = document.getElementById("paymentMethod").value;
+    
+    if (!token) {
+        alert("❌ Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+         // ✅ Remove temp token after successful payment
+         sessionStorage.removeItem("tempToken");
+         sessionStorage.removeItem("quickRechargeMobile");
+
+    fetch(`http://localhost:8083/api/users/${mobileNumber}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(user => {
+        console.log("UserID: ",user.userId);
+        return createRechargeEntry(user.userId, planId, paymentMethod);
+    })
+    .catch(error => {
+        console.error("❌ Error fetching user ID:", error);
+        alert("❌ Error processing payment.");
+    });
+}
+
+// ✅ Create Recharge Entry in `recharge_history`
+function createRechargeEntry(userId, planId, paymentMethod) {
+    let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
+    if (!token) {
+        alert("❌ Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // ✅ Extract correct amount
+    const totalAmountMatch = document.getElementById("totalLabel").textContent.match(/₹([\d.]+)/);
+    const amount = totalAmountMatch ? parseFloat(totalAmountMatch[1]) : NaN;
+
+    if (isNaN(amount)) {
+        console.error("❌ Invalid amount detected:", totalAmountMatch);
+        alert("❌ Payment amount calculation error. Please try again.");
+        return;
+    }
+
+    const rechargePayload = {
+        userId: userId,
+        planId: planId,
+        amount: amount,
+        rechargeMode: paymentMethod
+    };
+
+    console.log("Recharge Request Payload:", rechargePayload);
+
+    return fetch("http://localhost:8083/api/recharge-history", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(rechargePayload)
+    })
+    .then(response => {
+        if (response.status === 403) {
+            throw new Error("❌ Unauthorized. Ensure you are logged in.");
+        }
+        if (response.status === 415) {
+            throw new Error("❌ Unsupported Media Type. Check Content-Type.");
+        }
+        if (!response.ok) throw new Error("❌ Failed to create recharge entry.");
+        return response.json();
+    })
+    .then(recharge => {
+        console.log("✅ Recharge Created:", recharge);
+
+        return createPaymentTransaction(userId, recharge.rechargeId, paymentMethod);
+    })
+    .catch(error => {
+        console.error("❌ Error creating recharge entry:", error);
+        alert(error.message);
+    });
+}
 
 
-    // Handle form submission
-    // document.getElementById("payment-form").addEventListener("submit", function (e) {
-    //     e.preventDefault();
-    //     $('#paymentSuccessModal').modal('show');
+// ✅ Create Payment Transaction Entry
+function createPaymentTransaction(userId, rechargeId, paymentMethod) {
+    console.log("🔹 Sending Payment Transaction Request for UserID:", userId, "RechargeID:", rechargeId);
 
-    //     $('#paymentSuccessModal').on('show.bs.modal', function () {
-    //         const successContainer = document.querySelector('.success-icon-container');
-    //         const successTick = document.querySelector('.success-tick');
-    //         const successMessage = document.querySelector('.success-message');
-        
-    //         // Add the class that triggers the animation
-    //         successContainer.classList.add('show-success');
-    //         successTick.classList.add('show-success');
-    //         successMessage.classList.add('show-success');
-        
-    //         // Generate and display transaction details
-    //         const transactionId = Math.floor(10000000 + Math.random() * 90000000).toString();
-    //         const now = new Date();
-    //         const date = now.toLocaleDateString();
-    //         const time = now.toLocaleTimeString();
-    //         const paymentMethod = document.getElementById("paymentMethod").value;
-        
-    //         document.getElementById('transactionId').textContent = transactionId;
-    //         document.getElementById('transactionDate').textContent = date;
-    //         document.getElementById('transactionTime').textContent = time;
-    //         document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
-        
-    //         // Fetch current user mobile number from sessionStorage
-    //         const loggedInMobile = sessionStorage.getItem("mobileNumber");
-        
-    //         // Get plan details
-    //         const price = localStorage.getItem('planPrice');
-    //         const category = localStorage.getItem('planCategory');
-        
-    //         // Create transaction object
-    //         const transaction = {
-    //             transactionId,
-    //             date,
-    //             time,
-    //             paymentMethod,
-    //             price,
-    //             category,
-    //             data,
-    //             sms,
-    //             calls,
-    //             mobile: loggedInMobile // Associate with user
-    //         };
-        
-    //         // Retrieve existing recharge history or create a new array
-    //         let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-        
-    //         // Add new transaction
-    //         rechargeHistory.push(transaction);
-        
-    //         // Store updated history in localStorage
-    //         localStorage.setItem("rechargeHistory", JSON.stringify(rechargeHistory));
-    //     });
+    const totalAmountMatch = document.getElementById("totalLabel").textContent.match(/₹([\d.]+)/);
+    const amount = totalAmountMatch ? parseFloat(totalAmountMatch[1]) : NaN;
 
-    //     sessionStorage.setItem('rechargeToken', 'false');
+    if (isNaN(amount)) {
+        console.error("❌ Invalid amount detected:", totalAmountMatch);
+        alert("Payment amount calculation error. Please try again.");
+        return;
+    }
 
-    //     // Get the buttons
-    //     const downloadBtn = document.getElementById("downloadInvoiceBtn");
+    return fetch("http://localhost:8083/api/payments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken")}`
+        },
+        body: JSON.stringify({
+            userId: userId,
+            rechargeId: rechargeId,
+            amount: amount,
+            paymentMethod: paymentMethod,
+            transactionType: "Recharge",
+            status: "successful"
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(`❌ Payment API Error: ${err.message}`);
+            });
+        }
+        return response.json();
+    })    
+    .then(transaction => {
+        console.log("✅ Payment Transaction Created:", transaction);
+        showPaymentSuccess(transaction.transactionId, paymentMethod);
+    })
+    .catch(error => {
+        console.error("❌ Error creating payment transaction:", error);
+        alert("❌ Payment failed.");
+    });
+}
 
-    //     // Ensure buttons exist before replacing them
-    //     if (downloadBtn) {
-    //         downloadBtn.replaceWith(downloadBtn.cloneNode(true));
-    //         document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
-    //     } else {
-    //         console.warn("Download Invoice button not found!");
-    //     }
-    //     });
+// ✅ Show Payment Success Modal
+function showPaymentSuccess(transactionId, paymentMethod) {
+    document.getElementById('transactionId').textContent = transactionId;
+    document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
 
+    const now = new Date();
+    document.getElementById('transactionDate').textContent = now.toLocaleDateString();
+    document.getElementById('transactionTime').textContent = now.toLocaleTimeString();
+
+    $('#paymentSuccessModal').modal('show');
+}
+
+$('#paymentSuccessModal').on('show.bs.modal', function () {
+    console.log("✅ Showing success modal...");
+
+    // ✅ Ensure the success tick is visible with animation
+    const successContainer = document.querySelector('.success-icon-container');
+    const successTick = document.querySelector('.success-tick');
+
+    successContainer.classList.add('show-success'); // Scale up & fade in
+    successTick.classList.add('show-success'); // Make tick visible
+});
+
+// ✅ Setup Payment Listeners
+function setupPaymentListeners() {
     document.getElementById("payment-form").addEventListener("submit", function (e) {
         e.preventDefault();
-        
-        // Generate transaction details
-        const transactionId = Math.floor(10000000 + Math.random() * 90000000).toString();
-        const now = new Date();
-        const date = now.toLocaleDateString();
-        const time = now.toLocaleTimeString();
-        const paymentMethod = document.getElementById("paymentMethod").value;
-    
-        // Fetch current user mobile number from sessionStorage
-        const loggedInMobile = sessionStorage.getItem("mobileNumber");
-    
-        // Get plan details
-        const price = localStorage.getItem('planPrice');
-        const category = localStorage.getItem('planCategory');
-        const data = localStorage.getItem('planData'); // FIX: Retrieve missing values
-        const sms = localStorage.getItem('planSms'); 
-        const calls = localStorage.getItem('planCalls');
-    
-        // Update modal content before showing
-        document.getElementById('transactionId').textContent = transactionId;
-        document.getElementById('transactionDate').textContent = date;
-        document.getElementById('transactionTime').textContent = time;
-        document.getElementById('transactionPaymentMethod').textContent = paymentMethod;
-    
-        // Show success animation by adding class
-        const successContainer = document.querySelector('.success-icon-container');
-        const successTick = document.querySelector('.success-tick');
-        const successMessage = document.querySelector('.success-message');
-        successContainer.classList.add('show-success');
-        successTick.classList.add('show-success');
-        successMessage.classList.add('show-success');
-    
-        // Create transaction object
-        const transaction = {
-            transactionId,
-            date,
-            time,
-            paymentMethod,
-            price,
-            category,
-            data,
-            sms,
-            calls,
-            mobile: loggedInMobile // Associate with user
-        };
-    
-        // Retrieve existing recharge history or create a new array
-        let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-    
-        // Add new transaction
-        rechargeHistory.push(transaction);
-    
-        // Store updated history in localStorage
-        localStorage.setItem("rechargeHistory", JSON.stringify(rechargeHistory));
-    
-        // Ensure rechargeToken is reset
-        sessionStorage.setItem('rechargeToken', 'false');
-    
-        // Show modal AFTER all updates
-        $('#paymentSuccessModal').modal('show');
-    
-        // Ensure buttons exist before replacing them
-        const downloadBtn = document.getElementById("downloadInvoiceBtn");
-        if (downloadBtn) {
-            downloadBtn.replaceWith(downloadBtn.cloneNode(true));
-            document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
-        } else {
-            console.warn("Download Invoice button not found!");
-        }
-    });    
+        processPayment();
+    });
+}
 
-// });
+document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
 
 function generateInvoice() {
     const transactionId = document.getElementById("transactionId").textContent;
-    const userMobile = sessionStorage.getItem("mobileNumber") || "N/A";
-    const date = document.getElementById("transactionDate").textContent;
-    const time = document.getElementById("transactionTime").textContent;
-    const price = localStorage.getItem("planPrice") || "0";
-    const paymentMethod = document.getElementById("transactionPaymentMethod").textContent;
-    const plan = localStorage.getItem("planCategory") || "Custom Plan";
-    const userName = sessionStorage.getItem("userName") || "Unknown User";
+    const userMobile = sessionStorage.getItem("mobileNumber");
 
-    // Call the function to download the invoice
-    downloadInvoice(transactionId, userName, userMobile, date, time, price, paymentMethod, plan);
+    if (!transactionId || !userMobile) {
+        alert("❌ Missing transaction details.");
+        return;
+    }
+
+    let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
+
+    fetch(`http://localhost:8083/api/users/${userMobile}/recent-recharge`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("❌ Failed to fetch recharge details.");
+        }
+        return response.json();
+    })
+    .then(recharge => {
+        console.log("✅ Fetched Recharge Data:", recharge);
+
+        // Extract details for the invoice
+        const userName = recharge.userName || "Unknown User";
+        const date = new Date(recharge.rechargeDate).toLocaleDateString();
+        const time = new Date(recharge.rechargeDate).toLocaleTimeString();
+        const price = recharge.amount;
+        const paymentMethod = recharge.rechargeMode;
+        const plan = recharge.plan.planName || "Custom Plan";
+
+        // Call function to generate the invoice
+        downloadInvoice(transactionId, userName, userMobile, date, time, price, paymentMethod, plan);
+    })
+    .catch(error => {
+        console.error("❌ Error fetching recharge details:", error);
+        alert("❌ Unable to generate invoice. Please try again.");
+    });
 }
 
 //Invoice Download
@@ -358,7 +399,7 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
             ["Transaction ID", transactionId],
             ["Date", date],
             ["Time", time],
-            ["Amount", "Rs. " +price],
+            ["Amount", `Rs. ${price}`],
             ["Payment Method", paymentMethod],
             ["Plan", plan]
         ];

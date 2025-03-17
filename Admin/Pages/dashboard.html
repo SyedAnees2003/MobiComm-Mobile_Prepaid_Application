@@ -31,7 +31,7 @@
                     </a>                    
                 </div>
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
@@ -39,7 +39,7 @@
                             <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="managePlans.html">Manage Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="manageSubscribers.html">Manage Subscribers</a></li>
-                            <li class="nav-item"><a class="nav-link" href="support.html">Help</a></li>
+                            <li class="nav-item"><a class="nav-link" href="support.html">Support Requests</a></li>
                             <li class="nav-item dropdown px-4 list-unstyled" id="accountMenu">
                                 <a class="nav-link" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user" ></i>
@@ -93,23 +93,23 @@
                 <!-- Dashboard Tab -->
                 <div class="tab-pane fade show active" id="list-dashboard" role="tabpanel" aria-labelledby="list-dashboard-list">
                     <div class="dashboard-cards">
-                        <div class="card-item " style="background-color: #a3e2fd;">
-                            <h2>1K</h2>
+                        <div class="card-item" style="background-color: #a3e2fd;">
+                            <h2 id="totalSubscribers">0</h2>
                             <h6>Subscribers</h6>
                         </div>
                         <div class="card-item" style="background-color: #54a8fb;">
-                            <h2>600+</h2>
+                            <h2 id="activeUsers">0+</h2>
                             <h6>Active Plan Users</h6>
                         </div>
                         <div class="card-item" style="background-color: #a3e2fd;">
-                            <h2>10</h2>
-                            <h6>Users Expiry nearing</h6>
+                            <h2 id="expiringUsers">0</h2>
+                            <h6>Users Expiry Nearing</h6>
                         </div>
                         <div class="card-item" style="background-color: #54a8fb;">
-                            <h2>25</h2>
+                            <h2 id="totalPlans">0</h2>
                             <h6>Plans Available</h6>
                         </div>
-                    </div>
+                    </div>                    
 
                     <div class="card m-4 bg-white">
                         <div class="card-header bg-white">
@@ -121,6 +121,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Mobile Number</th>
+                                        <th>Current Plan</th>
                                         <th>Plan Expiry</th>
                                         <th>Details</th>
                                         <th>Action</th>
@@ -172,6 +173,7 @@
                     
 
                     <div class="charts-container">
+                        
                         <div class="row">
                             <div class="chart-item col-lg-6 col-md-6 col-12 mx-2">
                                 <h4>Daily Transactions</h4>
@@ -254,31 +256,39 @@
                 </div>
         </main>
     </section>
-    <div class="modal fade" id="subscriberModal" tabindex="-1" aria-labelledby="subscriberModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-primary" id="subscriberModalLabel">Subscriber Details</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Name:</strong> <span id="subscriberName"></span></p>
-                    <p><strong>Mobile Number:</strong> <span id="subscriberMobile"></span></p>
-                    <p><strong>Plan Expiry:</strong> <span id="subscriberExpiry"></span></p>
 
-                    <section class="transaction-details mt-4">
-                        <h3 class="h5 mb-3 text-primary"><strong>Recharge History</strong></h3>
-                        <div id="rechargeHistory" class="space-y-4">
-                            <!-- Recharge history details will be injected here -->
-                        </div>
-                    </section>
+    <!-- Subscriber Details Modal -->
+<div class="modal fade" id="subscriberModal" tabindex="-1" aria-labelledby="subscriberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-primary mx-auto" id="subscriberModalLabel">Subscriber Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 🟢 User Details Section -->
+                <h5 class="text-center text-primary">User Details</h5>
+                <hr>
+                <p><strong>Name:</strong> <span id="subscriberName"></span></p>
+                <p><strong>Mobile Number:</strong> <span id="subscriberMobile"></span></p>
+                <p><strong>Email:</strong> <span id="subscriberEmail"></span></p>
+                <p><strong>Address:</strong> <span id="subscriberAddress"></span></p>
+                <p><strong>Current Plan:</strong> <span id="subscriberPlan"></span></p>
+                <p><strong>Plan Expiry:</strong> <span id="subscriberExpiry"></span></p>
+
+                <!-- 🟢 Recharge History Section -->
+                <h5 class="text-center text-primary mt-4">Recent Recharge</h5>
+                <hr>
+                <div id="rechargeHistory" class="space-y-4">
+                    <!-- Recharge history details will be injected here -->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
     <div id="logoutScreen" class="logout-overlay" style="display: none;">
         <div class="logout-box">
             <p>Logging out...</p>

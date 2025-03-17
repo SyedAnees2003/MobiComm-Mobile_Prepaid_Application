@@ -28,7 +28,7 @@
                     </a>                    
                 </div>
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
@@ -36,7 +36,7 @@
                             <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="managePlans.html">Manage Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="manageSubscribers.html">Manage Subscribers</a></li>
-                            <li class="nav-item"><a class="nav-link" href="support.html">Help</a></li>
+                            <li class="nav-item"><a class="nav-link" href="support.html">Support Requests</a></li>
                             <li class="nav-item dropdown px-4 list-unstyled" id="accountMenu">
                                 <a class="nav-link" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user" ></i>
@@ -99,11 +99,11 @@
                     </div>
                     <div class="card-item-top" style="background-color: #a3e2fd;">
                       <h2>600+</h2>
-                      <h6>Total Plan Subscribers</h6>
+                      <h6>Total Plan Subscriptions</h6>
                   </div>                  
                     <div class="card-item-top" style="background-color: #54a8fb;">
-                        <h2>Valued Category</h2>
-                        <h6>Popular Plans</h6>
+                        <h2>Popular Plans</h2>
+                        <h6>Valued Category</h6>
                     </div>
                 </div>
 
@@ -154,28 +154,71 @@
                 </div>
 
                 <div class="plans-container mt-5 bg-white p-4">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="d-flex justify-content-between mb-3">
                             <div class="h3 text-primary">Plan categories</div>
                         </div>
-                        <!-- <div class="d-flex justify-content-end mb-3 w-100">
-                            <button class="btn btn-primary" id="addPlanButton">Add Plan +</button>
-                        </div> -->
-                        <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <button aria-controls="pills-popular" aria-selected="true" class="nav-link active" data-bs-target="#pills-popular" data-bs-toggle="pill" id="pills-popular-tab" role="tab" type="button">Popular</button>
-                            <button aria-controls="pills-data" aria-selected="false" class="nav-link" data-bs-target="#pills-data" data-bs-toggle="pill" id="pills-data-tab" role="tab" type="button">Data</button>
-                            <button aria-controls="pills-topup" aria-selected="false" class="nav-link" data-bs-target="#pills-topup" data-bs-toggle="pill" id="pills-topup-tab" role="tab" type="button">Top-up</button>
-                            <button aria-controls="pills-calls" aria-selected="false" class="nav-link" data-bs-target="#pills-calls" data-bs-toggle="pill" id="pills-calls-tab" role="tab" type="button">Calls</button>
-                            <button aria-controls="pills-unlimited" aria-selected="false" class="nav-link" data-bs-target="#pills-unlimited" data-bs-toggle="pill" id="pills-unlimited-tab" role="tab" type="button">Unlimited</button>
+                
+                        <!-- NAV PILLS FOR ACTIVE & INACTIVE -->
+                        <div class="nav nav-pills mb-3" id="plan-status-tab" role="tablist">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#active-plans">Active Plans</button>
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#inactive-plans">Inactive Plans</button>
+                        </div>
+                
+                        
+                        <div class="tab-content">
+                            <!-- ACTIVE PLANS TAB -->
+                            <div class="tab-pane fade show active" id="active-plans" role="tabpanel">
+                                <div class="d-flex justify-content-end mb-3 w-100">
+                                    <button class="btn btn-success" id="addCategoryButton">Add Category +</button>
+                                </div>
+                                <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-popular">Popular</button>
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-data">Data</button>
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-topup">Top-up</button>
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-calls">Calls</button>
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-unlimited">Unlimited</button>
+                                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-entertainment">Entertainment</button>
+                                </div>
+                
+                                <div class="d-flex justify-content-end mb-3 w-90">
+                                    <button class="btn btn-primary" id="addPlanButton">Add Plan +</button>
+                                </div>
+                
+                                <div class="container mt-4 bg-white">
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div aria-labelledby="pills-popular-tab" class="tab-pane fade show active" id="pills-popular" role="tabpanel">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                        <div aria-labelledby="pills-data-tab" class="tab-pane fade" id="pills-data" role="tabpanel">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                        <div aria-labelledby="pills-topup-tab" class="tab-pane fade" id="pills-topup" role="tabpanel">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                        <div aria-labelledby="pills-calls-tab" class="tab-pane fade" id="pills-calls" role="tabpanel">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                        <div aria-labelledby="pills-unlimited-tab" class="tab-pane fade" id="pills-unlimited" role="tabpanel">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-entertainment" role="tabpanel" aria-labelledby="pills-entertainment-tab">
+                                            <div class="row gx-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <!-- INACTIVE PLANS TAB (ADDED tab-pane CLASS) -->
+                            <div class="tab-pane fade" id="inactive-plans" role="tabpanel">
+                                <!-- <h2>Inactive Plans</h2> -->
+                                <div id="inactive-plans-list" class="plans-grid"></div>
+                            </div>
                         </div>
                     </div>
-                  <div class="d-flex justify-content-end mb-3 w-100">
-                      <button class="btn btn-primary" id="addPlanButton">Add Plan +</button>
-                  </div>
-                  <div class="container mt-4 bg-white">
-                    <div id="plansContainer" class="plan-cards"></div>
-                  </div>
                 </div>
+                
+                
 
                 <div class="charts-section bg-white p-2 mt-5 row d-flex justify-content-center align-items-center">
                     <div class="d-flex justify-content-between mb-3 p-4">
@@ -187,52 +230,123 @@
                     <div class="chart-container col-lg-6" style="width: 40%; margin: 20px auto;">
                         <canvas id="subscriptionsChart"></canvas>
                     </div>
-                </div>               
+                </div>    
+
+                <!-- OTT Benefits Popup Modal -->
+                <div id="benefitsModal" class="benefits-popup">
+                    <div class="benefits-content">
+                        <span class="close-popup" onclick="closeBenefitsPopup()"></span>
+                        <div id="benefitsContent"></div>
+                    </div>
+                </div>
+
+                
+                <!-- Plan Details Modal -->
+                <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="planDetailsModalLabel">Plan Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalPrice">Price: </p>
+                                <p id="modalData">Data: </p>
+                                <p id="modalSms">SMS: </p>
+                                <p id="modalCalls">Calls: </p>
+                                <p id="modalCategory">Category: </p>
+                                <p id="modalBenefits"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Category Modal -->
+                <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addCategoryForm">
+                                    <div class="mb-3">
+                                        <label for="categoryName" class="form-label">Category Name</label>
+                                        <input type="text" class="form-control" id="categoryName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="categoryDesc" class="form-label">Description</label>
+                                        <input type="text" class="form-control" id="categoryDesc" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Add Category</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Add Plan Modal -->
                 <div class="modal fade" id="addPlanModal" tabindex="-1" aria-labelledby="addPlanModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="addPlanModalLabel">Add New Plan</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addPlanModalLabel">Add New Plan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addPlanForm">
+                                    <div class="mb-3">
+                                        <label for="planName" class="form-label">Plan Name</label>
+                                        <input type="text" class="form-control" id="planName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planPrice" class="form-label">Price (₹)</label>
+                                        <input type="number" class="form-control" id="planPrice" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planData" class="form-label">Data</label>
+                                        <input type="text" class="form-control" id="planData">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planSms" class="form-label">SMS</label>
+                                        <input type="text" class="form-control" id="planSms">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planCalls" class="form-label">Calls</label>
+                                        <input type="text" class="form-control" id="planCalls">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planValidity" class="form-label">Validity (Days)</label>
+                                        <input type="text" class="form-control" id="planValidity" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="planCategory" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">OTT Benefits</label>
+                                        <div id="ottCheckboxes">
+                                            <label><input type="checkbox" value="Netflix"> Netflix</label><br>
+                                            <label><input type="checkbox" value="Amazon Prime"> Amazon Prime</label><br>
+                                            <label><input type="checkbox" value="Disney+ Hotstar"> Disney+ Hotstar</label><br>
+                                            <label><input type="checkbox" value="Sony Liv"> Sony Liv</label><br>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="planStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="planStatus">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Add Plan</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                        <form id="addPlanForm">
-                            <div class="mb-3">
-                            <label for="planPrice" class="form-label">Price</label>
-                            <input type="text" class="form-control" id="planPrice" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="planData" class="form-label">Data</label>
-                            <input type="text" class="form-control" id="planData" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="planSms" class="form-label">SMS</label>
-                            <input type="text" class="form-control" id="planSms" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="planCalls" class="form-label">Calls</label>
-                            <input type="text" class="form-control" id="planCalls" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="planValidity" class="form-label">Validity</label>
-                            <input type="text" class="form-control" id="planValidity" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="planCategory" class="form-label">Category</label>
-                            <select class="form-select" id="planCategory" required>
-                                <option value="popular">Popular</option>
-                                <option value="data">Data</option>
-                                <option value="topup">Top-up</option>
-                                <option value="calls">Calls</option>
-                                <option value="unlimited">Unlimited</option>
-                            </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Plan</button>
-                        </form>
-                        </div>
-                    </div>
                     </div>
                 </div>
 
@@ -246,32 +360,61 @@
                             </div>
                             <div class="modal-body">
                                 <form id="updatePlanForm">
+                                    <input type="hidden" id="updatePlanId">
                                     <div class="mb-3">
-                                        <label for="updatePlanPrice" class="form-label">Price</label>
-                                        <input type="text" class="form-control" id="updatePlanPrice" required>
+                                        <label for="updatePlanName" class="form-label">Plan Name</label>
+                                        <input type="text" class="form-control" id="updatePlanName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="updatePlanPrice" class="form-label">Price (₹)</label>
+                                        <input type="number" class="form-control" id="updatePlanPrice" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="updatePlanData" class="form-label">Data</label>
-                                        <input type="text" class="form-control" id="updatePlanData" required>
+                                        <input type="text" class="form-control" id="updatePlanData">
                                     </div>
                                     <div class="mb-3">
                                         <label for="updatePlanSms" class="form-label">SMS</label>
-                                        <input type="text" class="form-control" id="updatePlanSms" required>
+                                        <input type="text" class="form-control" id="updatePlanSms">
                                     </div>
                                     <div class="mb-3">
                                         <label for="updatePlanCalls" class="form-label">Calls</label>
-                                        <input type="text" class="form-control" id="updatePlanCalls" required>
+                                        <input type="text" class="form-control" id="updatePlanCalls">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="updatePlanValidity" class="form-label">Validity</label>
+                                        <label for="updatePlanValidity" class="form-label">Validity (Days)</label>
                                         <input type="text" class="form-control" id="updatePlanValidity" required>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Update Plan</button>
+                                    <div class="mb-3">
+                                        <label for="updatePlanCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="updatePlanCategory" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">OTT Benefits</label>
+                                        <div id="ottCheckboxes">
+                                            <label><input type="checkbox" value="Netflix"> Netflix</label><br>
+                                            <label><input type="checkbox" value="Amazon Prime"> Amazon Prime</label><br>
+                                            <label><input type="checkbox" value="Disney+ Hotstar"> Disney+ Hotstar</label><br>
+                                            <label><input type="checkbox" value="Sony Liv"> Sony Liv</label><br>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="updatePlanStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="updatePlanStatus">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Update Plan</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
+
+                
 
                 <!-- Confirmation Modal -->
                 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">

@@ -64,6 +64,7 @@
                 </div>
             </div>
         </div>
+        <span class="text-muted" id="lastLogin" style="color: #419af9 !important; background-color: rgb(217, 236, 252);padding: 0.2rem;"></span>
     
         <nav class="nav mt-4">
             <a class="nav-link active" href="#" onclick="showSection('profile', this)">PROFILE</a>
@@ -86,11 +87,22 @@
                         <input type="email" class="form-control d-none" id="emailInput">
                     </div>
                 </div>
-                <div class="mt-3">
-                    <h3 class="h6">RESIDENTIAL ADDRESS</h3>
-                    <p class="lead" id="addressText"></p>
-                    <textarea class="form-control d-none" id="addressInput"></textarea>
-                </div>
+                <div class="row">
+                    <div class="mt-3 col-md-6">
+                        <h3 class="h6">RESIDENTIAL ADDRESS</h3>
+                        <p class="lead" id="addressText"></p>
+                        <div id="addressInput" class="d-none">
+                            <input type="text" class="form-control my-2" id="streetInput" placeholder="Street">
+                            <input type="text" class="form-control my-2" id="cityInput" placeholder="City">
+                            <input type="text" class="form-control my-2" id="stateInput" placeholder="State">
+                            <input type="text" class="form-control my-2" id="zipInput" placeholder="Zip Code">
+                        </div>
+                    </div>      
+                    <div class="mt-3 col-md-6">
+                        <h3 class="h6">DATE OF BIRTH</h3>
+                        <p class="lead" id="dobText"></p>
+                    </div>      
+                </div>                    
             </div>
             <button class="btn btn-primary mt-3" id="editProfileBtn" onclick="toggleEditProfile()">Update Profile</button>
             <button class="btn btn-success mt-3 d-none" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>

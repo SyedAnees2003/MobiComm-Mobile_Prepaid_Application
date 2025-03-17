@@ -1,30 +1,27 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const mobileNumber = sessionStorage.getItem('mobileNumber');
+    const mobileNumber = sessionStorage.getItem("mobileNumber"); // ✅ Ensure using correct key
+
     if (mobileNumber) {
-        document.getElementById('loggedInMobile').value = mobileNumber;
+        document.getElementById("loggedInMobile").value = mobileNumber;
+        fetchUserDetails(mobileNumber);
+        fetchRecentRecharge(mobileNumber);
+    } else {
+        alert("❌ No user session found. Redirecting to login...");
+        window.location.href = "login.html"; // Redirect if no session
     }
-    loadActivePlan();
-});
-document.getElementById("nav-offers").addEventListener("click", function() {
-    // event.preventDefault();
-    alert("No offers available at the moment.");
+
+    setupEventListeners();
 });
 
-document.getElementById("Recharge").addEventListener("click", function() {
-    window.location.href = "prepaidPlans.html";
-});
-
-document.getElementById("Explore").addEventListener("click", function() {
-    window.location.href = "prepaidPlans.html";
-});
-
-document.getElementById("Help").addEventListener("click", function() {
-    window.location.href="support.html"
-});
-
-document.getElementById("Offers").addEventListener("click", function() {
-    alert("No offers available at the moment.");
-});
+function setupEventListeners() {
+    document.getElementById("nav-offers").addEventListener("click", () => alert("No offers available at the moment."));
+    document.getElementById("Recharge").addEventListener("click", () => window.location.href = "prepaidPlans.html");
+    document.getElementById("Explore").addEventListener("click", () => window.location.href = "prepaidPlans.html");
+    document.getElementById("Help").addEventListener("click", () => window.location.href = "support.html");
+    document.getElementById("Offers").addEventListener("click", () => alert("No offers available at the moment."));
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+    document.getElementById("confirmChangeBtn").addEventListener("click", changeMobileNumber);
+}
 
 document.addEventListener("DOMContentLoaded", function() {
         const sidebar = document.getElementById("sidebar");
@@ -43,24 +40,154 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 });
 
-document.getElementById('logoutBtn').addEventListener('click', function() {
-    let logoutScreen = document.getElementById('logoutScreen');
+// ✅ Handle Logout
+function handleLogout() {
+    // event.preventDefault();
+    let logoutScreen = document.getElementById("logoutScreen");
+    logoutScreen.style.display = "flex";
 
-    logoutScreen.style.display = 'flex';
-
-    setTimeout(function() {
-        sessionStorage.removeItem('isLoggedIn');
+    const token = sessionStorage.getItem("userToken");
+    console.log(token);
+    if (!token) {
+        alert("❌ No active session found.");
         logoutScreen.style.display = "none";
         window.location.href = "login.html";
-    },1500);
+        return;
+    }
 
-});
+    fetch("http://localhost:8083/auth/logout", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(response => {
+        if (!response.ok) return response.text().then(error => { throw new Error(error); });
+        return response.text();
+    })
+    .then(message => {
+        console.log("✅ Logout Successful:", message);
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    })
+    .catch(error => {
+        console.error("❌ Logout Error:", error);
+        alert("❌ Logout failed: " + error.message);
+        logoutScreen.style.display = "none";
+    });
+}
+
+// ✅ Fetch User Details
+function fetchUserDetails(mobileNumber) {
+    const token = sessionStorage.getItem("userToken"); // ✅ Get stored JWT token
+    console.log("fetchUser",token);
+
+    fetch(`http://localhost:8083/api/users/${mobileNumber}`)
+        .then(response => response.json())
+        .then(user => {
+            document.getElementById('loggedInMobile').value = user.mobileNumber;
+            // document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+        })
+        .catch(error => console.error("❌ Error fetching user details:", error));
+}
+
+// ✅ Fetch Recent Recharge with Authorization
+function fetchRecentRecharge(mobileNumber) {
+    const token = sessionStorage.getItem("userToken"); // ✅ Get stored JWT token
+    console.log("fetchRecent",token);
+
+    if (!token) {
+        console.error("❌ No authentication token found.");
+        alert("❌ Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    fetch(`http://localhost:8083/api/users/${mobileNumber}/recent-recharge`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(error => { throw new Error(error); });
+        }
+        return response.json();
+    })
+    .then(recharge => {
+        console.log("✅ Fetched Recent Recharge:", recharge);
+
+        if (!recharge.plan) {
+            console.error("❌ Plan details missing in recent recharge.");
+            alert("❌ Recharge fetched, but plan details are missing.");
+            return;
+        }
+
+        const expiryDate = calculateExpiry(recharge.rechargeDate, recharge.plan.validityDays);
+
+        // ✅ Correctly extract plan details
+        updatePlanDetails(
+            recharge.plan.planName, 
+            recharge.amount, 
+            recharge.plan.data, 
+            recharge.plan.validityDays, 
+            expiryDate, 
+            recharge.plan.sms, 
+            recharge.plan.calls
+        );
+    })
+    .catch(error => {
+        console.error("❌ Error fetching recent recharge:", error);
+        alert("❌ Unable to fetch recharge details: " + error.message);
+    });
+}
+
+// ✅ Function to Calculate Expiry Date
+function calculateExpiry(rechargeDate, validityDays) {
+    if (!rechargeDate || !validityDays) {
+        console.error("❌ Invalid recharge date or validity:", rechargeDate, validityDays);
+        return "N/A";
+    }
+
+    let rechargeDateObj = new Date(rechargeDate);
+    if (isNaN(rechargeDateObj)) {
+        console.error("❌ Invalid recharge date format:", rechargeDate);
+        return "N/A";
+    }
+
+    let validity = parseInt(validityDays, 10);
+    if (isNaN(validity)) {
+        console.error("❌ Invalid validity format:", validityDays);
+        return "N/A";
+    }
+
+    rechargeDateObj.setDate(rechargeDateObj.getDate() + validity);
+
+    let yyyy = rechargeDateObj.getFullYear();
+    let mm = String(rechargeDateObj.getMonth() + 1).padStart(2, '0');
+    let dd = String(rechargeDateObj.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+
+function formatExpiryDate(rechargeDate, validityDays) {
+    if (!rechargeDate || !validityDays) return "N/A";
+
+    let expiryDate = new Date(rechargeDate);
+    expiryDate.setDate(expiryDate.getDate() + validityDays);
+
+    return expiryDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+}
+
+
 
 document.getElementById("changeMobileNumberBtn").addEventListener("click", function () {
     $("#changeMobileModal").modal("show");
 });
 
-document.getElementById("confirmChangeBtn").addEventListener("click", function () {
+// ✅ Handle Mobile Number Change
+function changeMobileNumber() {
     const currentMobile = sessionStorage.getItem("mobileNumber");
     const newMobile = document.getElementById("newMobileNumber").value.trim();
     const errorMessage = document.getElementById("errorMessage");
@@ -76,68 +203,14 @@ document.getElementById("confirmChangeBtn").addEventListener("click", function (
         errorMessage.style.display = "block";
         return;
     } 
-    else {
-        let logoutScreen = document.getElementById('logoutScreen');
 
-        // Show the loading screen
-        logoutScreen.style.display = 'flex';
+    handleLogout();
+}
 
-        setTimeout(function() {
-            sessionStorage.clear();
-            sessionStorage.setItem("mobileNumber", newMobile);
-            sessionStorage.removeItem('isLoggedIn');
-            localStorage.setItem("userMobile", newMobile);
-            logoutScreen.style.display = "none";
-            window.location.href = "login.html";
-        },1500);
-    }
-});
 
     function rechargeNow(){
     // event.preventDefault();
     window.location.href='prepaidPlans.html';
-}
-
-
-// Function to Load Active Plan Data from Local Storage
-function loadActivePlan() {
-    let userMobile = sessionStorage.getItem('mobileNumber') || "9876543210";
-    let rechargeHistory = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-
-    let lastTransaction = rechargeHistory.reverse().find(txn => txn.mobile === userMobile);
-
-    if (lastTransaction) {
-        let expiry = calculateExpiry(lastTransaction.date, localStorage.getItem('planValidity'));
-        console.log(expiry);
-        updatePlanDetails(lastTransaction.category, lastTransaction.price, lastTransaction.data, localStorage.getItem('planValidity'),expiry,lastTransaction.sms, lastTransaction.calls);
-        // console.log(lastTransaction.data);
-    }
-}
-
-function calculateExpiry(rechargeDate, validity) {
-    if (!rechargeDate || !validity) {
-        console.error("Invalid recharge date or validity:", rechargeDate, validity);
-        return "N/A";
-    }
-
-    let rechargeDateObj = new Date(rechargeDate);
-    if (isNaN(rechargeDateObj)) {
-        console.error("Invalid recharge date format:", rechargeDate);
-        return "N/A";
-    }
-    let validityDays = parseInt(validity.replace(/\D/g, ""), 10);
-    
-    if (isNaN(validityDays)) {
-        console.error("Invalid validity format:", validity);
-        return "N/A";
-    }
-    rechargeDateObj.setDate(rechargeDateObj.getDate() + validityDays);
-
-    let yyyy = rechargeDateObj.getFullYear();
-    let mm = String(rechargeDateObj.getMonth() + 1).padStart(2, '0');
-    let dd = String(rechargeDateObj.getDate()).padStart(2, '0');
-
-    return `${yyyy}-${mm}-${dd}`;
 }
 
 function updatePlanDetails(planName, price, data, validity, expiry,sms, calls) {

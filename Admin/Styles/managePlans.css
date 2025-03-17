@@ -47,36 +47,26 @@ body {
     flex: 1;
     padding: 20px;
 }
-
-.plan-cards{
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
 .nav-link {
     cursor: pointer;
 }
 
-/* .plan-cards {
+.plan-cards {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-} */
+}
 
 .card-item {
     text-align: center;
-    /* background-color: #54a8fb !important; Set background color to blue */
-    width: calc(50% - 1rem); /* Two cards per row */
+    width: calc(50% - 1rem);
 }
 
-.card-body{
+/* .card-body{
     background-color:#007bffdd;
     padding: 1rem;
     border-radius: 0.5rem;
-}
+} */
 
 .card-item-top {
     padding: 20px;
@@ -210,6 +200,26 @@ footer li a{
 
 /* Responsive Design */
 @media (max-width: 768px) {
+
+    .card {
+        max-width: 100%; /* Make card full-width on small screens */
+        max-height: 300px; /* Adjust height for smaller screens */
+    }
+
+    .card-body .row.first-row {
+        font-size: 0.7em; /* Adjust font size for smaller screens */
+        margin: 0;
+    }
+
+    .card-body .row.second-row, .row.third-row {
+        flex-direction: column; /* Stack content vertically on small screens */
+        padding: 5px 0;
+    }
+
+    .text-muted{
+        font-size: 0.6em;
+    }
+
     .plans-section {
         flex-direction: column;
     }
@@ -227,4 +237,117 @@ footer li a{
     .dashboard-cards, .charts-container {
         flex-direction: column;
     }
+}
+
+.card{
+    background: rgba(125, 212, 252, 0.783); 
+    border-radius: 20px;
+    border-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-width: 350px; /* Adjust as needed */
+    max-height: 400px; /* Adjust as needed */
+    margin: auto;
+    overflow: hidden; /* Prevent content overflow */
+    text-align: center; /* Center content */
+}
+
+.text-muted{
+    font-size: 1em;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; /* Center content vertically */
+    overflow: hidden; /* Prevent content overflow */
+    padding: 10px; /* Add padding for better spacing */
+}
+
+.card-body .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.card-body .row.first-row {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.card-body .row.second-row {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: space-around;
+    padding: 10px 0;
+    overflow: hidden; /* Prevent content overflow */
+}
+.card-body .row.third-row {
+    display: flex;
+    justify-content: center;
+}
+
+/* OTT Benefits Popup */
+.benefits-popup {
+    position: fixed; /* Ensure it floats over all elements */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px 15px;
+    display: none;
+    min-width: 280px;
+    z-index: 10000; /* High value to prevent overlapping */
+    transform: translate(-50%, -50%);
+    top: 50% !important;
+    left: 50%;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.benefit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.ott-icon-container {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.ott-icon {
+    width: 30px;
+    height: auto;
+}
+
+.benefit-text {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.benefit-validity {
+    text-align: right;
+    font-size: 14px;
+    color: #888;
+}
+
+.close-popup {
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+    color: red;
+}
+
+.arrow-toggle:hover {
+    cursor: pointer;
 }
