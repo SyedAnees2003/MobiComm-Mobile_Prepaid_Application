@@ -171,6 +171,9 @@
                             <div class="tab-pane fade show active" id="active-plans" role="tabpanel">
                                 <div class="d-flex justify-content-end mb-3 w-100">
                                     <button class="btn btn-success" id="addCategoryButton">Add Category +</button>
+                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" onclick="loadCategories()">
+                                        🗑 Delete Category
+                                    </button>
                                 </div>
                                 <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-popular">Popular</button>
@@ -240,7 +243,29 @@
                     </div>
                 </div>
 
-                
+
+                <!-- Delete Category Modal -->
+                <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteCategoryLabel">Delete Category</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="categorySelect">Select Category:</label>
+                                <select id="categorySelect" class="form-select">
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button id="deleteCategoryBtn" class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Plan Details Modal -->
                 <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
                     <div class="modal-dialog">

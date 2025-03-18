@@ -214,6 +214,23 @@
 //     window.scrollTo({ top: 0, behavior: 'smooth' });
 // }
 
+document.addEventListener("DOMContentLoaded", function () {
+    loadRecentRequest();
+
+    const profileLink = document.getElementById("profileLink");
+        
+        // Check if the user is logged in
+        const userToken = sessionStorage.getItem("userToken");
+
+        console.log(userToken);
+        
+        // Update the profile link based on login status
+        if (userToken) {
+        profileLink.href = "subscriber.html"; // If logged in, go to profile
+        } else {
+        profileLink.href = "login.html"; // If not logged in, go to login
+        }
+});
 
     document.getElementById("nav-offers").addEventListener("click", function() {
     alert("No offers available at the moment.");
@@ -241,28 +258,12 @@
         lastScrollTop = currentScroll;
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector(".form-fill");
-        const successModal = new bootstrap.Modal(document.getElementById("successModal"));
-        const closeModalBtns = document.querySelectorAll('[data-bs-dismiss="modal"]');
-    
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevents page refresh
-            submitSupportTicket();
-        });
-    
-        closeModalBtns.forEach(button => {
-            button.addEventListener("click", function () {
-                successModal.hide();
-            });
-        });
-    
-        // ✅ Load Recent Requests on Page Load
-        loadRecentRequest();
-    });
+document.querySelector(".form-fill").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent page refresh
 
-    // ✅ Submit Support Ticket via API
-function submitSupportTicket() {
+    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
+
+
     const token = sessionStorage.getItem("userToken");
     if (!token) {
         alert("❌ Session expired. Please log in again.");
@@ -270,66 +271,59 @@ function submitSupportTicket() {
         return;
     }
 
-    const supportRequest = {
-        userId: document.getElementById("name").value;
-        issueType: document.getElementById("subject").value,
-        issueDescription: document.getElementById("query").value,
-        priority: "Medium", // Default priority
-        status: "Open"
-    };
-
     fetch("http://localhost:8083/api/support-tickets", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(supportRequest)
+        body: JSON.stringify({
+            mobileNumber: document.getElementById("mobile").value,  // ✅ Use mobile number
+            issueType: document.getElementById("subject").value,
+            issueDescription: document.getElementById("query").value,
+        }),
     })
-    .then(response => {
-        if (!response.ok) throw new Error("❌ Failed to submit ticket.");
-        return response.json();
-    })
+    .then(response => response.text())
     .then(data => {
-        console.log("✅ Ticket Submitted:", data);
-        successModal.show();
+        console.log("✅ Success:", data);
         document.querySelector(".form-fill").reset(); // Reset form
-        loadRecentRequest(); // Refresh recent request
+        successModal.show();
     })
     .catch(error => {
-        console.error("❌ Error submitting ticket:", error);
-        alert("❌ Ticket submission failed.");
-    });
-}
+        console.error("❌ Error:", error);
+        alert("❌ Failed to submit ticket.");
+    });    
+});
 
 // ✅ Load Recent Request from Backend
 function loadRecentRequest() {
     const token = sessionStorage.getItem("userToken");
     if (!token) return;
 
-    const userId = sessionStorage.getItem("userId");
-    fetch(`http://localhost:8083/api/support-tickets/${userId}`, {
+    const mobileNumber = sessionStorage.getItem("mobileNumber");  // ✅ Get mobile number
+    if (!mobileNumber) return console.error("❌ Mobile number not found in session!");
+
+    fetch(`http://localhost:8083/api/support-tickets/recent/${mobileNumber}`, {
         headers: { "Authorization": `Bearer ${token}` }
     })
     .then(response => response.json())
-    .then(tickets => {
-        if (tickets.length === 0) {
+    .then(ticket => {
+        if (!ticket || Object.keys(ticket).length === 0) {
             document.getElementById("recentRequest").innerHTML = "<p>No recent requests.</p>";
             return;
         }
 
-        const lastRequest = tickets[tickets.length - 1]; // Get the latest request
         document.getElementById("recentRequest").innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
-                <h6>ID: ${lastRequest.ticketId}</h6>
-                <span class="badge bg-${lastRequest.status === 'open' ? 'primary' : lastRequest.status === 'pending' ? 'warning' : 'success'}">${lastRequest.status}</span>
+                <h6>ID: ${ticket.ticketId}</h6>
+                <span class="badge bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'pending' ? 'warning' : 'success'}">${ticket.status}</span>
             </div>
-            <p class="text-muted">Subject: ${lastRequest.issueType}</p>
-            <p>${new Date(lastRequest.createdAt).toLocaleString()}</p>
+            <p class="text-muted">Subject: ${ticket.issueType}</p>
+            <p>${new Date(ticket.createdAt).toLocaleString()}</p>
         `;
     })
     .catch(error => console.error("❌ Error fetching recent request:", error));
 }
+
 
 // ✅ Open and Load All Support Requests
 function openRequestsModal() {

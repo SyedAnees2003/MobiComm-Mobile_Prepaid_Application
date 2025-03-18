@@ -59,7 +59,7 @@
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    fetchPlans();
+    // fetchPlans();
 
     // ✅ Profile Icon Click - Redirect based on authentication
     document.getElementById("profileLink").addEventListener("click", function (event) {
@@ -79,20 +79,20 @@ document.getElementById("Offers").addEventListener("click", ()=>{
     alert("No offers available at the moment.");
 });
 
-// Fetch plans from API
-function fetchPlans() {
-    fetch("http://localhost:8083/api/plans")
-        .then(response => response.json())
-        .then(plans => {
-            console.log("Fetched plans:", plans); // Debugging
-            if (plans.length === 0) {
-                document.getElementById("pills-popular").querySelector(".row").innerHTML = "<p>No plans available.</p>";
-            } else {
-                populatePlans(plans);
-            }
-        })
-        .catch(error => console.error("Error fetching plans:", error));
-}
+// // Fetch plans from API
+// function fetchPlans() {
+//     fetch("http://localhost:8083/api/plans")
+//         .then(response => response.json())
+//         .then(plans => {
+//             console.log("Fetched plans:", plans); // Debugging
+//             if (plans.length === 0) {
+//                 document.getElementById("pills-popular").querySelector(".row").innerHTML = "<p>No plans available.</p>";
+//             } else {
+//                 populatePlans(plans);
+//             }
+//         })
+//         .catch(error => console.error("Error fetching plans:", error));
+// }
 
 // OTT Image Mapping
 const ottIcons = {
@@ -197,18 +197,75 @@ document.addEventListener("click", function (event) {
 });
 
 
-// Modify populatePlans() to use the new function
-function populatePlans(plans) {
-    const categories = {
-        "1": "pills-popular",
-        "2": "pills-data",
-        "3": "pills-topup",
-        "4": "pills-calls",
-        "5": "pills-unlimited",
-        "6": "pills-entertainment",
-        "7": "pills-international"
-    };
+// Load categories first when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    fetchCategories();  
+});
 
+// Fetch categories first, then fetch plans
+function fetchCategories() {
+    fetch("http://localhost:8083/api/categories")
+        .then(response => response.json())
+        .then(categories => {
+            populateCategories(categories);
+            fetchPlans();  // Fetch plans after categories load
+        })
+        .catch(error => console.error("❌ Error fetching categories:", error));
+}
+
+// Fetch plans from API
+function fetchPlans() {
+    fetch("http://localhost:8083/api/plans")
+        .then(response => response.json())
+        .then(plans => {
+            console.log("✅ Active Plans fetched:", plans);
+
+            // Ensure categoryId is set properly for each plan
+            plans.forEach(plan => {
+                if (!plan.categoryId && plan.category) {
+                    plan.categoryId = plan.category.categoryId; // Extract categoryId
+                }
+            });
+
+            populatePlans(plans);
+        })
+        .catch(error => console.error("❌ Error fetching plans:", error));
+}
+
+// Populate Categories in Nav Pills
+function populateCategories(categories) {
+    console.log("✅ Categories received:", categories);
+
+    const navPills = document.getElementById("pills-tab");
+    const tabContent = document.getElementById("pills-tabContent");
+
+    navPills.innerHTML = ""; // Clear existing categories
+    tabContent.innerHTML = ""; // Clear existing content
+
+    categories.forEach((category, index) => {
+        let activeClass = index === 0 ? "active" : "";
+        let categoryId = `pills-${category.categoryId}`;
+
+        // Create navigation tab
+        navPills.innerHTML += `
+            <button class="nav-link ${activeClass}" data-bs-toggle="pill" data-bs-target="#${categoryId}" id="${categoryId}-tab">
+                ${category.categoryName}
+            </button>
+        `;
+
+        // Create tab content container
+        tabContent.innerHTML += `
+            <div class="tab-pane fade ${activeClass === "active" ? "show active" : ""}" id="${categoryId}" role="tabpanel">
+                <div class="row g-3"></div> <!-- This row will hold the plans -->
+            </div>
+        `;
+    });
+
+    console.log("✅ Categories populated successfully.");
+}
+
+// Populate Plans under respective categories
+function populatePlans(plans) {
     plans.forEach(plan => {
         let benefits = "{}";
         try {
@@ -219,11 +276,14 @@ function populatePlans(plans) {
 
         let benefitsHtml = benefits.OTT ? getOttIcons(benefits, plan.validityDays) : "";
 
-        const categoryDiv = document.getElementById(categories[plan.categoryId]);
-        if (!categoryDiv) return; // Skip if category is missing
+        const categoryDiv = document.getElementById(`pills-${plan.categoryId}`);
+        if (!categoryDiv) {
+            console.warn(`Category div not found for categoryId: ${plan.categoryId}`);
+            return;
+        }
 
         const planHTML = `
-            <div class="feature-card card p-3 mt-4" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" border-radius="10px">
+            <div class="feature-card card p-3 mt-4" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}">
                 <div class="card-body">
                     <div class="row first-row">
                         <p class="price text-center fw-bold fs-4">₹${plan.price}</p>
@@ -248,7 +308,7 @@ function populatePlans(plans) {
                         <p class="fw-bold text-muted mb-0">${plan.validityDays} Days</p>
                         <p class="text-muted small">Validity</p>
                     </div>
-                    ${benefitsHtml} <!-- Only show benefits if available -->
+                    ${benefitsHtml} 
                 </div>
                 <div class="row text-center mt-3">
                     <button class="btn btn-primary w-50 mx-auto" onclick="showPlanDetails(${plan.planId})">Recharge</button>
@@ -256,8 +316,11 @@ function populatePlans(plans) {
             </div>
         `;
 
+        // Append the plan inside the correct category
         categoryDiv.querySelector(".row").innerHTML += planHTML;
     });
+
+    console.log("✅ Plans populated successfully.");
 }
 
 // Function to fetch and display plan details in modal

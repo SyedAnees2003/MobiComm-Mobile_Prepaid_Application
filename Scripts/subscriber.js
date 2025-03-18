@@ -128,7 +128,7 @@ function fetchRecentRecharge(mobileNumber) {
         // ✅ Correctly extract plan details
         updatePlanDetails(
             recharge.plan.planName, 
-            recharge.amount, 
+            recharge.plan.price, 
             recharge.plan.data, 
             recharge.plan.validityDays, 
             expiryDate, 
@@ -204,6 +204,9 @@ function changeMobileNumber() {
         return;
     } 
 
+    localStorage.setItem("userMobile",newMobile);
+
+
     handleLogout();
 }
 
@@ -216,7 +219,7 @@ function changeMobileNumber() {
 function updatePlanDetails(planName, price, data, validity, expiry,sms, calls) {
     console.log("validity : " ,validity);
     updateText("planName", planName || "Unlimited Plan");
-    updateText("planPrice", `${price || "799"}`);
+    updateText("planPrice", `₹${price || "799"}`);
     updateText("planData", data || "3GB/day");
     updateText("planValidity", validity || "56 Days");
     updateText("expiryDate", expiry || "2025-02-28");

@@ -214,10 +214,18 @@ function populateInactivePlans(inactivePlans) {
 
     inactiveContainer.innerHTML = ""; // Clear previous data
 
-    inactivePlans.forEach(plan => {
-        inactiveContainer.innerHTML += createPlanCard(plan);
+    let rowDiv = document.createElement("div");
+    rowDiv.classList.add("d-flex","row", "gx-3", "gy-4"); // Adds spacing between columns
+
+    inactivePlans.forEach((plan, index) => {
+        let colDiv = document.createElement("div");
+        colDiv.classList.add("col-12", "col-sm-6", "col-lg-4"); // 1 per row on mobile, 2 on sm, 3 on lg
+        colDiv.innerHTML = createPlanCard(plan);
+
+        rowDiv.appendChild(colDiv);
     });
-    
+
+    inactiveContainer.appendChild(rowDiv);
 }
 
 
@@ -489,6 +497,13 @@ function loadCategories() {
                 option.value = category.categoryId;  // ✅ Use correct key
                 option.textContent = category.categoryName;
                 categoryDropdown.appendChild(option);
+
+                const categorySelect = document.getElementById("categorySelect");
+                categorySelect.innerHTML = '<option value="">-- Select Category --</option>'; // Reset
+                categories.forEach(category => {
+                    categorySelect.innerHTML += `<option value="${category.categoryId}">${category.categoryName}</option>`;
+            });
+
             });
         })
         .catch(error => console.error("❌ Error fetching categories:", error));
@@ -651,21 +666,51 @@ document.getElementById("updatePlanForm").addEventListener("submit", function (e
     .catch(error => console.error("❌ Error updating plan:", error));
 });
 
-// // ✅ Delete a plan
-// function deletePlan(planId) {
-//     if (confirm("Are you sure you want to delete this plan?")) {
-//         fetch(`http://localhost:8083/api/plans/${planId}`, {
-//             method: "DELETE"
-//         })
-//         .then(() => {fetchPlans();
-//             document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
+function deletePlan(planId) {
+    if (confirm("Are you sure you want to deactivate this plan?")) {
+        fetch(`http://localhost:8083/api/plans/${planId}/status`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(() => {
+            console.log("Plan made inactive successfully");
+            fetchPlans(); // ✅ Refresh plan list
+            document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
+        })
+        .catch(error => console.error("❌ Error updating plan status:", error));
+    }
+}
 
-//     })
-//         .catch(error => console.error("❌ Error deleting plan:", error));
-//     }
-// }
 
+document.getElementById("deleteCategoryBtn").addEventListener("click", () => {
+    const categoryId = document.getElementById("categorySelect").value;
+    if (!categoryId) {
+        alert("Please select a category!");
+        return;
+    }
 
+    if (!confirm("⚠ Are you sure you want to delete this category? All associated plans will be set to inactive.")) {
+        return;
+    }
+
+    fetch(`http://localhost:8083/api/categories/${categoryId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("❌ Failed to delete category");
+        return response.text();
+    })
+    .then(data => {
+        alert("✅ Category deleted successfully! Plans have been set to inactive.");
+
+        $('#deleteCategoryModal').modal('hide');
+
+        fetchCategories(); // Refresh categories
+        fetchPlans(); // Refresh plans list
+    })
+    .catch(error => console.error("❌ Error deleting category:", error));
+}); 
 
 // **Add Category Button Click**
 $('#addCategoryButton').on('click', function () {

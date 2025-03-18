@@ -197,8 +197,6 @@ function fetchSubscribers() {
     .catch(error => console.error("❌ Error fetching subscribers:", error));
 }
 
-// ✅ Update Subscriber Statistics in Cards
-
 // ✅ Populate subscribers into their respective tables
 function populateSubscribers(subscribers) {
     document.getElementById("activeUsersTable").innerHTML = "";
@@ -323,11 +321,25 @@ function openUpdateModal(mobileNumber) {
 
         // ✅ Populate status dropdown
         const statusDropdown = document.getElementById("updateStatus");
-        statusDropdown.innerHTML = `
-            <option value="Active" ${userStatus === "Active" ? "selected" : ""}>Active</option>
-            <option value="Inactive" ${userStatus === "Inactive" ? "selected" : ""}>Inactive</option>
-            <option value="Blocked" ${userStatus === "Blocked" ? "selected" : ""}>Blocked</option>
-        `;
+
+         // ✅ If user is Blocked, show only "Unblock" option
+         if (userStatus === "Blocked") {
+            statusDropdown.innerHTML = `
+                <option value="" selected disabled>Select any one</option>
+                <option value="Inactive">Unblock (Set to Inactive)</option>
+            `;
+
+            document.getElementById("unblockMessage").classList.remove("d-none");
+        } else {
+            // ✅ Show all status options for non-blocked users
+            statusDropdown.innerHTML = `
+                    <option value="" selected disabled>Select any one</option>
+                <option value="Active" ${userStatus === "Active" ? "selected" : ""}>Active</option>
+                <option value="Inactive" ${userStatus === "Inactive" ? "selected" : ""}>Inactive</option>
+                <option value="Blocked" ${userStatus === "Blocked" ? "selected" : ""}>Blocked</option>
+            `;
+            document.getElementById("unblockMessage").classList.add("d-none");
+        }
 
         // ✅ Populate recharge details if available
         if (recentRecharge) {
@@ -409,15 +421,6 @@ document.getElementById("saveUserChanges").addEventListener("click", function ()
     });
 });
 
-
-
-// $(document).ready(function () {
-//     $('.subscriberTable').DataTable({
-//         "paging": true,
-//         "info": true,
-//         "dom": '<"d-flex justify-content-between align-items-center custom-datatable-controls"lf>tip'
-//     });
-// });
 
 // ✅ Admin Logout Function (With API Integration)
 function logout() {

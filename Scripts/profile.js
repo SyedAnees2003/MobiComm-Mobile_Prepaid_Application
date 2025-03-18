@@ -137,7 +137,7 @@ function displayRechargeHistory(history) {
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Transaction ID</th>
+                    <th>Recharge ID</th>
                     <th>Amount</th>
                     <th>Payment Mode</th>
                     <th>Plan</th>
@@ -382,7 +382,7 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
         const tableData = [
             ["User Name", userName],
             ["Mobile Number", userMobile],
-            ["Transaction ID", transactionId],
+            ["Recharge ID", transactionId],
             ["Date", date],
             ["Time", time],
             ["Amount", "Rs. " +price],

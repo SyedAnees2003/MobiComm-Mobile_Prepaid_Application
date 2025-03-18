@@ -241,7 +241,7 @@ function isExpiringWithinAWeek(rechargeDate, validityDays) {
     const rechargeDateObj = new Date(rechargeDate);
     const expiryDate = new Date(rechargeDateObj.setDate(rechargeDateObj.getDate() + validityDays));
     const today = new Date();
-    const weekFromNow = new Date(today.setDate(today.getDate() + 5));
+    const weekFromNow = new Date(today.setDate(today.getDate() + 7));
 
     return expiryDate <= weekFromNow && expiryDate >= new Date();
 }

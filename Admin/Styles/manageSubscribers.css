@@ -157,6 +157,17 @@ tbody tr td {
     margin-left: 5px;
 }
 
+.modal.fade .modal-dialog {
+    transform: scale(0.5);
+    opacity: 0;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+    opacity: 1;
+}
+
 .logout-overlay {
     display: none;
     position: fixed;
