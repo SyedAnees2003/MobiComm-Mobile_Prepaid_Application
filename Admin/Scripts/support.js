@@ -1,154 +1,174 @@
-let tickets = [
-    // Open Tickets (3)
-    { id: 'T1001', user: 'John Doe', email: 'john.doe@example.com', mobile: '9876543210', subject: 'Payment Issue', priority: 'High', status: 'Open' },
-    { id: 'T1004', user: 'Anna Scott', email: 'anna.scott@example.com', mobile: '9123456789', subject: 'Technical Issue', priority: 'High', status: 'Open' },
-    { id: 'T1007', user: 'David Brown', email: 'david.brown@example.com', mobile: '9988776655', subject: 'Recharge Failure', priority: 'Medium', status: 'Open' },
-
-    // Pending Tickets (3)
-    { id: 'T1002', user: 'Jane Smith', email: 'jane.smith@example.com', mobile: '9871234567', subject: 'Account Access', priority: 'Medium', status: 'Pending' },
-    { id: 'T1005', user: 'Emily White', email: 'emily.white@example.com', mobile: '9234567890', subject: 'Verification Issue', priority: 'High', status: 'Pending' },
-    { id: 'T1008', user: 'Chris Johnson', email: 'chris.johnson@example.com', mobile: '9345678901', subject: 'Billing Error', priority: 'Low', status: 'Pending' },
-
-    // Resolved Tickets (3)
-    { id: 'T1003', user: 'Mike Lee', email: 'mike.lee@example.com', mobile: '9543216789', subject: 'Plan Inquiry', priority: 'Low', status: 'Resolved' },
-    { id: 'T1006', user: 'Sarah Green', email: 'sarah.green@example.com', mobile: '9654321876', subject: 'Refund Request', priority: 'Medium', status: 'Resolved' },
-    { id: 'T1009', user: 'James Wilson', email: 'james.wilson@example.com', mobile: '9765432189', subject: 'Network Issue', priority: 'High', status: 'Resolved' }
-];
-
-$(document).ready(function () {
-
     const token = sessionStorage.getItem("adminToken");
     
     if (!token) {
         // alert("❌ Session expired. Please log in again.");
         window.location.href = "login.html";
-        return;
+        // return;
     }
 
-    let recentTickets = [
-        { id: 'T1001', user: 'John Doe', email: 'john.doe@example.com', mobile: '9876543210', subject: 'Payment Issue', priority: 'High', status: 'Open' },
-        { id: 'T1002', user: 'Jane Smith', email: 'jane.smith@example.com', mobile: '9871234567', subject: 'Account Access', priority: 'Medium', status: 'Pending' },
-        { id: 'T1003', user: 'Mike Lee', email: 'mike.lee@example.com', mobile: '9543216789', subject: 'Plan Inquiry', priority: 'Low', status: 'Resolved' }
-    ];
+    document.addEventListener('DOMContentLoaded', function () {
 
-    // Check if tickets exist in localStorage
-    let storedTickets = localStorage.getItem("supportTickets");
+        fetchSupportTickets();
+        fetchRecentSupportRequests();
 
-    // If not, initialize with default tickets
-    if (!storedTickets) {
-        localStorage.setItem("supportTickets", JSON.stringify(tickets));
-    } 
-    else {
-        tickets = JSON.parse(storedTickets);
-    }
-    console.log(storedTickets);
-
-    //Add new Support Request
-    function addNewSupportRequest(newTicket) {
-        // Add the new ticket to the array
-        tickets.push(newTicket);
-    
-        localStorage.setItem("supportTickets", JSON.stringify(tickets));
-    
-        // Repopulate the tables to reflect the new ticket
-        populateFilteredTables(tickets);
-    }
-    
-    //cards
-    recentTickets.forEach(ticket => {
-        $("#recentSupportCards").append(`
-            <div class="p-3 border rounded shadow-sm d-flex flex-column align-items-center" style="width: 48%; min-width: 300px;">
-                <h6 class="fw-bold text-center mb-3">${ticket.subject}</h6>
-                <div class="d-flex justify-content-evenly w-100 mb-2">
-                    <strong>User:</strong> <span>${ticket.user}</span>
-                </div>
-                <div class="d-flex justify-content-evenly  w-100 mb-2">
-                    <strong>Priority:</strong> <span class="badge bg-${ticket.priority === 'High' ? 'danger' : ticket.priority === 'Medium' ? 'warning' : 'success'}">${ticket.priority}</span>
-                </div>
-                <div class="d-flex justify-content-evenly  w-100 mb-3">
-                    <strong>Status:</strong> <span class="badge bg-${ticket.status === 'Open' ? 'primary' : ticket.status === 'Pending' ? 'secondary' : 'success'}">${ticket.status}</span>
-                </div>
-                <button class="btn btn-primary view-ticket" data-id="${ticket.id}">View</button>
-            </div>
-        `);
     });
 
-    function populateInitialTables() {
-        populateFilteredTables(tickets); // Load all tickets initially
-    }
+    function fetchRecentSupportRequests() {
+        fetch("http://localhost:8083/api/support-tickets/recent", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem("adminToken")}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(recentTickets => {
+            $("#recentSupportCards").empty(); // Clear previous data
     
+            recentTickets.forEach(ticket => {
+                $("#recentSupportCards").append(`
+                    <div class="p-3 border rounded shadow-sm d-flex flex-column align-items-center" style="width: 48%; min-width: 300px;">
+                        <h5 class="text-center mb-3">${ticket.issueType}</h6>
+                        <div class="d-flex justify-content-evenly w-100 mb-2">
+                            <h6>User:</h6> <span>${ticket.user.firstName} ${ticket.user.lastName}</span>
+                        </div>
+                        <div class="d-flex justify-content-evenly w-100 mb-2">
+                            <h6>Priority:</h6> 
+                            <span class="badge bg-${ticket.priority === 'high' ? 'danger' : ticket.priority === 'medium' ? 'warning' : 'success'}">
+                                ${ticket.priority}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-evenly w-100 mb-3">
+                            <h6>Status:</h6> 
+                            <span class="badge bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'pending' ? 'secondary' : 'success'}">
+                                ${ticket.status}
+                            </span>
+
+                `);
+            });
+        })
+        .catch(error => console.error("Error fetching recent tickets:", error));
+    }
+
+    let supports = [];
+    // Fetch all support tickets from the backend
+    function fetchSupportTickets() {
+        fetch("http://localhost:8083/api/support-tickets", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch support tickets.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Tickets Data" , data);
+            supports = data;
+            populateFilteredTables(supports); // Populate tables with API data
+            updateDashboardStats(supports);
+
+                            generateSupportStatusChart(supports);
+                generatePriorityChart(supports);
+        })
+        .catch(error => console.error("Error:", error));
+    }
+
     function populateFilteredTables(filteredTickets) {
         let pendingTbody = $("#pendingTable tbody");
         let openTbody = $("#openTable tbody");
         let resolvedTbody = $("#resolvedTable tbody");
-    
-        // Clear existing rows
+
         pendingTbody.empty();
         openTbody.empty();
         resolvedTbody.empty();
-    
-        // Loop through the filtered tickets and populate tables
+
         filteredTickets.forEach(ticket => {
             let row = `<tr>
-                <td>${ticket.id}</td>
-                <td>${ticket.user}</td>
-                <td>${ticket.subject}</td>
-                <td><span class="badge bg-${ticket.priority === 'High' ? 'danger' : ticket.priority === 'Medium' ? 'warning' : 'success'}">${ticket.priority}</span></td>
-                <td><button class='btn btn-primary btn-sm view-ticket' data-id='${ticket.id}'>View</button></td>
+                <td>${ticket.ticketId}</td>
+                <td>${ticket.user.firstName} ${ticket.user.lastName}</td>
+                <td>${ticket.user.mobileNumber}</td>
+                <td>${ticket.issueType}</td>
+                <td><span class="badge bg-${getPriorityColor(ticket.priority)}">${ticket.priority}</span></td>
+                <td><button class='btn btn-primary btn-sm view-ticket' data-id='${ticket.ticketId}'>View</button>
+                ${ticket.status !== "resolved" ? `<button type="button" class="btn btn-success btn-sm ms-2 resolve-request" data-id='${ticket.ticketId}'>Resolve</button>` : ""}
+                </td>
             </tr>`;
-    
-            if (ticket.status === 'Pending') {
+
+            if (ticket.status === 'pending') {
                 pendingTbody.append(row);
-            } else if (ticket.status === 'Open') {
+            } else if (ticket.status === 'open') {
                 openTbody.append(row);
-            } else if (ticket.status === 'Resolved') {
+            } else if (ticket.status === 'resolved') {
                 resolvedTbody.append(row);
             }
         });
     }
-    
-    populateInitialTables();
+
+    function getPriorityColor(priority) {
+        return priority === 'high' ? 'danger' : priority === 'medium' ? 'warning' : 'success';
+    }
 
     $("#statusFilter, #priorityFilter, #searchTicket").on("input", function () {
-        let status = $("#statusFilter").val();
-        let priority = $("#priorityFilter").val();
-        let searchText = $("#searchTicket").val().toLowerCase();
-
-        let filteredTickets = tickets.filter(ticket => {
-            return (!status || ticket.status === status) &&
-                   (!priority || ticket.priority === priority) &&
-                   (ticket.user.toLowerCase().includes(searchText) || ticket.subject.toLowerCase().includes(searchText));
+        let status = $("#statusFilter").val().trim().toLowerCase();
+        let priority = $("#priorityFilter").val().trim().toLowerCase();
+        let searchText = $("#searchTicket").val().trim().toLowerCase();
+    
+        let filteredTickets = supports.filter(ticket => {
+            let ticketStatus = ticket.status ? ticket.status.toLowerCase() : "";
+            let ticketPriority = ticket.priority ? ticket.priority.toLowerCase() : "";
+            let userName = ticket.user ? (ticket.user.firstName + " " + ticket.user.lastName).toLowerCase() : "";
+            let issueType = ticket.issueType ? ticket.issueType.toLowerCase() : "";
+            let mobilenumber = ticket.user ? ticket.user.mobileNumber : "";
+    
+            return (!status || ticketStatus === status) &&
+                   (!priority || ticketPriority === priority) &&
+                   (userName.includes(searchText) || issueType.includes(searchText) || mobilenumber.includes(searchText));
         });
+    
+        console.log("Filtered Tickets: ", filteredTickets);  // Debugging
+    
+        populateFilteredTables(filteredTickets);
+    });    
 
-        populateFilteredTables(filteredTickets); // Update table with filtered results
-
-    });
+    function updateDashboardStats(tickets) {
+        let totalRequests = tickets.length;
+        let openRequests = tickets.filter(ticket => ticket.status.toLowerCase() === "open").length;
+        let pendingRequests = tickets.filter(ticket => ticket.status.toLowerCase() === "pending").length;
+        let resolvedRequests = tickets.filter(ticket => ticket.status.toLowerCase() === "resolved").length;
+    
+        document.getElementById("totalRequests").innerText = totalRequests;
+        document.getElementById("openRequests").innerText = openRequests;
+        document.getElementById("pendingRequests").innerText = pendingRequests;
+        document.getElementById("resolvedRequests").innerText = resolvedRequests;
+    }
 
 
     // Initialize the toast
     const toastElement = document.getElementById('successToast');
     const toast = new bootstrap.Toast(toastElement);
 
-    // Event listener for View button
+    // Event listener for View button to open modal and populate details
     $(document).on("click", ".view-ticket", function () {
         let ticketId = $(this).data("id");
-        let ticket = tickets.find(t => t.id === ticketId);
+        let ticket = supports.find(t => t.ticketId === ticketId);
 
         if (ticket) {
             // Populate modal with ticket details
-            $("#modalTicketId").text(ticket.id);
-            $("#modalUser").text(ticket.user);
-            $("#modalSubject").text(ticket.subject);
+            $("#modalTicketId").text(ticket.ticketId);
+            $("#modalUser").text(`${ticket.user.firstName} ${ticket.user.lastName}`);
+            $("#modalMobile").text(`${ticket.user.mobileNumber}`);
+            $("#modalSubject").text(ticket.issueType);
             $("#modalPriority").text(ticket.priority);
             $("#modalStatus").text(ticket.status);
 
-            // Set the current status and priority in the dropdowns
-            $("#statusChange").val(ticket.status);
-            $("#priorityChange").val(ticket.priority);
-
-            // Reset the compose message section
+            // Reset the compose message section (keeping it static for now)
             $("#composeMessageSection").hide();
-            $("#messageTo").val(ticket.mobile);
+            $("#messageTo").val(ticket.user.mobileNumber);
             $("#messageInput").val("");
 
             // Show the modal
@@ -157,38 +177,158 @@ $(document).ready(function () {
     });
 
     // Event listener for Save Changes button
-    $("#saveChanges").on("click", function () {
-        let newStatus = $("#statusChange").val();
-        let newPriority = $("#priorityChange").val();
+$("#saveChanges").on("click", function () {
+    let newStatus = $("#statusChange").val();
+    let newPriority = $("#priorityChange").val();
 
-        if (!newStatus || !newPriority) {
-            alert("Please select a valid status and priority.");
-            return;
+    if (!newStatus || !newPriority) {
+        alert("Please select a valid status and priority.");
+        return;
+    }
+
+    // Show confirmation modal before applying changes
+    $("#confirmationModal").modal("show");
+
+});
+
+// Event listener for Confirm Save Changes button
+$("#confirmSaveChanges").on("click", function () {
+    let ticketId = $("#modalTicketId").text();  // Use hidden input instead of text
+    let newStatus = $("#statusChange").val();
+    let newPriority = $("#priorityChange").val();
+
+    if (!ticketId) {
+        console.log("ticketId: ",ticketId);
+        alert("Error: Ticket ID is missing.");
+        return;
+    }
+
+    // Prepare the request payload
+    let requestData = {
+        status: newStatus.toLowerCase(),
+        priority: newPriority.toLowerCase()
+    };
+
+    $("#ticketModal").modal("hide");
+
+    // Call the backend API to update the ticket
+    fetch(`http://localhost:8083/api/support-tickets/${ticketId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Ticket updated successfully:", data);
 
-        // Show confirmation modal
-        $("#confirmationModal").modal("show");
-    });
-
-    // Event listener for Confirm Save Changes button
-    $("#confirmSaveChanges").on("click", function () {
-        let ticketId = $("#modalTicketId").text();
-        let newStatus = $("#statusChange").val();
-        let newPriority = $("#priorityChange").val();
-
-        // Update the ticket status and priority in the tickets array
-        let ticket = tickets.find(t => t.id === ticketId);
+        // Update the ticket in the frontend table
+        let ticket = supports.find(t => t.ticketId == ticketId);
         if (ticket) {
             ticket.status = newStatus;
             ticket.priority = newPriority;
         }
 
-        // Repopulate the tables to reflect the updated status and priority
-        populateInitialTables();
+        // Refresh the tables
+        fetchSupportTickets();
 
+        // Hide modals
         $("#confirmationModal").modal("hide");
-        $("#ticketModal").modal("hide");
+
+        // alert("Ticket updated successfully!");
+    })
+    .catch(error => {
+        console.error("Error updating ticket:", error);
+        alert("Failed to update the ticket.");
     });
+
+});
+
+
+let selectedTicketId = null; // Store ticket ID globally
+
+$(document).on("click", ".resolve-request", function () {
+    selectedTicketId = $(this).data("id"); // Store ticket ID
+    console.log("Opening modal for ticket:", selectedTicketId);
+
+    $("#resolveConfirmModal").modal("show"); // Open confirmation modal
+});
+
+$(document).on("click", "#confirmResolve", async function () {
+    if (!selectedTicketId) {
+        alert("Error: Ticket ID is missing.");
+        return;
+    }
+
+    let adminToken = sessionStorage.getItem("adminToken");
+    if (!adminToken) {
+        alert("Error: Admin not logged in.");
+        return;
+    }
+
+    try {
+        // Fetch logged-in admin details
+        let adminResponse = await fetch("http://localhost:8083/api/admin/profile", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${adminToken}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!adminResponse.ok) {
+            throw new Error(`Failed to fetch admin details: ${adminResponse.status}`);
+        }
+
+        let adminData = await adminResponse.json();
+        console.log(adminData);
+
+        let requestData = {
+            status: "resolved",
+            resolvedAt: new Date().toISOString(),
+            resolvedByAdmin: adminData.userId
+        };
+
+        // Call API to resolve the ticket
+        let response = await fetch(`http://localhost:8083/api/support-tickets/resolve/${selectedTicketId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to resolve ticket: ${response.status}`);
+        }
+
+        let updatedTicket = await response.json();
+        console.log("Ticket resolved successfully:", updatedTicket);
+
+        // Close the modal
+        $("#resolveConfirmModal").modal("hide");
+
+        // Update UI
+        let ticket = supports.find(t => t.ticketId == selectedTicketId);
+        if (ticket) {
+            ticket.status = "resolved";
+            ticket.resolvedAt = requestData.resolvedAt;
+            ticket.resolvedByAdmin = requestData.resolvedByAdmin;
+        }
+
+        fetchSupportTickets(); // Refresh the ticket list
+    } catch (error) {
+        console.error("Error resolving ticket:", error);
+        alert("Failed to resolve the ticket.");
+    }
+});
+
 
     // Event listener for Compose Message button
     $("#composeMessageButton").on("click", function () {
@@ -246,48 +386,62 @@ $(document).ready(function () {
         }
     });
 
-     // Count tickets by status
-     let statusCounts = { Open: 0, Pending: 0, Resolved: 0 };
-     let priorityCounts = { High: 0, Medium: 0, Low: 0 };
- 
-     tickets.forEach(ticket => {
-         statusCounts[ticket.status]++;
-         priorityCounts[ticket.priority]++;
-     });
+    // Function to generate Support Status Chart
+function generateSupportStatusChart(tickets) {
+    let statusCounts = {
+        open: 0,
+        pending: 0,
+        resolved: 0
+    };
 
-    // 🎯 Ticket Status Pie Chart
-    new Chart(document.getElementById("Supportchart"), {
-        type: "pie",
-        data: {
-            labels: ["Open", "Pending", "Resolved"],
-            datasets: [{
-                data: Object.values(statusCounts),
-                backgroundColor: ["#007bff", "#ffc107", "#28a745"],
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: "bottom" } }
+    tickets.forEach(ticket => {
+        let status = ticket.status.toLowerCase();
+        if (statusCounts[status] !== undefined) {
+            statusCounts[status]++;
         }
     });
 
-    // 🎯 Ticket Priority Bar Chart
-    new Chart(document.getElementById("PriorityChart"), {
+    let ctx = document.getElementById("Supportchart").getContext("2d");
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Open", "Pending", "Resolved"],
+            datasets: [{
+                data: [statusCounts.open, statusCounts.pending, statusCounts.resolved],
+                backgroundColor: ["#54a8fb", "#f1c40f", "#2ecc71"]
+            }]
+        }
+    });
+}
+
+// Function to generate Priority Chart
+function generatePriorityChart(tickets) {
+    let priorityCounts = {
+        high: 0,
+        medium: 0,
+        low: 0
+    };
+
+    tickets.forEach(ticket => {
+        let priority = ticket.priority.toLowerCase();
+        if (priorityCounts[priority] !== undefined) {
+            priorityCounts[priority]++;
+        }
+    });
+
+    let ctx = document.getElementById("PriorityChart").getContext("2d");
+    new Chart(ctx, {
         type: "bar",
         data: {
             labels: ["High", "Medium", "Low"],
             datasets: [{
-                label: "Number of Tickets",
-                data: Object.values(priorityCounts),
-                backgroundColor: ["#dc3545", "#ffc107", "#28a745"]
+                label: "Ticket Priority",
+                data: [priorityCounts.high, priorityCounts.medium, priorityCounts.low],
+                backgroundColor: ["#e74c3c", "#f1c40f", "#2ecc71"]
             }]
-        },
-        options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true } }
         }
     });
-});
+}
 
 function downloadCSV() {
     let tables = document.querySelectorAll(".tab-content table"); // Select all tables inside the tab content

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
         fetchUserDetails(mobileNumber);
         fetchRecentRecharge(mobileNumber);
     } else {
-        alert("❌ No user session found. Redirecting to login...");
+        // alert("❌ No user session found. Redirecting to login...");
         window.location.href = "login.html"; // Redirect if no session
     }
 

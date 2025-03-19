@@ -99,10 +99,31 @@ body {
     background-color: #f8f9fa;
 }
 
-/* .chevron-icon {
-    font-size: 18px;
-    font-weight: bold;
-} */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-icon {
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.profile-dropdown:hover .dropdown-content {
+    display: block;
+}
 
 /* Style for the chevron icon */
 #chevronIcon {

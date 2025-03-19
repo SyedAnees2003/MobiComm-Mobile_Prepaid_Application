@@ -28,9 +28,21 @@
                             <li class="nav-item"><a class="nav-link" href="prepaidPlans.html">Prepaid Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.html">Quick Recharge</a></li>
                             <li class="nav-item"><a id="nav-offers" class="nav-link">Offers</a></li>
-                            <li class="nav-item">
-                                <a id="profileLink" class="nav-link" href="#">
-                                    <i class="fas fa-user"></i>
+                            <!-- Profile Dropdown for Authenticated Users -->
+                            <li class="nav-item profile-container d-none" id="profileMenu">
+                                <div class="profile-dropdown mx-4">
+                                    <i class="fa-solid fas fa-user profile-icon"></i>
+                                    <div class="dropdown-content">
+                                        <a class="nav-link" href="subscriber.html">Dashboard</a>
+                                        <a class="nav-link" href="profile.html">My Profile</a>
+                                    </div>
+                                </div>
+                            </li>
+                        
+                            <!-- Login Dropdown for Guests -->
+                            <li class="nav-item d-none" id="loginMenu">
+                                <a class="nav-link" href="login.html">
+                                    <i class="fas fa-sign-in-alt"></i> Login
                                 </a>
                             </li>
                         </ul>
@@ -145,7 +157,7 @@
             </div>
             <div class="faq-item">
                 <div class="fw-bold">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
-                <div class="faq-answer">Yes, you can recharge any mobile operator, including Airtel, Jio, Vodafone Idea, and more. Choose your operator and plan during the recharge process.</div>
+                <div class="faq-answer">Only MobiComm users can perform recharges. You need to be a registered user to access our recharge services.</div>
             </div>
             <div class="faq-item">
                 <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>

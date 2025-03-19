@@ -39,12 +39,25 @@
                         <li class="nav-item">
                             <a class="nav-link" href="support.html">Help</a>
                         </li>
-                        <li class="nav-item">
-                            <a id="profileLink" class="nav-link" href="#">
-                                <i class="fas fa-user"></i>
+                    
+                        <!-- Profile Dropdown for Authenticated Users -->
+                        <li class="nav-item profile-container d-none" id="profileMenu">
+                            <div class="profile-dropdown mx-4">
+                                <i class="fa-solid fas fa-user profile-icon"></i>
+                                <div class="dropdown-content">
+                                    <a class="nav-link" href="subscriber.html">Dashboard</a>
+                                    <a class="nav-link" href="profile.html">My Profile</a>
+                                </div>
+                            </div>
+                        </li>
+                    
+                        <!-- Login Dropdown for Guests -->
+                        <li class="nav-item d-none" id="loginMenu">
+                            <a class="nav-link" href="login.html">
+                                <i class="fas fa-sign-in-alt"></i> Login
                             </a>
-                        </li>     
-                    </ul>
+                        </li>
+                    </ul>                    
                 </div>
             </div>
         </nav>                

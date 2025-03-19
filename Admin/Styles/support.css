@@ -69,6 +69,14 @@ body {
     border: none;
 }
 
+h5{
+    color: #0051ff !important;
+}
+
+#resolveNote{
+    background-color: lightgoldenrodyellow;
+}
+
 .nav-pills .nav-link.active {
     background-color: #0d6efd; /* Bootstrap primary color */
     color: white;

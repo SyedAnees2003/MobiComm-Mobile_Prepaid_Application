@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const mobileNumber = sessionStorage.getItem("mobileNumber");
     if (!mobileNumber) {
-        alert("❌ No user session found. Redirecting to login...");
+        // alert("❌ No user session found. Redirecting to login...");
         window.location.href = "login.html";
         return;
     }
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("fecthUser:",token);
 
         if (!token) {
-            alert("❌ Session expired. Please log in again.");
+            // alert("❌ Session expired. Please log in again.");
             window.location.href = "login.html";
             return;
         }

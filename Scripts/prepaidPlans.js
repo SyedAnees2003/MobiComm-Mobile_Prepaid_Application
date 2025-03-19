@@ -1,98 +1,24 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     // Populate all plans
-//     Object.keys(plans).forEach(category => {
-//         populatePlans(category, plans[category]);
-//     });
-
-//     // Event delegation for Recharge buttons
-//     const planContainers = document.querySelectorAll('.tab-pane .row');
-//     planContainers.forEach(container => {
-//         container.addEventListener('click', function (event) {
-//             if (event.target && event.target.id === 'rechargeButton') {
-//                 const card = event.target.closest('.card');
-//                 const price = card.getAttribute('data-price');
-//                 const data = card.getAttribute('data-data');
-//                 const sms = card.getAttribute('data-sms');
-//                 const calls = card.getAttribute('data-calls');
-//                 const category = card.getAttribute('data-category'); // Capture category
-//                 const validity = card.getAttribute('data-validity')
-
-//                 // Store plan details in localStorage
-//                 localStorage.setItem('planPrice', price);
-//                 localStorage.setItem('planData', data);
-//                 localStorage.setItem('planSms', sms);
-//                 localStorage.setItem('planCalls', calls);
-//                 localStorage.setItem('planCategory', category); // Store category
-//                 localStorage.setItem('planValidity',validity);
-
-//                 // Update modal content
-//                 document.getElementById('modalPrice').textContent = `Price: ${price}`;
-//                 document.getElementById('modalData').textContent = `Data: ${data}`;
-//                 document.getElementById('modalSms').textContent = `SMS: ${sms}`;
-//                 document.getElementById('modalCalls').textContent = `Calls: ${calls}`;
-//                 document.getElementById('modalCategory').textContent = `Category: ${category}`; // Update modal
-
-//                 // Check if the user is logged in
-//                 const token = sessionStorage.getItem('rechargeToken') === 'true';
-//                 console.log("token: ",token);
-                
-//                 if (token) {
-//                     const modal = new bootstrap.Modal(document.getElementById('planDetailsModal'));
-//                     modal.show();
-//                     return;
-//                 } 
-
-//                 const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
-
-//                 if (!isLoggedIn) {
-//                     // If not logged in, display a popup message
-//                     event.preventDefault(); // Prevent the default action
-//                     showPopupMessage('Log in to proceed. Redirecting to Login page...');
-//                 } else {
-//                     // If logged in, proceed with the normal functionality
-//                     const modal = new bootstrap.Modal(document.getElementById('planDetailsModal'));
-//                     modal.show();
-//                 }
-//             }
-//         });
-//     });
-
-
 document.addEventListener("DOMContentLoaded", function () {
-    // fetchPlans();
+    const token = sessionStorage.getItem("userToken"); // Check token presence
+    const profileMenu = document.getElementById("profileMenu");
+    const loginMenu = document.getElementById("loginMenu");
 
-    // ✅ Profile Icon Click - Redirect based on authentication
-    document.getElementById("profileLink").addEventListener("click", function (event) {
-        event.preventDefault();
-        const token = sessionStorage.getItem("userToken");
-
-        if (!token) {
-            alert("Please log in to proceed.");
-            window.location.href = "login.html"; // Redirect to login if not authenticated
-        } else {
-            window.location.href = "subscriber.html"; // Redirect to profile page if authenticated
-        }
-    });
+    if (token) {
+        // Show Profile Dropdown for Logged-in Users
+        profileMenu.classList.remove("d-none");
+        loginMenu.classList.add("d-none");
+    } 
+    else {
+        // Show Login Dropdown for Guests
+        loginMenu.classList.remove("d-none");
+        profileMenu.classList.add("d-none");
+    }
 });
+
 
 document.getElementById("Offers").addEventListener("click", ()=>{
     alert("No offers available at the moment.");
 });
-
-// // Fetch plans from API
-// function fetchPlans() {
-//     fetch("http://localhost:8083/api/plans")
-//         .then(response => response.json())
-//         .then(plans => {
-//             console.log("Fetched plans:", plans); // Debugging
-//             if (plans.length === 0) {
-//                 document.getElementById("pills-popular").querySelector(".row").innerHTML = "<p>No plans available.</p>";
-//             } else {
-//                 populatePlans(plans);
-//             }
-//         })
-//         .catch(error => console.error("Error fetching plans:", error));
-// }
 
 // OTT Image Mapping
 const ottIcons = {
