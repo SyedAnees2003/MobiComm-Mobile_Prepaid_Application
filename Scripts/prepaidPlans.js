@@ -27,42 +27,76 @@ const ottIcons = {
     "Disney+ Hotstar": "/Assets/JioHotstar.png",
     "Sony Liv": "/Assets/Sony_Liv.png"
 };
-
+// Function to create the OTT benefit section with expandable details
 function getOttIcons(benefits, validity) {
-    if (!benefits || !benefits.OTT) return ""; // No benefits, return empty
+    console.log("OTT Benefits:", benefits);
 
-    let icons = benefits.OTT.map(ott => {
-        const iconPath = ottIcons[ott] || ""; // Get icon path
-        return iconPath ? `<img src="${iconPath}" alt="${ott}" class="ott-icon" width="30px">` : ott;
+    if (!benefits || !Array.isArray(benefits)) return ""; // Ensure benefits is an array
+
+    let icons = benefits.map(benefit => {
+        let ottName = ""; 
+
+        // Case 1: If benefit is a string (direct OTT name)
+        if (typeof benefit === "string") {
+            ottName = benefit;
+        } 
+        // Case 2: If benefit is an object containing OTT
+        else if (typeof benefit === "object" && benefit.OTT) {
+            ottName = benefit.OTT;
+        }
+
+        console.log("Processed OTT:", ottName);
+
+        const iconPath = ottIcons[ottName] || ""; // Get corresponding icon
+
+        return iconPath ? `<img src="${iconPath}" alt="${ottName}" class="ott-icon mx-2" width="30px">` : ottName;
     }).join("");
 
-    return `
-        <div class="col d-flex flex-column align-items-center">
-            <div class="d-flex flex-row align-items-center ott-icons">
-                ${icons}
-                <span class="arrow-toggle ms-2" onclick='toggleBenefits(this, ${JSON.stringify(benefits)}, ${validity})'>▶</span>
-            </div>
-            <p class="text-muted small mt-1">Benefits</p>
-        </div>`;
+    if(icons){
+
+        return `
+            <div class="col d-flex flex-column align-items-center">
+                <div class="d-flex flex-row align-items-center ott-icons">
+                    ${icons}
+                    <span class="arrow-toggle ms-2" onclick='toggleBenefits(this, ${JSON.stringify(benefits)}, ${validity})'>▶</span>
+                </div>
+                <p class="text-muted small mt-1">Benefits</p>
+            </div>`;
+    }
+    else{
+        return ``;
+    }
 }
 
-// Function to show the benefits popup near the clicked element
+
 // Function to show the benefits popup in a structured format
 function openBenefitsPopup(element, benefits, validity) {
     let popup = document.getElementById("benefitsModal");
     let contentDiv = document.getElementById("benefitsContent");
 
-    if (!benefits || !benefits.OTT) return; // No benefits, do nothing
+    if (!benefits || !Array.isArray(benefits)) return; // Ensure benefits is an array
 
     // Generate each OTT benefit in a separate row
-    let rowsHtml = benefits.OTT.map((ott, index) => {
-        const iconPath = ottIcons[ott] || "";
-        const extraText = benefits.Extras && benefits.Extras[index] ? benefits.Extras[index] : "No extra benefit"; // Match extra to OTT
+    let rowsHtml = benefits.map(benefit => {
+        let ottName = "";
+
+        // Case 1: If benefit is a string (direct OTT name)
+        if (typeof benefit === "string") {
+            ottName = benefit;
+        } 
+        // Case 2: If benefit is an object containing OTT
+        else if (typeof benefit === "object" && benefit.OTT) {
+            ottName = benefit.OTT;
+        }
+
+        const iconPath = ottIcons[ottName] || "";
+        const extraText = benefit.Extras ? benefit.Extras : "No extra benefit"; 
+        
         
         return `
             <div class="d-flex align-items-center justify-content-between benefit-row">
                 <div class="ott-icon-container">
-                    <img src="${iconPath}" alt="${ott}" class="ott-icon" width="30px">
+                    <img src="${iconPath}" alt="${ottName}" class="ott-icon" width="30px">
                 </div>
                 <p class="benefit-text mb-0">${extraText}</p>
                 <p class="benefit-validity mb-0">Validity: ${validity} Days</p>
@@ -70,47 +104,59 @@ function openBenefitsPopup(element, benefits, validity) {
         `;
     }).join("");
 
-    // Set popup content
     contentDiv.innerHTML = rowsHtml;
 
     // Get element position
     let rect = element.getBoundingClientRect();
-    let popupWidth = 300; // Approximate width of the popup
+    let popupWidth = popup.offsetWidth || 300; // Default width if not calculated
+    let popupHeight = popup.offsetHeight || 200;
     let screenWidth = window.innerWidth;
+    let screenHeight = window.innerHeight;
 
-    let leftPos = window.scrollX + rect.left;
-    let topPos = window.scrollY + rect.bottom + 10; // Position below the arrow
+    // ** Position Modal Below the Arrow **
+    let leftPos = window.scrollX + rect.left + rect.width / 2 - popupWidth / 2;
+    let topPos = window.scrollY + rect.bottom + 8; // 8px margin below the arrow
 
-    // Adjust position if it overflows the right edge
-    if (leftPos + popupWidth > screenWidth) {
-        leftPos = screenWidth - popupWidth - 10; // Shift it left to stay inside the screen
+    // ** Prevent Overflow (Right & Left) **
+    if (leftPos + popupWidth >= screenWidth) {
+        leftPos = screenWidth - popupWidth - 10; // Shift left
+    }
+    if (leftPos < 10) {
+        leftPos = 10; // Shift right
     }
 
-    // Adjust position if it overflows the left edge
-    if (leftPos < 0) {
-        leftPos = 10; // Move it slightly right to stay inside
+    // ** Prevent Overflow (Bottom) - Move Above Arrow if Needed **
+    if (topPos + popupHeight > screenHeight) {
+        topPos = window.scrollY + rect.top + 30; // Move above arrow
     }
 
-    // Apply final position
-    popup.style.top = `${topPos}px`;
+    // ** Apply Position to Popup **
     popup.style.left = `${leftPos}px`;
+    popup.style.top = `${topPos}px`;
+    popup.style.opacity = "1";
     popup.style.display = "block";
 }
 
 // Function to close the benefits popup
 function closeBenefitsPopup() {
-    document.getElementById("benefitsModal").style.display = "none";
+    let popup = document.getElementById("benefitsModal");
+    popup.style.opacity = "0";
+    setTimeout(() => {
+        popup.style.display = "none";
+    }, 300); // Matches CSS transition time
 }
 
 // Modify the arrow click function to open the popup
 function toggleBenefits(element, benefits, validity) {
     let popup = document.getElementById("benefitsModal");
 
-    // If the popup is already open, close it
+    // If the popup is already open, close it and reset the arrow
     if (popup.style.display === "block") {
         closeBenefitsPopup();
+        element.textContent = "▶"; // Reset to right arrow when closing
     } else {
         openBenefitsPopup(element, benefits, validity);
+        element.textContent = "▼"; // Change to down arrow when opening
     }
 }
 
@@ -187,6 +233,31 @@ function populateCategories(categories) {
         `;
     });
 
+        // Add filter pills dynamically below the categories
+        document.getElementById("filter-pills").innerHTML = `
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="under299">Under ₹299</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="under499">Under ₹499</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="data">Data Plans</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="calls">Calls</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="ott">OTT Plans</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="unlimited">Unlimited</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="28days">28 Days</button>
+        <button class="nav-link filter-pill opacity-30 small-button" data-filter="yearly">Yearly Plans</button>
+        `;
+
+        // Attach click event for filtering plans
+        document.querySelectorAll(".filter-pill").forEach(button => {
+            button.addEventListener("click", function () {
+                toggleFilter(button);
+            });
+        });
+
+
+    setTimeout(() => {
+        console.log("Calling sortPlans...");
+        sortPlans("asc"); // or "desc" based on default sorting order
+    }, 500);
+
     console.log("✅ Categories populated successfully.");
 }
 
@@ -194,13 +265,15 @@ function populateCategories(categories) {
 function populatePlans(plans) {
     plans.forEach(plan => {
         let benefits = "{}";
-        try {
-            benefits = JSON.parse(plan.additionalBenefits || "{}");
-        } catch (e) {
-            console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
-        }
+    try {
+        benefits = JSON.parse(plan.additionalBenefits || "{}");
+    } catch (e) {
+        console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
+    }
 
-        let benefitsHtml = benefits.OTT ? getOttIcons(benefits, plan.validityDays) : "";
+    // console.log("OTTs: ", benefits.OTT);
+
+    let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
 
         const categoryDiv = document.getElementById(`pills-${plan.categoryId}`);
         if (!categoryDiv) {
@@ -209,7 +282,7 @@ function populatePlans(plans) {
         }
 
         const planHTML = `
-            <div class="feature-card card p-3 mt-4" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}">
+            <div class="feature-card card p-3 mt-2 plan-item" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" data-category="${plan.categoryId}" data-benefits='${JSON.stringify(benefits.OTT)}'>
                 <div class="card-body">
                     <div class="row first-row">
                         <p class="price text-center fw-bold fs-4">₹${plan.price}</p>
@@ -231,7 +304,7 @@ function populatePlans(plans) {
                 </div>
                 <div class="row">
                     <div class="col d-flex flex-column align-items-center">
-                        <p class="fw-bold text-muted mb-0">${plan.validityDays} Days</p>
+                        <p class="fw-bold text-muted mb-0 validity">${plan.validityDays} Days</p>
                         <p class="text-muted small">Validity</p>
                     </div>
                     ${benefitsHtml} 
@@ -248,6 +321,132 @@ function populatePlans(plans) {
 
     console.log("✅ Plans populated successfully.");
 }
+
+// 🔍 Search Plans by Price, Data, SMS, or Calls
+function searchPlans() {
+    let query = document.getElementById("searchInput").value.toLowerCase();
+    console.log(document.getElementById("searchInput"));
+
+    document.querySelectorAll(".plan-item").forEach(plan => {
+        let price = plan.getAttribute("data-price").toLowerCase();
+        let data = plan.getAttribute("data-data").toLowerCase();
+        let sms = plan.getAttribute("data-sms").toLowerCase();
+        let calls = plan.getAttribute("data-calls").toLowerCase();
+
+        if (price.includes(query) || data.includes(query) || sms.includes(query) || calls.includes(query)) {
+            plan.style.display = "block";
+        } else {
+            plan.style.display = "none";
+        }
+    });
+}
+
+// 🔽 Sort Plans by Price
+function sortPlans(order) {
+    let plansArray = Array.from(document.querySelectorAll(".plan-item"));
+    console.log("plansArray: ", plansArray);
+
+    plansArray.sort((a, b) => {
+        let priceA = parseInt(a.getAttribute("data-price").replace("₹", ""));
+        let priceB = parseInt(b.getAttribute("data-price").replace("₹", ""));
+        return order === "asc" ? priceA - priceB : priceB - priceA;
+    });
+
+    // Reorder plans in the DOM
+    plansArray.forEach(plan => {
+        let categoryId = plan.getAttribute("data-category");
+        let targetDiv = document.getElementById(`pills-${categoryId}`);
+
+        if (!targetDiv) {
+            console.error(`❌ Element with ID pills-${categoryId} not found`);
+            return;
+        }
+
+        let planContainer = targetDiv.querySelector(".row");
+        if (!planContainer) {
+            console.error(`❌ Row container missing inside #pills-${categoryId}`);
+            return;
+        }
+
+        planContainer.appendChild(plan);
+    });
+}
+
+// Function to toggle filter selection and apply filtering
+function toggleFilter(button) {
+    // Toggle active state for the clicked filter
+    if (button.classList.contains("active")) {
+        button.classList.remove("active", "opacity-30");
+        button.classList.add("opacity-30");
+    } else {
+        button.classList.add("active", "opacity-30");
+        button.classList.remove("opacity-30");
+    }
+
+    applyFilters(); // Apply filters when selection changes
+}
+
+// Function to filter plans based on selected filters
+function applyFilters() {
+    let selectedFilters = [];
+
+    // Get all active filter pills
+    document.querySelectorAll(".filter-pill.active").forEach(activePill => {
+        selectedFilters.push(activePill.dataset.filter);
+    });
+
+    document.querySelectorAll(".plan-item").forEach(plan => {
+        let price = parseInt(plan.getAttribute("data-price").replace("₹", "").trim());
+let data = plan.getAttribute("data-data").toLowerCase();
+let calls = plan.getAttribute("data-calls").toLowerCase();
+let validity = parseInt(plan.querySelector(".validity").innerText.replace(" Days", "").trim());
+let benefits = plan.getAttribute("data-benefits") ? plan.getAttribute("data-benefits").toLowerCase() : ""; // For OTT plans
+
+let showPlan = true; // Default to show the plan
+
+selectedFilters.forEach(filter => {
+    switch (filter) {
+        case "under299":
+            if (price > 299) showPlan = false;
+            break;
+        case "under499":
+            if (price > 499) showPlan = false;
+            break;
+        case "data":
+            if (!(data.includes("gb") || data.includes("unlimited"))) showPlan = false;
+            console.log(data);
+            break;
+        case "calls":
+            let callsFormatted = calls.toLowerCase().trim(); // Normalize text
+            if (callsFormatted === "0" || callsFormatted === "0 mins") {
+                showPlan = false; // Hide only if calls are 0
+            }
+            console.log("Filtered Calls:", callsFormatted, "Show Plan:", showPlan);
+            break;
+            case "ott":
+                if(!(benefits && benefits.length > 2 && benefits!='undefined')) showPlan = false;
+                console.log("Filtered OTT:", benefits, "Show Plan:", showPlan, "length : ", benefits.length);
+                break;            
+        case "unlimited":
+            if (!calls.includes("unlimited") && !data.includes("unlimited")) showPlan = false;
+            console.log("Filtered Unlimited:", calls, data, "Show Plan:", showPlan);
+            break;
+        case "28days":
+            if (validity !== 28) showPlan = false;
+            console.log(validity);
+            break;
+        case "yearly":
+            if (validity < 365) showPlan = false;
+            console.log(validity);
+            break;
+    }
+
+        });
+
+        plan.style.display = showPlan ? "block" : "none";
+    });
+}
+
 
 // Function to fetch and display plan details in modal
 function showPlanDetails(planId) {
@@ -270,25 +469,42 @@ function showPlanDetails(planId) {
             document.getElementById('modalSms').textContent = `SMS: ${plan.sms}`;
             document.getElementById('modalCalls').textContent = `Calls: ${plan.calls}`;
             
-            // Parse additional benefits JSON
-            let benefits = {};
+            // ✅ Parse and extract OTT benefits correctly
+            let benefits = [];
             try {
-                benefits = JSON.parse(plan.additionalBenefits || "{}");
+                const parsedBenefits = JSON.parse(plan.additionalBenefits || "[]"); // Ensure it's an array or object
+                benefits = Array.isArray(parsedBenefits) ? parsedBenefits : parsedBenefits.OTT || [];
             } catch (e) {
                 console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
             }
 
-            // Generate OTT Benefits HTML
+            console.log("Extracted OTT Benefits:", benefits);
+
+            // ✅ Generate OTT Icons and Extras Text
             let benefitsHtml = "";
-            if (benefits.OTT) {
-                benefitsHtml = benefits.OTT.map(ott => {
-                    const iconPath = ottIcons[ott] || ""; // Get icon path
-                    return iconPath 
-                        ? `<div class="d-flex align-items-center">
-                               <img src="${iconPath}" alt="${ott}" class="ott-icon me-2" width="20px">
-                               <span>${ott}</span>
-                           </div>` 
-                        : `<p>Benefits: ${ott}</p>`; // Fallback if no icon
+            if (benefits.length > 0) {
+                benefitsHtml = benefits.map(benefit => {
+                    let ottName = "";
+                    let extraText = "";
+
+                    // 🔹 Handle Case 1: Array of Strings
+                    if (typeof benefit === "string") {
+                        ottName = benefit;
+                    } 
+                    // 🔹 Handle Case 2: Array of Objects
+                    else if (typeof benefit === "object" && benefit.OTT) {
+                        ottName = benefit.OTT;
+                        extraText = benefit.Extras ? `<span class="text-muted small"> - ${benefit.Extras}</span>` : "";
+                    }
+
+                    const iconPath = ottIcons[ottName] || ""; // Get corresponding icon
+
+                    return iconPath
+                        ? `<div class="d-flex align-items-center my-1">
+                               <img src="${iconPath}" alt="${ottName}" class="ott-icon me-2" width="30px">
+                               <span>${ottName}</span> ${extraText}
+                           </div>`
+                        : `<p>${ottName} ${extraText}</p>`; // Fallback if no icon found
                 }).join("");
             } else {
                 benefitsHtml = "<p>No OTT benefits</p>";
@@ -344,22 +560,16 @@ function fetchFeaturedPlans() {
 
 // Function to create a "Featured Plan" card
 function createFeaturedCard(plan) {
-    let benefitsHtml = "";
-
-    // Parse additional benefits JSON
-    let benefits = {};
+    let benefits = "{}";
     try {
         benefits = JSON.parse(plan.additionalBenefits || "{}");
     } catch (e) {
         console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
     }
 
-    if (benefits.OTT) {
-        benefitsHtml =   benefits.OTT ? getOttIcons(benefits, plan.validityDays) : "";
+    // console.log("OTTs: ", benefits.OTT);
 
-    } else {
-        benefitsHtml = "<p class='text-muted small'>No OTT benefits</p>";
-    }
+    let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
 
     return `
         <div class="feature-card card p-3" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}">
@@ -383,14 +593,12 @@ function createFeaturedCard(plan) {
                 </div>
             </div>
             <div class="row">
-                <div class="col d-flex flex-column align-items-center">
-                    <p class="fw-bold text-muted mb-0">${plan.validityDays} Days</p>
-                    <p class="text-muted small">Validity</p>
+                    <div class="col d-flex flex-column align-items-center">
+                        <p class="fw-bold text-muted mb-0">${plan.validityDays} Days</p>
+                        <p class="text-muted small">Validity</p>
+                    </div>
+                    ${benefitsHtml} 
                 </div>
-                <div class="col d-flex flex-column align-items-center">
-                    ${benefitsHtml}
-                </div>                        
-            </div>
             <div class="row text-center mt-3">
                 <button class="btn btn-primary w-50 mx-auto" onclick="showPlanDetails(${plan.planId})">Recharge</button>
             </div>
@@ -423,6 +631,7 @@ function showPopupMessage(message) {
         document.body.removeChild(popup);
     }, 3000);
 }
+
 
 // Hide/show navbar on scroll
 let lastScrollTop = 0;

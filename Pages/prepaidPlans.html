@@ -64,7 +64,7 @@
     </header>    
     <main class="container my-4">
         <section class="mb-5">
-            <h2 class="h3 mb-1">Trending plans</h2>
+            <h2 class="h3 mb-1"></h2>
             <!-- <div class="carousel" id="carousel"> -->
 
                 <section class="main-carousel">
@@ -99,20 +99,28 @@
         <section class="d-flex mt-5">
             <!-- Left content (sidebar) -->
             <div class="col-md-4 mb-4 sidebar">
-                <div class="mb-3">
-                    <input class="form-control" placeholder="Search" type="text"/>
-                </div>
                 <div class="h5 mb-3">Featured for you</div>
                 <div class="featured-plans"></div> <!-- Dynamic Content -->
             </div>
             
             <!-- Right content (plan categories) -->
-            <!-- <div class="container"> -->
                 <div class="col-md-8">
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex justify-content-between mb-4">
                         <div class="h5 mb-0">Plan categories</div>
                     </div>
-                    <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <div class="row g-2 align-items-center justify-content-between mb-4">
+                        <div class="col-md-6 w-50">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search Plan" onkeyup="searchPlans()">
+                        </div>
+                        <div class="col-md-6 w-25">
+                            <select id="sortSelect" class="form-select" onchange="sortPlans(this.value)">
+                                <option value="" disabled selected>Sort by Price</option>
+                                <option value="asc">Lowest to Highest</option>
+                                <option value="desc">Highest to Lowest</option>
+                            </select>
+                        </div>
+                    </div>                                                            
+                    <div class="nav nav-pills mb-4" id="pills-tab" role="tablist">
                         <button aria-controls="pills-popular" aria-selected="true" class="nav-link active" data-bs-target="#pills-popular" data-bs-toggle="pill" id="pills-popular-tab" role="tab" type="button">Popular</button>
                         <button aria-controls="pills-data" aria-selected="false" class="nav-link" data-bs-target="#pills-data" data-bs-toggle="pill" id="pills-data-tab" role="tab" type="button">Data</button>
                         <button aria-controls="pills-topup" aria-selected="false" class="nav-link" data-bs-target="#pills-topup" data-bs-toggle="pill" id="pills-topup-tab" role="tab" type="button">Top-up</button>
@@ -121,6 +129,14 @@
                         <button class="nav-link" data-bs-target="#pills-entertainment" data-bs-toggle="pill" id="pills-entertainment-tab" role="tab" type="button">Entertainment</button>
                         <button class="nav-link" data-bs-target="#pills-international" data-bs-toggle="pill" id="pills-international-tab" role="tab" type="button">International</button>
                     </div>
+                    <!-- Filter Pills Section -->
+                    <div class="nav nav-pills mb-5 mt-4 filters" id="filter-pills">
+                        <button class="nav-link filter-pill opacity-50 btn-sm" data-filter="under299">Under ₹299</button>
+                        <button class="nav-link filter-pill opacity-50" data-filter="data">Data Plans</button>
+                        <button class="nav-link filter-pill opacity-50" data-filter="calls">Calls</button>
+                        <button class="nav-link filter-pill opacity-50" data-filter="28days">28 Days</button>
+                    </div>
+
                     <div class="tab-content" id="pills-tabContent">
                         <div aria-labelledby="pills-popular-tab" class="tab-pane fade show active" id="pills-popular" role="tabpanel">
                             <div class="row gx-3"></div>
@@ -144,9 +160,7 @@
                             <div class="row gx-3"></div>
                         </div>
                     </div>
-                </div>
-            <!-- </div> -->
-        
+                </div>        
         </section>
     </main>
 
@@ -157,7 +171,7 @@
 
 
     
-    <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

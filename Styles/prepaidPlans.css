@@ -81,6 +81,8 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    border: 1px solid #73cffd5e;
+    border-radius: 5px;
 }
 
 /* Background images for each carousel item */
@@ -127,6 +129,15 @@ body {
 .modal-backdrop {
     z-index: -1;
 }
+
+.arrow-toggle {
+    transition: transform 0.2s ease-in-out;
+}
+
+.arrow-toggle.open {
+    transform: rotate(180deg);
+}
+
 .card {
     border-radius: 15px; /* Rounded corners */
     margin-bottom: 20px; /* Margin between cards */
@@ -174,8 +185,6 @@ body {
     margin-right: 30px; /* Space between sidebar and right content */
 }
 .featured-plans {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
     border-radius: 10px;
     padding: 15px;
 }
@@ -189,8 +198,6 @@ button {
     font-size: 1rem; /* Set button size in rem */
     padding: 0.6rem 1.2rem; /* Button padding in rem */
 }
-
-
 
 .logo-icon {
     height: 40px; /* Adjust the height */
@@ -227,6 +234,34 @@ button {
     font-size: 1em;
     overflow: hidden; /* Prevent content overflow */
 }
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.filter-pill {
+    transition: all 0.3s ease;
+    border: 1px solid #8fe3ff;
+    border-radius: 2rem !important;
+    background-color: #b0eafd7b;
+}
+
+.filter-pill.active {
+    background-color: #007bff !important;
+    color: white !important;
+    opacity: 1;
+}
+
+.small-button {
+    font-size: 0.9rem;  /* Reduce text size */
+    padding: 6px 8px; /* Reduce padding */
+    width: auto;      /* Adjust width dynamically */
+    height: auto;     /* Adjust height dynamically */
+    line-height: 1.2; /* Improve text spacing */
+}
+
 
 @media (max-width: 768px) {
     .card {
@@ -326,8 +361,8 @@ button {
 }
 
 .ott-icon {
-    width: 30px;
-    height: auto;
+    width: auto;
+    height: 1.3rem;
 }
 
 .benefit-text {
@@ -355,4 +390,12 @@ button {
 
 #Offers{
     cursor: pointer;
+}
+
+.modal-backdrop {
+    background-color: rgba(48, 66, 67, 0.2) !important; /* Adjust opacity */
+}
+
+#searchInput, #sortSelect{
+    border-color:rgba(120, 203, 254, 0.501);
 }

@@ -43,18 +43,20 @@
                         </li>
                         <!-- Notification Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link position-relative" href="#" id="notificationDropdown"style="display: none;" role="button">
+                            <a class="nav-link position-relative dropdown-toggle" href="#" id="notificationDropdown"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-solid fa-bell"></i>
                                 <span id="notificationBadge" class="badge rounded-pill bg-danger position-absolute start-100 translate-middle">3</span>
                             </a>
-
-                            <!-- Popover Content -->
-                            <div id="notificationMenu" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="width: 300px; display: none;">
+                        
+                            <!-- Dropdown Content -->
+                            <ul id="notificationMenu" class="dropdown-menu dropdown-menu-end p-3 shadow-lg" aria-labelledby="notificationDropdown">
                                 <h6 class="dropdown-header">Notifications</h6>
                                 <div id="notificationList">
                                     <!-- Notifications will be dynamically added here -->
                                 </div>
-                        </li>
+                            </ul>
+                        </li>                        
 
                         <div class="profile-dropdown mx-4">
                             <i class="fa-solid fas fa-user profile-icon"></i>
@@ -105,16 +107,16 @@
                         <div class="my-3">
                             <h5 class="text-white">Plan Name: <bold id="planName">Unlimited Plan</bold></h5>
                         </div>
-                        <div>
+                        <div class="w-100">
                             <h5 class="text-white">Plan Details:</h5>
                             <div class="border p-3" style="background-color: rgba(255, 255, 255, 0.8); border-radius: 10px;">
                                 <!-- Price Section (Heading Style) -->
-                                <div class="row justify-content-center">
+                                <div class="row justify-content-center mb-2">
                                     <h3 class="fw-bold fs-3 text-primary" id="planPrice">₹799</h3>
                                 </div>
                                 
                                 <!-- Plan Details in Rows (First row with Plan, Validity, Data) -->
-                                <div class="row text-center d-flex flex-md-row flex-column mb-3">
+                                <div class="row text-center d-flex flex-md-row flex-column mb-2">
                                     <div class="col d-flex flex-column align-items-center">
                                         <p class="fw-bold mb-0 text-dark" id="planData">3GB/day</p>
                                         <p class="text-muted small">Data</p>
@@ -125,11 +127,11 @@
                                     </div>
                                     <div class="col d-flex flex-column align-items-center">
                                         <p class="fw-bold mb-0 text-dark">10 GB</p>
-                                        <p class="text-muted small">Data</p>
+                                        <p class="text-muted small">Extra</p>
                                     </div>
                                 </div>
                                 <!-- Second row with SMS, Calls, Benefits -->
-                                <div class="row text-center d-flex flex-md-row flex-column mb-3">
+                                <div class="row text-center d-flex flex-md-row flex-column mb-2">
                                     <div class="col d-flex flex-column align-items-center">
                                         <p class="fw-bold mb-0 text-dark" id="planSMS">Unlimited SMS</p>
                                         <p class="text-muted small">SMS</p>
@@ -138,14 +140,11 @@
                                         <p class="fw-bold mb-0 text-dark" id="planCalls">Unlimited Calls</p>
                                         <p class="text-muted small">Calls</p>
                                     </div>
-                                    <div class="col d-flex flex-column align-items-center">
-                                        <p class="fw-bold mb-0 text-dark">Free Netflix</p>
-                                        <p class="text-muted small">Benefits</p>
-                                    </div>
+                                    <div id="ottBenefitsContainer"></div>
                                 </div>
                                 <!-- Expiry Information -->
                                 <div>
-                                    <p class="text-dark">Expiry on: <strong id="expiryDate">2025-02-28</strong></p>
+                                    <p class="text-dark fw-bold fs-6">Expiry Date: <span id="expiryDate" class="text-danger fw-bold">2025-02-28</span></p>
                                 </div>
                             </div>
                         </div>
@@ -182,69 +181,15 @@
             </div>
 
             <body class="bg-white text-dark">
-                <div class="container py-5">
-                  <div class="text-center mb-5">
-                  </div>
-                    <div class="row">
-                      <div class="col-md-4 mb-4">
-                        <div class="card border shadow-sm">
-                          <div class="card-body">
-                            <h3 class="font-weight-bold text-center">Basic Plan</h3>
-                            <p class="text-muted">Starting at</p>
-                            <p class="price text-primary">₹199<span>.00</span><small>/mo</small></p>
-                            <ul class="list-unstyled">
-                                <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
-                                <li class="mb-3"><i class="fas fa-rss mr-2"></i> 1.5 GB data/day</li>
-                                <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
-                                <li><i class="fas fa-signal mr-2"></i> High-speed 4G network</li>
-                            </ul>
-                          </div>
-                          <div class="card-footer bg-white border-0">
-                              <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-4 mb-4">
-                          <div class="card border shadow-sm">
-                              <div class="card-body">
-                                  <h3 class="font-weight-bold text-center">Value Plan</h3>
-                                  <p class="text-muted">20 GB Data</p>
-                                  <p class="price text-primary">₹349<span>.00</span><small>/mo</small></p>
-                                  <p class="text-muted">Includes 50 SMS/day</p>
-                                  <ul class="list-unstyled">
-                                      <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
-                                      <li class="mb-3"><i class="fas fa-rss mr-2"></i> 2.5 GB data/day</li>
-                                      <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
-                                      <li><i class="fas fa-signal mr-2"></i> High-speed 5G network</li>
-                                  </ul>
-                              </div>
-                              <div class="card-footer bg-white border-0">
-                                  <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="col-md-4 mb-4">
-                          <div class="card border shadow-sm">
-                              <div class="card-body">
-                                  <h3 class="font-weight-bold text-center">Premium Plan</h3>
-                                  <p class="text-muted">50 GB Data</p>
-                                  <p class="price text-primary">₹499<span>.00</span><small>/mo</small></p>
-                                  <p class="text-muted">Includes 100 SMS/day</p>
-                                  <ul class="list-unstyled">
-                                      <li class="mb-3"><i class="fas fa-mobile-alt mr-2"></i> Unlimited calls and texts</li>
-                                      <li class="mb-3"><i class="fas fa-rss mr-2"></i> 3.5 GB data/day</li>
-                                      <li class="mb-3"><i class="fas fa-sim-card mr-2"></i> SIM card included</li>
-                                      <li><i class="fas fa-signal mr-2"></i> High-speed 5G network</li>
-                                  </ul>
-                              </div>
-                              <div class="card-footer bg-white border-0">
-                                  <button class="btn btn-primary btn-block" onclick="rechargeNow()">View Plans <i class="fas fa-arrow-right ml-2"></i></button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>      
-                </div>      
-            </body>      
+                <div class="container py-5 mt-4">
+                    <div class="text-center mb-5">
+                        <h2 class="text-dark">Featured Plans</h2>
+                    </div>
+                    <div class="row" id="plans-container">
+                        <!-- Plans will be inserted here dynamically -->
+                    </div>
+                </div>   
+            </body>
             
             <footer class="bg-dark text-white py-4">
                 <div class="container">
@@ -301,6 +246,12 @@
             </div>
         </div>
     </div>
+    </div>
+    <div id="benefitsModal" class="benefits-popup">
+        <div class="benefits-content">
+            <span class="close-popup" onclick="closeBenefitsPopup()"></span>
+            <div id="benefitsContent"></div>
+        </div>
     </div>
     <div id="logoutScreen" class="logout-overlay">
         <div class="logout-box">

@@ -1,6 +1,11 @@
 // API Base URL
 const API_BASE_URL = "http://localhost:8083";
 
+document.addEventListener("DOMContentLoaded", function () {
+
+document.getElementById("Offers").addEventListener("click", () => alert("No offers available at the moment."));
+
+});
 // Function to validate email
 function validateEmail() {
     const email = document.getElementById('username').value.trim();
@@ -47,6 +52,19 @@ document.getElementById('login-button').addEventListener('click', function (even
     const email = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
 
+    let loginButton = this;
+
+        // Change text to "Logging in..."
+        loginButton.textContent = "Logging in...";
+        loginButton.disabled = true; // Prevent multiple clicks
+
+        // After 2 seconds, revert back to "Login"
+        setTimeout(() => {
+            loginButton.textContent = "Login";
+            loginButton.disabled = false; // Re-enable the button if needed
+        }, 2000);
+
+
     fetch(`${API_BASE_URL}/auth/admin-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -59,14 +77,40 @@ document.getElementById('login-button').addEventListener('click', function (even
     .then(data => {
         sessionStorage.setItem("adminToken", data.accessToken);
         sessionStorage.setItem("adminRole", data.role);
-        alert("✅ Login successful!");
+        showLoginSuccess();
+        setTimeout(() => {
         window.location.href = "dashboard.html"; // Redirect to admin dashboard
+        }, 2000);
     })
     .catch(error => {
         console.error("❌ Login Error:", error);
-        alert("❌ Invalid login credentials.");
+        showLoginFailure();
     });
 });
+
+function showLoginSuccess() {
+    let toastElement = document.getElementById("customToast");
+
+    // Show toast
+    toastElement.classList.add("toast-show");
+
+    // Hide after 2 seconds
+    setTimeout(() => {
+        toastElement.classList.remove("toast-show");
+    }, 2000);
+}
+
+function showLoginFailure() {
+    let toastElement = document.getElementById("customFailToast");
+
+    // Show toast
+    toastElement.classList.add("toast-show");
+
+    // Hide after 2 seconds
+    setTimeout(() => {
+        toastElement.classList.remove("toast-show");
+    }, 2000);
+}
 
 // **Forgot Password Flow**
 function openForgotPasswordModal() {

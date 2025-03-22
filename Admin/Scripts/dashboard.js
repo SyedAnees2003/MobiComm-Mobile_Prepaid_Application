@@ -38,6 +38,17 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener("resize", function () {
         createCharts(); // Destroy and recreate charts on resize
     });
+
+    const token = sessionStorage.getItem("adminToken");
+    if (!token) {
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
+        return;
+    }
+
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -610,9 +621,11 @@ function logout() {
     const token = sessionStorage.getItem("adminToken");
 
     if (!token) {
-        alert("❌ No active session found.");
-        logoutScreen.style.display = "none";
-        window.location.href = "login.html";
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
         return;
     }
 
@@ -632,9 +645,10 @@ function logout() {
         console.log("✅ Logout Successful:", message);
         sessionStorage.removeItem("adminToken"); // ✅ Remove Token
         sessionStorage.removeItem("adminRole");  // ✅ Remove Role
-        logoutScreen.style.display = "none";
-        alert("✅ Successfully logged out!");
-        window.location.href = "login.html"; // ✅ Redirect to Login Page
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // ✅ Redirect to Login Page
     })
     .catch(error => {
         console.error("❌ Logout Error:", error);

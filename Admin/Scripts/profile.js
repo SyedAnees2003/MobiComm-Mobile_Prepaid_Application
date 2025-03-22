@@ -5,7 +5,7 @@ document.getElementById("logoutBtn").addEventListener("click", adminLogout);
 function loadAdminProfile() {
     const token = sessionStorage.getItem("adminToken");
     if (!token) {
-        alert("❌ Session expired. Please log in again.");
+        // alert("❌ Session expired. Please log in again.");
         window.location.href = "admin-login.html";
         return;
     }
@@ -153,35 +153,47 @@ function showSection(section, link) {
 }
 
 function adminLogout() {
+    event.preventDefault(); // Prevent default link behavior
+    console.log("🔹 Logging out...");
+
+    let logoutScreen = document.getElementById("logoutScreen");
+    logoutScreen.style.display = "flex"; // Show loading screen
+
     const token = sessionStorage.getItem("adminToken");
 
     if (!token) {
-        alert("❌ You are already logged out.");
-        window.location.href = "login.html";
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
         return;
     }
 
     fetch("http://localhost:8083/auth/logout", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         }
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(error => { throw new Error(error); });
+        }
+        return response.text();
+    })
     .then(message => {
-        console.log("✅ Logout Response:", message);
-        alert("✅ Logged out successfully!");
-
-        // ✅ Clear session storage
-        sessionStorage.removeItem("adminToken");
-        sessionStorage.removeItem("adminRole");
-
-        // ✅ Redirect to login page
-        window.location.href = "login.html";
+        console.log("✅ Logout Successful:", message);
+        sessionStorage.removeItem("adminToken"); // ✅ Remove Token
+        sessionStorage.removeItem("adminRole");  // ✅ Remove Role
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // ✅ Redirect to Login Page
     })
     .catch(error => {
         console.error("❌ Logout Error:", error);
-        alert("❌ Failed to logout.");
+        alert("❌ Logout failed: " + error.message);
+        logoutScreen.style.display = "none";
     });
 }

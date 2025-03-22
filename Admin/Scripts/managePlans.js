@@ -9,7 +9,7 @@ function loadPlanSummary() {
     const token = sessionStorage.getItem("adminToken");
 
     if(!token){
-        alert("No session available!");
+        // alert("No session available!");
         window.location.href="login.html";
     }
 
@@ -81,7 +81,7 @@ function populateCategoryPlansTable() {
         tableHead.innerHTML = `
             <tr>
                 <th>Category</th>
-                <th>Plans Available</th>
+                <th>Total Plans</th>
                 <th>Active Subscribers</th>
                 <th>Revenue Generated (₹)</th>
             </tr>
@@ -185,6 +185,8 @@ function populateCategories(categories) {
         let activeClass = index === 0 ? "active" : "";
         let categoryId = `pills-${category.categoryId}`;
 
+        // console.log("Category id: ", category.categoryId);
+
         // Create navigation tab
         navPills.innerHTML += `
             <button class="nav-link ${activeClass}" data-bs-toggle="pill" data-bs-target="#${categoryId}" id="${categoryId}-tab">
@@ -199,6 +201,11 @@ function populateCategories(categories) {
             </div>
         `;
     });
+
+    // setTimeout(() => {
+    //     console.log("Calling sortPlans...");
+    //     sortPlans("asc"); // or "desc" based on default sorting order
+    // }, 500);
 
     console.log("✅ Categories populated successfully.");
 }
@@ -239,13 +246,30 @@ const ottIcons = {
 
 // Function to create the OTT benefit section with expandable details
 function getOttIcons(benefits, validity) {
-    if (!benefits || !benefits.OTT) return ""; // No benefits, return empty
+    // console.log("OTT Benefits:", benefits);
 
-    let icons = benefits.OTT.map(ott => {
-        const iconPath = ottIcons[ott] || "";
-        return iconPath ? `<img src="${iconPath}" alt="${ott}" class="ott-icon mx-2" width="30px">` : ott;
+    if (!benefits || !Array.isArray(benefits)) return ""; // Ensure benefits is an array
+
+    let icons = benefits.map(benefit => {
+        let ottName = ""; 
+
+        // Case 1: If benefit is a string (direct OTT name)
+        if (typeof benefit === "string") {
+            ottName = benefit;
+        } 
+        // Case 2: If benefit is an object containing OTT
+        else if (typeof benefit === "object" && benefit.OTT) {
+            ottName = benefit.OTT;
+        }
+
+        console.log("Processed OTT:", ottName);
+
+        const iconPath = ottIcons[ottName] || ""; // Get corresponding icon
+
+        return iconPath ? `<img src="${iconPath}" alt="${ottName}" class="ott-icon mx-2" width="30px">` : ottName;
     }).join("");
 
+    if(icons){
     return `
         <div class="col d-flex flex-column align-items-center">
             <div class="d-flex flex-row align-items-center ott-icons">
@@ -254,24 +278,41 @@ function getOttIcons(benefits, validity) {
             </div>
             <p class="text-muted small mt-1">Benefits</p>
         </div>`;
+    }
+    else{
+        return `
+        `
+    }
 }
 
-/// Function to show the benefits popup in a structured format
+
+// Function to show the benefits popup in a structured format
 function openBenefitsPopup(element, benefits, validity) {
     let popup = document.getElementById("benefitsModal");
     let contentDiv = document.getElementById("benefitsContent");
 
-    if (!benefits || !benefits.OTT) return;
+    if (!benefits || !Array.isArray(benefits)) return; // Ensure benefits is an array
 
     // Generate each OTT benefit in a separate row
-    let rowsHtml = benefits.OTT.map((ott, index) => {
-        const iconPath = ottIcons[ott] || "";
-        const extraText = benefits.Extras && benefits.Extras[index] ? benefits.Extras[index] : "No extra benefit"; 
+    let rowsHtml = benefits.map(benefit => {
+        let ottName = "";
+
+        // Case 1: If benefit is a string (direct OTT name)
+        if (typeof benefit === "string") {
+            ottName = benefit;
+        } 
+        // Case 2: If benefit is an object containing OTT
+        else if (typeof benefit === "object" && benefit.OTT) {
+            ottName = benefit.OTT;
+        }
+
+        const iconPath = ottIcons[ottName] || "";
+        const extraText = benefit.Extras ? benefit.Extras : "No extra benefit"; 
         
         return `
             <div class="d-flex align-items-center justify-content-between benefit-row">
                 <div class="ott-icon-container">
-                    <img src="${iconPath}" alt="${ott}" class="ott-icon" width="30px">
+                    <img src="${iconPath}" alt="${ottName}" class="ott-icon" width="30px">
                 </div>
                 <p class="benefit-text mb-0">${extraText}</p>
                 <p class="benefit-validity mb-0">Validity: ${validity} Days</p>
@@ -283,25 +324,29 @@ function openBenefitsPopup(element, benefits, validity) {
 
     // Get element position
     let rect = element.getBoundingClientRect();
-    let popupWidth = 300;
+    let popupWidth = popup.offsetWidth || 300; // Default width if not calculated
+    let popupHeight = popup.offsetHeight || 200;
     let screenWidth = window.innerWidth;
     let screenHeight = window.innerHeight;
 
-    let leftPos = window.scrollX + rect.left + rect.width / 2;
-    let topPos = window.scrollY + rect.bottom + 10;
+    // ** Position Modal Below the Arrow **
+    let leftPos = window.scrollX + rect.left + rect.width / 2 - popupWidth / 2;
+    let topPos = window.scrollY + rect.bottom + 8; // 8px margin below the arrow
 
-    // Ensure it stays within viewport bounds
-    if (leftPos + popupWidth > screenWidth) {
-        leftPos = screenWidth - popupWidth - 10;
+    // ** Prevent Overflow (Right & Left) **
+    if (leftPos + popupWidth >= screenWidth) {
+        leftPos = screenWidth - popupWidth - 10; // Shift left
     }
-    if (leftPos < 0) {
-        leftPos = 10;
-    }
-    if (topPos + popup.offsetHeight > screenHeight) {
-        topPos = screenHeight - popup.offsetHeight - 10;
+    if (leftPos < 10) {
+        leftPos = 10; // Shift right
     }
 
-    // Apply position
+    // ** Prevent Overflow (Bottom) - Move Above Arrow if Needed **
+    if (topPos + popupHeight > screenHeight) {
+        topPos = window.scrollY + rect.top + 30; // Move above arrow
+    }
+
+    // ** Apply Position to Popup **
     popup.style.left = `${leftPos}px`;
     popup.style.top = `${topPos}px`;
     popup.style.opacity = "1";
@@ -331,7 +376,6 @@ function toggleBenefits(element, benefits, validity) {
     }
 }
 
-
 // Close popup if user clicks outside
 document.addEventListener("click", function (event) {
     let popup = document.getElementById("benefitsModal");
@@ -339,6 +383,7 @@ document.addEventListener("click", function (event) {
         closeBenefitsPopup();
     }
 });
+
 
 // **Create Plan Cards**
 function createPlanCard(plan) {
@@ -349,10 +394,12 @@ function createPlanCard(plan) {
         console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
     }
 
-    let benefitsHtml = benefits.OTT ? getOttIcons(benefits, plan.validityDays) : "";
+    // console.log("OTTs: ", benefits.OTT);
+
+    let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
 
     return `
-        <div class="feature-card card p-3 mt-4" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" border-radius="10px">
+        <div class="feature-card card p-3 mt-4 plan-item" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" data-category="${plan.categoryId}" border-radius="10px">
                 <div class="card-body">
                     <div class="row first-row">
                         <p class="price text-center fw-bold fs-4">₹${plan.price}</p>
@@ -421,6 +468,63 @@ function populatePlans(plans) {
 }
 
 
+// 🔍 Search Plans by Price, Data, SMS, or Calls
+function searchPlans() {
+    let query = document.getElementById("searchInput").value.toLowerCase();
+
+    document.querySelectorAll(".plan-item").forEach(plan => {
+        let price = plan.getAttribute("data-price").toLowerCase();
+        let data = plan.getAttribute("data-data").toLowerCase();
+        let sms = plan.getAttribute("data-sms").toLowerCase();
+        let calls = plan.getAttribute("data-calls").toLowerCase();
+
+        if (price.includes(query) || data.includes(query) || sms.includes(query) || calls.includes(query)) {
+            plan.style.display = "block";
+        } else {
+            plan.style.display = "none";
+        }
+    });
+}
+
+// 🔽 Sort Plans by Price
+function sortPlans(order) {
+    let plansArray = Array.from(document.querySelectorAll(".plan-item"));
+    // console.log("plansArray: ", plansArray);
+
+    plansArray.sort((a, b) => {
+        let priceA = parseInt(a.getAttribute("data-price").replace("₹", ""));
+        let priceB = parseInt(b.getAttribute("data-price").replace("₹", ""));
+        return order === "asc" ? priceA - priceB : priceB - priceA;
+    });
+
+    // Reorder plans in the DOM
+    plansArray.forEach(plan => {
+        let categoryId = plan.getAttribute("data-category");
+    
+        // ✅ Skip if categoryId is 0
+        if (categoryId === "0") {
+            console.warn(`⚠️ Skipping plan with category ID 0`);
+            return; // Skip this iteration
+        }
+    
+        let targetDiv = document.getElementById(`pills-${categoryId}`);
+    
+        if (!targetDiv) {
+            console.error(`❌ Element with ID pills-${categoryId} not found, skipping...`);
+            return; // Skip this iteration
+        }
+    
+        let planContainer = targetDiv.querySelector(".row");
+        if (!planContainer) {
+            console.error(`❌ Row container missing inside #pills-${categoryId}, skipping...`);
+            return; // Skip this iteration
+        }
+    
+        planContainer.appendChild(plan);
+    });
+    
+}
+
 
 // **Show Plan Details in Modal**
 function showPlanDetails(planId) {
@@ -432,31 +536,48 @@ function showPlanDetails(planId) {
             document.getElementById('modalSms').textContent = `SMS: ${plan.sms}`;
             document.getElementById('modalCalls').textContent = `Calls: ${plan.calls}`;
 
-            // Parse additional benefits JSON
-            let benefits = {};
+            // ✅ Parse and extract OTT benefits correctly
+            let benefits = [];
             try {
-                benefits = JSON.parse(plan.additionalBenefits || "{}");
+                const parsedBenefits = JSON.parse(plan.additionalBenefits || "[]"); // Ensure it's an array or object
+                benefits = Array.isArray(parsedBenefits) ? parsedBenefits : parsedBenefits.OTT || [];
             } catch (e) {
                 console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
             }
 
-            // Generate OTT Benefits HTML
+            console.log("Extracted OTT Benefits:", benefits);
+
+            // ✅ Generate OTT Icons and Extras Text
             let benefitsHtml = "";
-            if (benefits.OTT) {
-                benefitsHtml = benefits.OTT.map(ott => {
-                    const iconPath = ottIcons[ott] || ""; // Get icon path
-                    return iconPath 
-                        ? `<div class="d-flex align-items-center">
-                               <img src="${iconPath}" alt="${ott}" class="ott-icon me-2" width="20px">
-                               <span>${ott}</span>
-                           </div>` 
-                        : `<p>Benefits: ${ott}</p>`; // Fallback if no icon
+            if (benefits.length > 0) {
+                benefitsHtml = benefits.map(benefit => {
+                    let ottName = "";
+                    let extraText = "";
+
+                    // 🔹 Handle Case 1: Array of Strings
+                    if (typeof benefit === "string") {
+                        ottName = benefit;
+                    } 
+                    // 🔹 Handle Case 2: Array of Objects
+                    else if (typeof benefit === "object" && benefit.OTT) {
+                        ottName = benefit.OTT;
+                        extraText = benefit.Extras ? `<span class="text-muted small">(${benefit.Extras})</span>` : "";
+                    }
+
+                    const iconPath = ottIcons[ottName] || ""; // Get corresponding icon
+
+                    return iconPath
+                        ? `<div class="d-flex align-items-center my-1">
+                               <img src="${iconPath}" alt="${ottName}" class="ott-icon me-2" width="30px">
+                               <span>${ottName}</span> ${extraText}
+                           </div>`
+                        : `<p>${ottName} ${extraText}</p>`; // Fallback if no icon found
                 }).join("");
             } else {
                 benefitsHtml = "<p>No OTT benefits</p>";
             }
 
-            document.getElementById("modalBenefits").innerHTML =`Benefits:  ${benefitsHtml}`;
+            document.getElementById("modalBenefits").innerHTML = benefitsHtml;
 
             fetch(`http://localhost:8083/api/categories/${plan.categoryId}`)
                 .then(response => response.json())
@@ -549,13 +670,44 @@ $('#addPlanButton').on('click', function () {
 // Function to get selected OTT benefits as JSON
 function getSelectedOTT() {
     let selectedOTTs = [];
+    let extras = [];
+
     document.querySelectorAll("#ottCheckboxes input[type='checkbox']:checked").forEach(checkbox => {
-        selectedOTTs.push(checkbox.value);
+        let ottName = checkbox.value;
+        let extraBenefitsInput = checkbox.parentElement.querySelector(".extra-benefit");
+        let extraBenefit = extraBenefitsInput ? extraBenefitsInput.value.trim() : "";
+
+        let ottObject = { "OTT": ottName };
+        if (extraBenefit) {
+            ottObject.Extras = extraBenefit;
+        }
+        selectedOTTs.push(ottObject);
     });
 
-    // Construct JSON structure
-    return selectedOTTs.length > 0 ? JSON.stringify({ "OTT": selectedOTTs }) : "{}";
+
+    // Construct JSON with OTT and Extras
+    return JSON.stringify({ "OTT": selectedOTTs, "Extras": extras });
 }
+
+// ✅ Show text area when OTT is selected
+document.querySelectorAll(".ott-checkbox").forEach(checkbox => {
+    checkbox.addEventListener("change", function () {
+        let extraBenefitInput = this.parentElement.querySelector(".extra-benefit");
+        if (this.checked) {
+            if (!extraBenefitInput) {
+                extraBenefitInput = document.createElement("input");
+                extraBenefitInput.type = "text";
+                extraBenefitInput.className = "form-control extra-benefit mt-1";
+                extraBenefitInput.placeholder = "Enter extra benefits";
+                this.parentElement.appendChild(extraBenefitInput);
+            }
+        } else {
+            if (extraBenefitInput) {
+                extraBenefitInput.remove();
+            }
+        }
+    });
+});
 
 
 // ✅ Add a new plan
@@ -588,6 +740,8 @@ document.getElementById("addPlanForm").addEventListener("submit", function (even
     .then(() => {
         $('#addPlanModal').modal('hide');
 
+        const planForm = document.getElementById("addPlanForm");
+
         // ✅ Clear form fields
         planForm.reset(); // Reset all input fields
 
@@ -596,12 +750,26 @@ document.getElementById("addPlanForm").addEventListener("submit", function (even
             checkbox.checked = false;
         });
 
+         // ✅ Hide all extra benefit text areas
+         document.querySelectorAll(".ott-extra").forEach(textarea => {
+            textarea.classList.add("hidden");
+            textarea.value = "";
+        });
+
          // 🔥 Clear existing plans to prevent duplication
          document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
 
         fetchPlans();
+
+        $('#successModal').modal('show');
+
     })
-    .catch(error => console.error("❌ Error adding plan:", error));
+    .catch(error => {
+        console.error("❌ Error adding plan:", error);
+
+        // ❌ Show error modal
+        $('#errorModal').modal('show');
+    });
 });
 
 // ✅ Edit a plan
@@ -661,39 +829,74 @@ document.getElementById("updatePlanForm").addEventListener("submit", function (e
 
         // 🔥 Clear existing plans to prevent duplication
         document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
-        fetchPlans();
+
+        $('#editSuccessModal').modal('show');
+
+        fetchCategories();
+
     })
     .catch(error => console.error("❌ Error updating plan:", error));
 });
 
 function deletePlan(planId) {
-    if (confirm("Are you sure you want to deactivate this plan?")) {
-        fetch(`http://localhost:8083/api/plans/${planId}/status`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" }
-        })
-        .then(() => {
-            console.log("Plan made inactive successfully");
-            fetchPlans(); // ✅ Refresh plan list
-            document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
-        })
-        .catch(error => console.error("❌ Error updating plan status:", error));
-    }
+    // Store planId in a global variable for confirmation
+    window.planToDelete = planId;
+
+    // Show the confirmation modal
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+    confirmModal.show();
 }
+
+// Handle "Yes, Deactivate" button click
+document.getElementById("confirmDeactivateBtn").addEventListener("click", function () {
+    if (!window.planToDelete) return;
+
+    fetch(`http://localhost:8083/api/plans/${window.planToDelete}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(() => {
+        console.log("Plan made inactive successfully");
+
+        // Close modal
+        const confirmModal = bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal"));
+        confirmModal.hide();
+
+        // ✅ Refresh plan list
+        fetchPlans(); 
+
+        // ✅ Clear existing plans to prevent duplication
+        document.querySelectorAll(".tab-pane .row").forEach(container => container.innerHTML = "");
+
+        // Clear global variable
+        window.planToDelete = null;
+    })
+    .catch(error => console.error("❌ Error updating plan status:", error));
+});
+
 
 
 document.getElementById("deleteCategoryBtn").addEventListener("click", () => {
     const categoryId = document.getElementById("categorySelect").value;
+    
     if (!categoryId) {
-        alert("Please select a category!");
+        alert("⚠ Please select a category!");
         return;
     }
 
-    if (!confirm("⚠ Are you sure you want to delete this category? All associated plans will be set to inactive.")) {
-        return;
-    }
+    // Store categoryId globally for confirmation action
+    window.categoryToDelete = categoryId;
 
-    fetch(`http://localhost:8083/api/categories/${categoryId}`, {
+    // Show the delete confirmation modal
+    const confirmModal = new bootstrap.Modal(document.getElementById("confirmDeleteCategoryModal"));
+    confirmModal.show();
+});
+
+// Handle "Yes, Delete" button click
+document.getElementById("confirmDeleteCategoryBtn").addEventListener("click", () => {
+    if (!window.categoryToDelete) return;
+
+    fetch(`http://localhost:8083/api/categories/${window.categoryToDelete}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
     })
@@ -702,15 +905,25 @@ document.getElementById("deleteCategoryBtn").addEventListener("click", () => {
         return response.text();
     })
     .then(data => {
-        alert("✅ Category deleted successfully! Plans have been set to inactive.");
+        console.log("✅ Category deleted successfully");
 
-        $('#deleteCategoryModal').modal('hide');
+        // Close the modal after deletion
+        const confirmModal = bootstrap.Modal.getInstance(document.getElementById("confirmDeleteCategoryModal"));
+        confirmModal.hide();
 
-        fetchCategories(); // Refresh categories
-        fetchPlans(); // Refresh plans list
+        const modal = bootstrap.Modal.getInstance(document.getElementById("deleteCategoryModal"));
+        if (modal) modal.hide();
+        
+        // Refresh categories and plans
+        fetchCategories();
+        fetchPlans();
+
+        // Clear global variable
+        window.categoryToDelete = null;
     })
     .catch(error => console.error("❌ Error deleting category:", error));
-}); 
+});
+
 
 // **Add Category Button Click**
 $('#addCategoryButton').on('click', function () {
@@ -789,7 +1002,7 @@ function renderRevenueChart(categoryRevenue) {
             datasets: [{
                 label: "Total Revenue (₹)",
                 data: data,
-                backgroundColor: ["#9C27B0", "#FF6384", "#FFCE56", "#4CAF50","#007BFF"],
+                backgroundColor: ["#007BFF","#9C27B0", "#FF6384", "#FFCE56", "#4CAF50"],
                 borderWidth: 1,
             }]
         },
@@ -819,7 +1032,7 @@ function renderSubscriptionsChart(categorySubscriptions) {
             datasets: [{
                 label: "Total Subscriptions",
                 data: data,
-                backgroundColor: ["#9C27B0", "#FF6384", "#FFCE56", "#4CAF50","#007BFF"],
+                backgroundColor: ["#007BFF","#9C27B0", "#FF6384", "#FFCE56", "#4CAF50"],
                 borderWidth: 1,
                 hoverBackgroundColor: "#4da3ff"
             }]
@@ -854,9 +1067,11 @@ function logout() {
     const token = sessionStorage.getItem("adminToken");
 
     if (!token) {
-        alert("❌ No active session found.");
-        logoutScreen.style.display = "none";
-        window.location.href = "login.html";
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
         return;
     }
 
@@ -876,9 +1091,10 @@ function logout() {
         console.log("✅ Logout Successful:", message);
         sessionStorage.removeItem("adminToken"); // ✅ Remove Token
         sessionStorage.removeItem("adminRole");  // ✅ Remove Role
-        logoutScreen.style.display = "none";
-        alert("✅ Successfully logged out!");
-        window.location.href = "login.html"; // ✅ Redirect to Login Page
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // ✅ Redirect to Login Page
     })
     .catch(error => {
         console.error("❌ Logout Error:", error);

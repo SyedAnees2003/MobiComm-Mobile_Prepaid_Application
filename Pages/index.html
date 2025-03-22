@@ -52,13 +52,8 @@
                 </div>
                 <h1 class="display-4 font-weight-bold">Stay Connected, Always</h1>
                 <p class="mt-4 lead">Recharge your prepaid mobile in seconds with our fast, secure, and reliable service. Enjoy the best plans and exclusive offers tailored just for you.</p>
-                <button id="explorePlans" class="btn btn-outline-light mt-4">Explore Plans</button>
+                <button id="explorePlans" class="btn btn-outline-light mt-4 gold-fill-btn">Explore Plans</button>
             </div>
-        <!-- <div class="col-md-6 mt-4 mt-md-0 d-flex justify-content-center hidden-on-small">
-        <div class="position-relative">
-        <img alt="Mobile recharge illustration" class="img-fluid rounded-lg shadow-lg" src="Assets/freepik__retouch.png"/>
-        </div>
-        </div> -->
         </div>
     </div>
 </header>        
@@ -90,34 +85,11 @@
             </div>
             <!-- Plans Carousel -->
             <div class="col-md-6 mb-4">
-                <div class="bg-white p-4 rounded-lg shadow-lg h-100">
-                    <h3 class="h4 font-weight-bold text-gray-800 text-center">Prepaid Plans</h3>
-                    <div id="plansCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
-                        <div class="carousel-inner" onclick="window.location.href='prepaidPlans.html'" style="cursor: pointer;">
-                            <div class="carousel-item active mt-lg-3">
-                                <div class="p-4 bg-light rounded-lg">
-                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Unlimited Plans</h3>
-                                    <p class="text-gray-700"><strong>₹299</strong></p>
-                                    <p class="text-gray-700">1GB/Day Data + Unlimited Calls</p>
-                                    <p class="text-gray-700">Valid for 28 Days</p>
-                                </div>
-                            </div>
-                            <div class="carousel-item mt-lg-3">
-                                <div class="p-4 bg-light rounded-lg">
-                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Popular Plan</h3>
-                                    <p class="text-gray-700 font-weight-bold"><strong>₹199</strong></p>
-                                    <p class="text-gray-700">2GB/Day Data + Unlimited Calls</p>
-                                    <p class="text-gray-700">Valid for 28 Days</p>
-                                </div>
-                            </div>
-                            <div class="carousel-item mt-lg-3">
-                                <div class="p-4 bg-light rounded-lg">
-                                    <h3 class="h5 font-weight-bold mb-4 text-gray-800">Yearly Plan</h3>
-                                    <p class="text-gray-700 font-weight-bold"><strong>₹2499</strong></p>
-                                    <p class="text-gray-700">2GB/Day Data + Unlimited Calls</p>
-                                    <p class="text-gray-700">Valid for 365 Days</p>
-                                </div>
-                            </div>
+                <div class="bg-white rounded-lg shadow-lg h-100">
+                    <!-- <h3 class="h4 font-weight-bold text-gray-800 text-center">Prepaid Plans</h3> -->
+                    <div id="plansCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                        <div class="carousel-inner" id="carouselPlansContainer" onclick="window.location.href='prepaidPlans.html'" style="cursor: pointer;">
+                            <!-- Plans will be inserted dynamically here -->
                         </div>
                         <a class="carousel-control-prev" href="#plansCarousel" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -129,7 +101,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
         
         <div class="container hero-section">
@@ -141,7 +113,7 @@
                     <p class="hero-text">
                         Recharge with our mobile prepaid plans for uninterrupted calls, texts, and data. Choose the best plan to stay connected with your loved ones and enjoy the convenience of instant recharges.
                     </p>
-                    <a class="btn btn-primary hero-button" id="hero-recharge" href="#">
+                    <a class="btn btn-primary hero-button mx-5" id="hero-recharge" href="prepaidPlans.html">
                         Recharge Now
                         <i class="fas fa-arrow-right ml-2"></i>
                     </a>
@@ -237,19 +209,19 @@
         <div class="faq-card p-4">
             <h2 class="text-center mb-4">Frequently Asked Questions (FAQs)</h2>
             <div class="faq-item">
-                <div class="fw-bold">What is a prepaid mobile recharge? <span class="faq-icon">+</span></div>
+                <div class="fw-bold-faq">What is a prepaid mobile recharge? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">A prepaid mobile recharge involves adding talk time, data, and/or SMS validity to your mobile number by paying in advance. The services are activated immediately after the recharge is successful.</div>
             </div>
             <div class="faq-item">
-                <div class="fw-bold">How do I perform a prepaid recharge? <span class="faq-icon">+</span></div>
+                <div class="fw-bold-faq">How do I perform a prepaid recharge? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">You can perform a prepaid recharge by selecting your plan and completing the payment process through UPI, debit/credit card, or net banking via our website or app.</div>
             </div>
             <div class="faq-item">
-                <div class="fw-bold">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
+                <div class="fw-bold-faq">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">Yes, you can recharge any mobile operator, including Airtel, Jio, Vodafone Idea, and more. Choose your operator and plan during the recharge process.</div>
             </div>
             <div class="faq-item">
-                <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>
+                <div class="fw-bold-faq">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>
                 <div class="faq-answer">If you run out of balance, you will need to recharge again to continue using the services. You can choose a plan with more talk time, data, or validity based on your needs.</div>
             </div>
         </div>

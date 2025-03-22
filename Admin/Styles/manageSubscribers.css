@@ -144,10 +144,20 @@ tbody tr td {
     background-color: red;
 }
 
-.btn-primary{
+.btn-eye{
     background-color: transparent;
     color: #007bff;
     border-color: #007bff;
+}
+
+.btn-eye:hover{
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.btn-primary:hover{
+    background-color: #fff;
+    color: #007bff;
 }
 
 .btn-danger{

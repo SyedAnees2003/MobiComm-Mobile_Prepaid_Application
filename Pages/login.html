@@ -38,66 +38,90 @@
         </div>
     </header>    
 
+
+    <div id="customToast" class="toast-container">
+        <div class="toast-icon"></div>
+        <div class="toast-message">✅ Login Successful!</div>
+    </div>
+    <div id="customFailToast" class="toast-container">
+        <div class="toast-icon"></div>
+        <div class="toast-message">❌ Login Failed !</div>
+    </div>
+
+    <div id="customVerifyToast" class="toast-container">
+        <div class="toast-icon"></div>
+        <div class="toast-message"></div>
+    </div>
+
     <main class="container mt-5">
         <div class="row">
-            <div class="col-md-6 " id="sidebar-image">
+            <div class="col-md-6" id="sidebar-image" style="height: 600px;">
                 <img alt="Placeholder Image" class="img-fluid" height="400" src="/Assets/LoginSide.jpg"/>
             </div>
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="bg-white p-4 shadow-sm w-100">
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <div class="bg-white p-4 shadow-sm rounded w-100">
                     <h2 class="h3 text-center mb-5">Login</h2>
-                    <form class="d-flex flex-column justify-content-between" style="height: 500px;">
-                        <div>
-                            <label class="form-label" for="mobile">Mob No:</label>
-                            <input class="form-control" id="mobile" placeholder="(hint)" type="text" oninput="validateMobileNumber()"/>
+                    <form class="d-flex flex-column align-items-center justify-content-center" style="height: 450px;">
+                        <!-- Mobile Number Input -->
+                        <div class="w-75 mb-4">
+                            <label class="form-label" for="mobile">Mob Number:</label>
+                            <input class="form-control" id="mobile" placeholder="(hint)" type="text" style="height: 50px;" oninput="validateMobileNumber()"/>
                             <span id="mobileError" class="text-danger" style="display: none;">Please enter a valid 10-digit mobile number.</span>
                         </div>                        
-                        <div class="w-100">
-                            <button id="sendOTPMobile" class="btn btn-primary btn-custom w-100" type="button" disabled>Send OTP</button>
+                        
+                        <!-- Send OTP Button -->
+                        <div class="w-75 mb-4">
+                            <button id="sendOTPMobile" class="btn btn-primary btn-custom w-100" type="button" disabled onclick="sendOTP()">Send OTP</button>
                         </div>
-                        <label for="otp" class="otp-label mb-0">Enter OTP</label>
-                        <div class="otp-container" id="otp">
-                            <input type="text" maxlength="1" class="otp-input" disabled/>
-                            <input type="text" maxlength="1" class="otp-input" disabled/>
-                            <input type="text" maxlength="1" class="otp-input" disabled/>
-                            <input type="text" maxlength="1" class="otp-input" disabled oninput="validateOTP()"/>                        
-                        </div>
-                        <span id="otpError" class="text-danger" style="display: none;">Please enter a valid 4-digit OTP.</span>
-                        <button class="login-btn" id="login-button" disabled>Login</button>
+            
+                        <!-- OTP Input Fields -->
+                        <div id="otpSection" class="w-75" style="display: none;">
 
-                        <div class="d-flex justify-content-between">
-                            <a class="text-primary" href="prepaidPlans.html">Continue as Guest</a>
-                            <a class="text-primary" href="support.html">Need Help?</a>
+                            <label for="otp" class="otp-label mb-0">Enter OTP :</label>
+                                <div class="otp-container mt-3" id="otp">
+                                    <input type="text" maxlength="1" class="otp-input" disabled oninput="moveToNextInput(this)"/>
+                                    <input type="text" maxlength="1" class="otp-input" disabled oninput="moveToNextInput(this)"/>
+                                    <input type="text" maxlength="1" class="otp-input" disabled oninput="moveToNextInput(this)"/>
+                                    <input type="text" maxlength="1" class="otp-input" disabled oninput="validateOTP()"/>
+                                </div>
+                            <span id="otpError" class="text-danger" style="display: none;">Please enter a valid 4-digit OTP.</span>
+                
+                            <!-- Verify OTP Button (Newly Added) -->
+                            <button id="verifyOtpButton" class="btn btn-success w-100 mt-4 mb-4" type="button" disabled onclick="verifyOTP()">Verify OTP</button>
                         </div>
+            
+                        <!-- Login Button -->
+                         <div class="w-75">
+                            <button class="login-btn" id="login-button" disabled>Login</button>
+                
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <a class="text-primary" href="prepaidPlans.html">Continue as Guest</a>
+                                <a class="text-primary" href="support.html">Need Help?</a>
+                            </div>
+                         </div>
                     </form>
                 </div>
-            </div>        
+            </div>                  
         </div>
 
         <!-- OTP Sent Modal -->
-        <div class="modal fade" id="otpSentModal" tabindex="-1" aria-labelledby="otpSentModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="otpSentModalLabel">OTP Sent</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="d-flex flex-column align-items-center">
-                            <i class="fas fa-check-circle text-primary mb-3" style="font-size: 2rem;"></i>
-                            <p>OTP sent successfully</p>
-                            <p>to <span id="otpMobileNumber"></span></p>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
+<div class="modal fade" id="otpSentModal" tabindex="-1" aria-labelledby="otpSentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="otpSentModalLabel">OTP Sent</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-check-circle text-primary mb-3" style="font-size: 2rem;"></i>
+                <p>OTP sent successfully to <span id="otpMobileNumber"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
-
+    </div>
+</div>
 
         <div class="mt-5 bg-white p-4 shadow-sm">
             <h3 class="h5">Featured for You</h3>

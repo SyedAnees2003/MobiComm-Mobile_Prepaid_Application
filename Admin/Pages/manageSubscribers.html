@@ -16,6 +16,9 @@
 
     <!-- Include SweetAlert2 (Add this to your HTML head) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
 
     <title>Manage Subscribers</title>
 
@@ -136,13 +139,13 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title text-primary mx-auto" id="subscriberModalLabel">Subscriber Details</h4>
+                                <h4 class="modal-title text-primary" id="subscriberModalLabel">Subscriber Details</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- 🟢 User Details Section -->
+                                <!-- 🟢 User Details Section
                                 <h5 class="text-center text-primary">User Details</h5>
-                                <hr>
+                                <hr> -->
                                 <p><strong>Name:</strong> <span id="subscriberName"></span></p>
                                 <p><strong>Mobile Number:</strong> <span id="subscriberMobile"></span></p>
                                 <p><strong>Email:</strong> <span id="subscriberEmail"></span></p>
@@ -165,10 +168,11 @@
                 </div>
 
                     <div class="users-container mt-5 bg-white p-4" id="allSubscribers">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="d-flex justify-content-between mb-3">
                                 <div class="h3 text-primary">Subscribers</div>
                             </div>
+                            <div class="d-flex justify-content-between w-100">
                             <ul class="nav nav-pills mb-3" id="userTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="active-users-tab" data-bs-toggle="pill" data-bs-target="#active-users" type="button" role="tab">Active Users</button>
@@ -180,6 +184,30 @@
                                     <button class="nav-link" id="blocked-users-tab" data-bs-toggle="pill" data-bs-target="#blocked-users" type="button" role="tab">Blocked Users</button>
                                 </li>
                             </ul>
+                            <!-- Download Button -->
+                            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#downloadReportModal">
+                                <i class="fas fa-download"></i> Download Report
+                            </button>
+
+                            <!-- Modal for Choosing Report Format -->
+                            <div class="modal fade" id="downloadReportModal" tabindex="-1" aria-labelledby="downloadReportModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-primary">Download Report</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Please choose the format you want to download the report in:</p>
+                                            <div class="d-flex justify-content-around">
+                                                <button class="btn btn-success" onclick="downloadSubscribersReportCSV()">📂 Download as CSV</button>
+                                                <button class="btn btn-danger" onclick="downloadSubscribersReportPDF()">📄 Download as PDF</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                         
                         </div>
             
                             <!-- Tab Content -->
@@ -236,7 +264,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateUserModalLabel">Update User Details</h5>
+                <h5 class="modal-title text-primary" id="updateUserModalLabel">Update User Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -292,6 +320,24 @@
                 <div class="spinner"></div>
             </div>
         </div>
+
+        <!-- Bootstrap Modal for Success/Error -->
+        <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="statusUpdateMessage">
+                        <!-- Message will be inserted dynamically -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
     <!-- Footer -->
 <footer class="bg-dark text-white py-4 footer-container">

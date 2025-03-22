@@ -266,7 +266,7 @@ function saveProfile() {
     })
     .then(message => {
         console.log("✅ Server Response:", message);
-        alert(message); // ✅ Show success message
+        $('#successModal').modal('show');
         fetchUserProfile(mobileNumber);
         toggleEditProfile();
     })

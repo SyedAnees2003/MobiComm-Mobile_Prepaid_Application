@@ -293,10 +293,22 @@ footer li a{
     display: flex;
     justify-content: center;
 }
+.card-footer{
+    background-color: transparent;
+}
+
+.success-animation, .error-animation {
+    font-size: 50px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
 
 /* OTT Benefits Popup */
 .benefits-popup {
-    position: fixed; /* Ensure it floats over all elements */
+    position: absolute; /* Allows it to be positioned dynamically */
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -304,9 +316,6 @@ footer li a{
     display: none;
     min-width: 280px;
     z-index: 10000; /* High value to prevent overlapping */
-    transform: translate(-50%, -50%);
-    top: 50% !important;
-    left: 50%;
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 

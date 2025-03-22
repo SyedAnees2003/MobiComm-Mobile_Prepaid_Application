@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/Admin/Styles/support.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -138,10 +141,27 @@
                             <input type="text" id="searchTicket" class="form-control" placeholder="Search by user or subject">
                         </div>
                         <div class="col-md-3 text-start mt-2">
-                            <button class="btn btn-primary" onclick="downloadCSV()">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadReportModal">
                                 <i class="fas fa-download"></i> Download Report
-                            </button>
+                            </button>                            
                         </div>
+                        <!-- Download Report Modal -->
+                        <div class="modal fade" id="downloadReportModal" tabindex="-1" aria-labelledby="downloadReportModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-primary" id="downloadReportModalLabel">Download Report</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <p>Select the format you want to download:</p>
+                                        <button class="btn btn-success me-2" onclick="downloadCSV(); closeModal()">📂 Download as CSV</button>
+                                        <button class="btn btn-danger" onclick="downloadPDF(); closeModal()">📄 Download as PDF</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <!-- Tab Content -->
                     <div class="tab-content" id="pills-tabContent">
@@ -225,6 +245,10 @@
     </div>
     </section>
 
+    <div id="customToast" class="toast-container hidden">
+        <div class="toast-icon"></div>
+        <div class="toast-message" id="toastMessage"></div>
+    </div>    
     
         <!-- Resolve Confirmation Modal -->
         <div class="modal fade" id="resolveConfirmModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
@@ -342,13 +366,13 @@
             </div>
         </div>
 
-        <div id="logoutScreen" class="logout-overlay" style="display: none;">
-            <div class="logout-box">
-                <p>Logging out...</p>
-                <div class="spinner"></div>
-            </div>
+    </div>
+    <div id="logoutScreen" class="logout-overlay" style="display: none;">
+        <div class="logout-box">
+            <p>Logging out...</p>
+            <div class="spinner"></div>
         </div>
-</div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 footer-container">

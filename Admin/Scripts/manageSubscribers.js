@@ -43,7 +43,7 @@ function fetchNewSubscribers() {
         const newSubscribers = subscribers.filter(user => {
             let createdAt = new Date(user.createdAt);
             let oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Users registered in last 7 days
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 14); // Users registered in last 7 days
             return createdAt >= oneWeekAgo;
         });
 
@@ -246,7 +246,7 @@ function populateSubscribers(subscribers) {
                     <small class="text-muted">${statusBadge}</small>
                     </td>                
                     <td>
-                    <button class="btn btn-primary btn-sm" onclick="viewNewSubscriber('${user.mobileNumber}')">
+                    <button class="btn btn-primary btn-eye btn-sm" onclick="viewNewSubscriber('${user.mobileNumber}')">
                         <i class="fas fa-eye"></i>
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="openUpdateModal('${user.mobileNumber}')">
@@ -411,7 +411,13 @@ document.getElementById("saveUserChanges").addEventListener("click", function ()
         return response.text();  // ✅ Use text to avoid JSON parsing errors
     })
     .then(message => {
-        alert(`✅ ${message}`);
+        // ✅ Set modal title and message dynamically
+        document.getElementById("statusUpdateMessage").innerHTML = `<p class="text-success">${message}</p>`;
+
+        // ✅ Show Bootstrap modal
+        let modal = new bootstrap.Modal(document.getElementById("statusUpdateModal"));
+        modal.show();
+
         $('#updateUserModal').modal('hide');
         fetchSubscribers(); // ✅ Refresh subscriber list
     })
@@ -420,6 +426,102 @@ document.getElementById("saveUserChanges").addEventListener("click", function ()
         alert("❌ Could not update user.");
     });
 });
+
+
+function downloadSubscribersReportCSV() {
+    let csvContent = "";
+    
+    // ✅ Add MobiComm header (Professional Format)
+    csvContent += '"MobiComm Subscriber Report"\n\n'; // Title Row
+    csvContent += "Generated On," + new Date().toLocaleString() + "\n\n"; // Timestamp
+    csvContent += "Name,Mobile,Email,Status,Last Recharge Date\n"; // Headers
+
+    // ✅ Collect Data from all three tables
+    let allSubscribers = [];
+    
+    document.querySelectorAll("#activeUsersTable tr, #inactiveUsersTable tr, #blockedUsersTable tr").forEach(row => {
+        let cells = row.querySelectorAll("td");
+        if (cells.length > 0) {
+            let name = cells[0].textContent.trim();
+            let mobile = cells[1].textContent.trim();
+            let email = cells[2].textContent.trim();
+            let status = cells[3].querySelector("small")?.textContent.trim() || "N/A";
+            let lastRecharge = cells[3].childNodes[0]?.textContent.trim() || "N/A";
+            
+            allSubscribers.push([name, mobile, email, status, lastRecharge]);
+        }
+    });
+
+    // ✅ Append Data to CSV
+    allSubscribers.forEach(row => {
+        csvContent += row.map(value => `"${value}"`).join(",") + "\n";
+    });
+
+    // ✅ Create & Trigger Download
+    let blob = new Blob([csvContent], { type: "text/csv" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "MobiComm_Subscribers_Report.csv";
+    link.click();
+}
+
+function downloadSubscribersReportPDF() {
+    let { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+
+    // ✅ Set Page Title: "MobiComm" in Blue
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 255); // Blue Color
+    doc.setFontSize(20);
+    doc.text("MobiComm", 105, 20, { align: "center" });
+
+    // ✅ Generated Date & Time
+    let dateTime = new Date().toLocaleString();
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Generated On: " + dateTime, 14, 30); // Left Side
+    doc.text("Date: " + new Date().toLocaleDateString(), 165, 30); // Right Side
+
+    // ✅ Table Title Centered
+    doc.setFontSize(14);
+    doc.setTextColor(50, 50, 50);
+    doc.text("Subscribers Report", 105, 40, { align: "center" });
+
+    // ✅ Table Headers
+    let headers = ["Name", "Mobile", "Email", "Status", "Last Recharge"];
+    let data = [];
+
+    // ✅ Collect Data
+    document.querySelectorAll("#activeUsersTable tr, #inactiveUsersTable tr, #blockedUsersTable tr").forEach(row => {
+        let cells = row.querySelectorAll("td");
+        if (cells.length > 0) {
+            let name = cells[0].textContent.trim();
+            let mobile = cells[1].textContent.trim();
+            let email = cells[2].textContent.trim();
+            let status = cells[3].querySelector("small")?.textContent.trim() || "N/A";
+            let lastRecharge = cells[3].childNodes[0]?.textContent.trim() || "N/A";
+
+            data.push([name, mobile, email, status, lastRecharge]);
+        }
+    });
+
+    // ✅ Add Table with Margins
+    doc.autoTable({
+        startY: 50,
+        margin: { left: 14, right: 14 }, // Space on both sides
+        head: [headers],
+        body: data,
+        theme: "grid",
+        styles: { fontSize: 10 }
+    });
+
+    // ✅ Save PDF
+    doc.save("MobiComm_Subscribers_Report.pdf");
+
+    // ✅ Close modal after download
+    bootstrap.Modal.getInstance(document.getElementById('downloadReportModal')).hide();
+}
+
 
 
 // ✅ Admin Logout Function (With API Integration)
@@ -433,9 +535,11 @@ function logout() {
     const token = sessionStorage.getItem("adminToken");
 
     if (!token) {
-        alert("❌ No active session found.");
-        logoutScreen.style.display = "none";
-        window.location.href = "login.html";
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
         return;
     }
 
@@ -455,8 +559,10 @@ function logout() {
         console.log("✅ Logout Successful:", message);
         sessionStorage.removeItem("adminToken"); // ✅ Remove Token
         sessionStorage.removeItem("adminRole");  // ✅ Remove Role
-        logoutScreen.style.display = "none";
-        window.location.href = "login.html"; // ✅ Redirect to Login Page
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // ✅ Redirect to Login Page
     })
     .catch(error => {
         console.error("❌ Logout Error:", error);

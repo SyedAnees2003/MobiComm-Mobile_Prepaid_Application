@@ -12,14 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     showSlide(currentSlide);
 });
 
-$(document).ready(function () {
-    $('#plansCarousel').carousel({
-        interval: 3000, // 3 seconds per slide
-        ride: 'carousel',
-        pause: 'hover', // Pause on hover
-        wrap: true // Loop back to first slide after last
-    });
-});
+// $(document).ready(function () {
+//     $('#plansCarousel').carousel({
+//         interval: 3000, // 3 seconds per slide
+//         ride: 'carousel',
+//         pause: 'hover', // Pause on hover
+//         wrap: true // Loop back to first slide after last
+//     });
+// });
 
 document.getElementById("Recharge").addEventListener("click", function() {
     window.location.href = "login.html";  // Change this to your login page URL
@@ -103,6 +103,97 @@ document.getElementById("hero-recharge").addEventListener("click", function(){
     event.preventDefault();
     window.location.href='prepaidPlans.html';
 });
+
+
+document.addEventListener("DOMContentLoaded", fetchCategories);
+
+function fetchCategories() {
+    fetch("http://localhost:8083/api/categories")
+        .then(response => response.json())
+        .then(categories => {
+            let categoryIds = {};
+
+            categories.forEach(category => {
+                categoryIds[category.categoryName.toLowerCase()] = category.categoryId;
+            });
+
+            // Fetch plans from selected categories
+            const categoriesToShow = ["popular", "unlimited", "5g plans"];
+            categoriesToShow.forEach(category => {
+                if (categoryIds[category]) {
+                    fetchPlansByCategory(categoryIds[category]);
+                }
+            });
+        })
+        .catch(error => console.error("Error fetching categories:", error));
+}
+
+function fetchPlansByCategory(categoryId) {
+    fetch(`http://localhost:8083/api/plans/${categoryId}`)
+        .then(response => response.json())
+        .then(plans => {
+            if (plans.length > 0) {
+                populateCarousel(plans[0]); // Add only the first plan from each category
+            }
+        })
+        .catch(error => console.error("Error fetching plans:", error));
+}
+
+function populateCarousel(plan) {
+    const carouselContainer = document.getElementById("carouselPlansContainer");
+
+    const isActive = carouselContainer.children.length === 0 ? "active" : "";
+
+    const planHTML = `
+    <div class="carousel-item ${isActive}">
+    <div class="p-4 shadow-lg rounded-lg position-relative bg-white">
+        <!-- Centered heading and price with blue accent -->
+        <div class="text-center mb-3">
+            <h3 class="h5 fw-bold text-primary mb-2">${plan.planName}</h3>
+        </div>
+                
+        <!-- Plan details with better alignment and blue accents -->
+        <div class="plan-details mb-2">
+        <div class="d-flex align-items-center justify-content-center mb-3">
+            <span class="badge bg-warning text-dark px-5 py-3 rounded-pill fw-bold" style="font-size: 1.2rem;">₹${plan.price}</span>
+        </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-container me-3 text-primary">
+                    <i class="fas fa-wifi fa-lg"></i>
+                </div>
+                <p class="mb-0 text-secondary small"><span class="text-dark">${plan.data || "Unlimited Data"}</span></p>
+            </div>
+
+            
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-container me-3 text-primary">
+                    <i class="fas fa-phone-alt fa-lg"></i>
+                </div>
+                <p class="mb-0 text-dark small">${plan.calls}</p>
+            </div>
+            
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-container me-3 text-primary">
+                    <i class="far fa-calendar-alt fa-lg"></i>
+                </div>
+                <p class="mb-0 text-dark small">Validity: <span class="text-dark">${plan.validityDays} Days</span></p>
+            </div>
+        </div>
+        
+        <!-- Centered button with improved styling -->
+        <div class="text-center mt-4">
+            <button class="btn btn-primary px-3 py-2 rounded-pill" onclick="window.location.href='prepaidPlans.html'">
+                View Details <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+        </div>
+    </div>
+</div>
+`;
+
+    carouselContainer.innerHTML += planHTML;
+}
+
+
 // Get the button
 var scrollToTopBtn = document.getElementById("scrollToTopBtn");
 

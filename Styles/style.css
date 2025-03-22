@@ -94,6 +94,55 @@ header::before {
     }
 }
 
+.gold-fill-btn {
+    position: relative;
+    border: 2px solid #fff;
+    color: #fff;
+    background-color: transparent;
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.4s ease;
+  }
+  
+  .gold-fill-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background:  #ffb729;
+    transition: width 0.4s ease;
+    z-index: -1;
+  }
+  
+  .gold-fill-btn:hover {
+    color: #0e0d0d;
+    border-color: transparent;
+  }
+  
+  .gold-fill-btn:hover::before {
+    width: 100%;
+  }
+  
+  /* Optional: add this for a smoother transition on the border */
+  .gold-fill-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #fdb833;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -2;
+  }
+  
+  .gold-fill-btn:hover::after {
+    opacity: 1;
+  }
+
 #plansCarousel {
     position: relative;
 }
@@ -124,6 +173,19 @@ header::before {
 
 .carousel-item {
     transition: transform 0.8s ease-in-out;
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+/* Fixed width for icons */
+.icon-container {
+    width: 24px;
+    display: flex;
+    justify-content: center;
 }
 
 /* #plansCarousel .carousel-item .bg-light:hover {
@@ -167,7 +229,7 @@ header::before {
     margin-bottom: 15px;
 }
 
-.fw-bold {
+.fw-bold-faq {
     font-size: 18px; /* Larger font size for better readability */
     font-weight: 100 !important;
     color: black;  /* Text color remains black */

@@ -113,7 +113,7 @@
                       <thead>
                           <tr>
                               <th>Category</th>
-                              <th>Plans Available</th>
+                              <th>Total Plans</th>
                               <th>Active Subscribers</th>
                               <th>Revenue Generated (₹)</th>
                           </tr>
@@ -158,23 +158,37 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div class="h3 text-primary">Plan categories</div>
                         </div>
-                
+
+                        
                         <!-- NAV PILLS FOR ACTIVE & INACTIVE -->
                         <div class="nav nav-pills mb-3" id="plan-status-tab" role="tablist">
                             <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#active-plans">Active Plans</button>
                             <button class="nav-link" data-bs-toggle="pill" data-bs-target="#inactive-plans">Inactive Plans</button>
                         </div>
-                
+                        
+                        <div class="row g-2 align-items-center justify-content-between mb-4">
+                            <div class="col-md-6 w-25">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search Plan" onkeyup="searchPlans()">
+                            </div>
+                            <div class="col-md-6 w-25">
+                                <select id="sortSelect" class="form-select" onchange="sortPlans(this.value)">
+                                    <option value="" disabled selected>Sort by Price</option>
+                                    <option value="asc">Lowest to Highest</option>
+                                    <option value="desc">Highest to Lowest</option>
+                                </select>
+                            </div>
+                        </div>
                         
                         <div class="tab-content">
                             <!-- ACTIVE PLANS TAB -->
                             <div class="tab-pane fade show active" id="active-plans" role="tabpanel">
                                 <div class="d-flex justify-content-end mb-3 w-100">
                                     <button class="btn btn-success" id="addCategoryButton">Add Category +</button>
-                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" onclick="loadCategories()">
+                                    <button class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" onclick="loadCategories()">
                                         🗑 Delete Category
                                     </button>
                                 </div>
+                                
                                 <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-popular">Popular</button>
                                     <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-data">Data</button>
@@ -226,6 +240,10 @@
                 <div class="charts-section bg-white p-2 mt-5 row d-flex justify-content-center align-items-center">
                     <div class="d-flex justify-content-between mb-3 p-4">
                         <div class="h3 text-primary">Plan Analysis</div>
+                    </div>
+                    <div class="d-flex justify-content-around">
+                        <h5 class="mb-5 text-secondary">Revenue Analysis</h5>
+                        <h5 class="mb-5 text-secondary">Subscription Analysis</h5>
                     </div>
                     <div class="chart-container col-lg-6" style="width: 40%; margin: 20px auto;">
                         <canvas id="revenueChart"></canvas>
@@ -354,13 +372,21 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">OTT Benefits</label>
-                                        <div id="ottCheckboxes">
-                                            <label><input type="checkbox" value="Netflix"> Netflix</label><br>
-                                            <label><input type="checkbox" value="Amazon Prime"> Amazon Prime</label><br>
-                                            <label><input type="checkbox" value="Disney+ Hotstar"> Disney+ Hotstar</label><br>
-                                            <label><input type="checkbox" value="Sony Liv"> Sony Liv</label><br>
+                                        <div id="ottCheckboxes" class="d-flex flex-column g-4">
+                                            <label>
+                                                <input type="checkbox" value="Netflix" class="ott-checkbox"> Netflix
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Amazon Prime" class="ott-checkbox"> Amazon Prime
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Disney+ Hotstar" class="ott-checkbox"> Disney+ Hotstar
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Sony Liv" class="ott-checkbox"> Sony Liv
+                                            </label>
                                         </div>
-                                    </div>
+                                    </div>                                    
                                     <div class="mb-3">
                                         <label for="planStatus" class="form-label">Status</label>
                                         <select class="form-select" id="planStatus">
@@ -416,11 +442,19 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">OTT Benefits</label>
-                                        <div id="ottCheckboxes">
-                                            <label><input type="checkbox" value="Netflix"> Netflix</label><br>
-                                            <label><input type="checkbox" value="Amazon Prime"> Amazon Prime</label><br>
-                                            <label><input type="checkbox" value="Disney+ Hotstar"> Disney+ Hotstar</label><br>
-                                            <label><input type="checkbox" value="Sony Liv"> Sony Liv</label><br>
+                                        <div id="ottCheckboxes" class="d-flex flex-column g-4">
+                                            <label>
+                                                <input type="checkbox" value="Netflix" class="ott-checkbox"> Netflix
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Amazon Prime" class="ott-checkbox"> Amazon Prime
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Disney+ Hotstar" class="ott-checkbox"> Disney+ Hotstar
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="Sony Liv" class="ott-checkbox"> Sony Liv
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -436,10 +470,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                
 
                 <!-- Confirmation Modal -->
                 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
@@ -464,6 +494,97 @@
         </div>
 
         </main>
+        <!-- Modern Plan Deactivation Confirmation Modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-3">
+                    <!-- ❌ Warning Icon -->
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title w-100">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                        </h5>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <h4>Are you sure?</h4>
+                        <p>You are about to deactivate this plan. This action cannot be undone.</p>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeactivateBtn">Yes, Deactivate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ Success Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close">x</button>
+
+                    <div class="success-animation">
+                        ✅ <!-- Replace with an animated checkmark -->
+                    </div>
+                    <h5 class="mt-3 text-success">Plan Successfully Added!</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ Edit Modal -->
+        <div class="modal fade" id="editSuccessModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <div class="success-animation">
+                        ✅ <!-- Replace with an animated checkmark -->
+                    </div>
+                    <h5 class="mt-3 text-success">Plan Updated Successfully!</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Delete Category Confirmation Modal -->
+        <div class="modal fade" id="confirmDeleteCategoryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-3">
+                    <!-- ❌ Warning Icon -->
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title w-100">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                        </h5>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <h4>Are you sure?</h4>
+                        <p>Deleting this category will set all associated plans to inactive. This action cannot be undone.</p>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteCategoryBtn">Yes, Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ❌ Error Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="error-animation">
+                        ❌ <!-- Replace with an animated error cross -->
+                    </div>
+                    <h5 class="mt-3 text-danger">Error Adding Plan!</h5>
+                </div>
+            </div>
+        </div>
         <div id="logoutScreen" class="logout-overlay" style="display: none;">
             <div class="logout-box">
                 <p>Logging out...</p>

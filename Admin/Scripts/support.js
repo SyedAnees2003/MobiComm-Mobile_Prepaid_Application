@@ -335,56 +335,65 @@ $(document).on("click", "#confirmResolve", async function () {
         $("#composeMessageSection").toggle(); // Toggle visibility of the compose message section
     });
 
-    // Event listener for Send Message button
-    $("#sendMessage").on("click", function () {
-        let message = $("#messageInput").val();
-        let recipientMobile = $("#messageTo").val(); // This should match the ticket.mobile field
+    document.getElementById("sendMessage").addEventListener("click", function() {
+        let mobile = document.getElementById("messageTo").value;
+        let message = document.getElementById("messageInput").value.trim();
     
-        if (message.trim() === "") {
-            alert("Please enter a message.");
+        if (!mobile) {
+            alert("User mobile number is missing!");
             return;
         }
     
-        if (message.length > 500) {
-            alert("Message cannot exceed 500 characters.");
+        if (message.length === 0) {
+            alert("Message cannot be empty!");
             return;
         }
     
-        // Find the user in the users array using the mobile number
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        let user = users.find(u => u.mobile === recipientMobile);
+        let requestBody = {
+            mobile: mobile,
+            message: message
+        };
     
-        if (user) {
-            // Create a new notification
-            let newNotification = {
-                id: `N${Date.now()}`, // Generate a unique ID
-                text: `Support Response: ${message}`,
-                seen: false,
-                link: "notifications.html",
-                timestamp: new Date().toISOString() // Add timestamp
-            };
-    
-            // Add the notification to the user's notifications
-            let notificationKey = `notifications_${user.mobile}`; // Unique key for user-specific notifications
-            let notifications = JSON.parse(localStorage.getItem(notificationKey)) || [];
-            notifications.push(newNotification);
-    
-            // Save the updated notifications back to localStorage
-            localStorage.setItem(notificationKey, JSON.stringify(notifications));
-    
-            // Log the message (for now)
-            console.log(`Message sent to ${user.name} (${user.mobile}): ${message}`);
-    
-            // Show success toast
-            toast.show();
-    
-            // Clear the message input and hide the compose section
-            $("#messageInput").val("");
-            $("#composeMessageSection").hide();
-        } else {
-            alert("User not found.");
-        }
+        fetch("http://localhost:8083/api/notifications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        })
+        .then(response => response.text())
+        .then(data => {
+            showToast("✅ Notification sent successfully!", "success");
+            document.getElementById("messageInput").value = ""; // Clear input
+        })
+        .catch(error => console.error("Error sending message:", error));
     });
+    
+
+    function showToast(message, type = "success") {
+        let toast = document.getElementById("customToast");
+        let toastMessage = document.getElementById("toastMessage");
+    
+        // Set the message
+        toastMessage.innerText = message;
+    
+        // Set class based on type (success, error, etc.)
+        toast.classList.remove("hidden", "error", "success");
+        toast.classList.add(type);
+    
+        // Show toast
+        toast.style.opacity = "1";
+        toast.style.bottom = "20px";
+    
+        // Hide after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => {
+                toast.classList.add("hidden");
+            }, 500);
+        }, 3000);
+    }
+
 
     // Function to generate Support Status Chart
 function generateSupportStatusChart(tickets) {
@@ -478,6 +487,70 @@ function downloadCSV() {
     link.download = "support_requests_report.csv";
     link.click();
 }
+
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+    
+    // ✅ Add Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.setTextColor(0, 0, 255); // Blue color
+    doc.text("MobiComm", 105, 20, { align: "center" });
+
+    // ✅ Add Date & Time
+    let currentDate = new Date().toLocaleDateString();
+    let currentTime = new Date().toLocaleTimeString();
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0); // Black color
+    doc.text(`Date: ${currentDate}`, 15, 25);
+    doc.text(`Time: ${currentTime}`, 160, 25);
+
+    // ✅ Table Title
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Support Requests Report", 15, 40);
+
+    // ✅ Table Data Collection
+    let data = [];
+    let tables = document.querySelectorAll(".tab-content table");
+
+    tables.forEach((table) => {
+        let rows = table.querySelectorAll("tr");
+        if (rows.length <= 1) return;
+
+        // Headers
+        let headers = [];
+        rows[0].querySelectorAll("th").forEach(header => headers.push(header.innerText));
+
+        // Rows
+        let tableData = [];
+        for (let i = 1; i < rows.length; i++) {
+            let rowData = [];
+            rows[i].querySelectorAll("td").forEach(col => rowData.push(col.innerText));
+            tableData.push(rowData);
+        }
+
+        data.push({ headers, body: tableData });
+    });
+
+    // ✅ Add Table to PDF
+    let startY = 50;
+    data.forEach((table, index) => {
+        doc.autoTable({
+            head: [table.headers],
+            body: table.body,
+            startY: startY,
+            margin: { left: 15, right: 15 }
+        });
+        startY = doc.lastAutoTable.finalY + 10; // Move down for next table
+    });
+
+    // ✅ Trigger Download
+    doc.save("support_requests_report.pdf");
+}
+
     
 
 // ✅ Admin Logout Function (With API Integration)
@@ -485,12 +558,17 @@ function logout() {
     event.preventDefault(); // Prevent default link behavior
     console.log("🔹 Logging out...");
 
+    let logoutScreen = document.getElementById("logoutScreen");
+    logoutScreen.style.display = "flex"; // Show loading screen
+
     const token = sessionStorage.getItem("adminToken");
 
     if (!token) {
-        alert("❌ No active session found.");
-        logoutScreen.style.display = "none";
-        window.location.href = "login.html";
+        // alert("❌ No active session found.");
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // Keep visible for 2 seconds
         return;
     }
 
@@ -510,13 +588,15 @@ function logout() {
         console.log("✅ Logout Successful:", message);
         sessionStorage.removeItem("adminToken"); // ✅ Remove Token
         sessionStorage.removeItem("adminRole");  // ✅ Remove Role
-        logoutScreen.style.display = "none";
-        alert("✅ Successfully logged out!");
-        window.location.href = "login.html"; // ✅ Redirect to Login Page
+        setTimeout(() => {
+            logoutScreen.style.display = "none";
+            window.location.href = "login.html";
+        }, 2000); // ✅ Redirect to Login Page
     })
     .catch(error => {
         console.error("❌ Logout Error:", error);
         alert("❌ Logout failed: " + error.message);
         logoutScreen.style.display = "none";
+        window.location.href="login.html";
     });
 }
