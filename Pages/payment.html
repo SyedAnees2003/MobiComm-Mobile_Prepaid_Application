@@ -61,90 +61,57 @@
             </div>
         </div>
 
-        <!-- Payment Form -->
-        <div class="payment-container bg-light shadow p-3">
-            <h3 class="text-center">Payment</h3>
-            <form id="payment-form">
-                <div class="form-group">
-                    <label for="paymentMethod">Select a Payment Method</label>
-                    <select class="form-control" id="paymentMethod" onchange="togglePaymentInputs()">
-                        <option value="" disabled selected>Select a payment method</option>
-                        <option value="upi"><i class="fas fa-mobile-alt"></i> UPI</option>
-                        <option value="card"><i class="fas fa-credit-card"></i> Credit/Debit Card</option>
-                        <option value="netbanking"><i class="fas fa-university"></i> Net Banking</option>
-                    </select>
-                </div>
-
-                <!-- UPI Providers -->
-                <div class="upi-options" id="upiOptions">
-                    <label>Select UPI Provider</label>
-                    <div class="payment-option" data-provider="Google Pay">
-                        <input type="radio" name="upiProvider" id="googlePay">
-                        <img src="/Assets/google-pay.png" alt="Google Pay">
-                        <label for="googlePay">Google Pay</label>
-                    </div>
-                    <div class="payment-option" data-provider="PhonePe">
-                        <input type="radio" name="upiProvider" id="phonePe">
-                        <img src="/Assets/phone-pe.png" alt="PhonePe">
-                        <label for="phonePe">PhonePe</label>
-                    </div>
-                    <div class="payment-option" data-provider="Paytm">
-                        <input type="radio" name="upiProvider" id="paytm">
-                        <img src="/Assets/paytm.png" alt="Paytm">
-                        <label for="paytm">Paytm</label>
-                    </div>
-                </div>
-
-                <!-- Credit/Debit Card Inputs -->
-                <div id="cardInputs" style="display: none;">
-                    <div class="form-group">
-                        <label for="cardNumber">Card Information</label>
-                        <input type="text" class="form-control" id="cardNumber" placeholder="Card Number">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <input type="text" class="form-control" placeholder="MM/YY">
+        <!-- Payment Container -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="payment-container bg-light shadow p-4 rounded">
+                <h3 class="text-center text-primary mb-4 mt-2">Complete Your Payment</h3>
+                
+                <!-- Payment Info Section -->
+                <div class="payment-info mb-4 mt-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="secure-badge mr-3">
+                            <i class="fas fa-lock text-success" style="font-size: 24px;"></i>
                         </div>
-                        <div class="form-group col-md-6">
-                            <input type="text" class="form-control" placeholder="CVV">
+                        <div>
+                            <h5 class="mb-0">Secure Payment</h5>
+                            <p class="mb-0 text-muted">Your payment information is secure and encrypted</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Net Banking Banks -->
-                <div class="bank-options" id="bankOptions">
-                    <label>Select a Bank</label>
-                    <div class="payment-option" data-bank="SBI">
-                        <input type="radio" name="bank" id="sbi">
-                        <img src="/Assets/sbi.png" alt="SBI">
-                        <label for="sbi">SBI</label>
-                    </div>
-                    <div class="payment-option" data-bank="HDFC">
-                        <input type="radio" name="bank" id="hdfc">
-                        <img src="/Assets/hdfc.png" alt="HDFC">
-                        <label for="hdfc">HDFC</label>
-                    </div>
-                    <div class="payment-option" data-bank="ICICI">
-                        <input type="radio" name="bank" id="icici">
-                        <img src="/Assets/icici.png" alt="ICICI">
-                        <label for="icici">ICICI</label>
-                    </div>
-                    <div class="payment-option" data-bank="Canara Bank">
-                        <input type="radio" name="bank" id="canara">
-                        <img src="/Assets/Canara-Bank.png" alt="Canara">
-                        <label for="canara">Canara</label>
+                    
+                    <!-- Payment Method Info -->
+                    <div class="payment-method-info p-3 bg-white rounded mb-3 mt-4">
+                        <p class="mb-4"><i class="fas fa-info-circle text-primary mr-2"></i> Your payment will be processed through our secure payment gateway.</p>
+                        <p class="mb-0"><i class="fas fa-credit-card text-primary mr-2"></i> You'll receive a confirmation email once payment is complete.</p>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label id="paymentamount">Amount: </label><br>
+                
+                <!-- Terms and Conditions Checkbox -->
+                <div class="form-check mb-4 mt-5">
+                    <input class="form-check-input" type="checkbox" checked id="termsCheck">
+                    <label class="form-check-label" for="termsCheck">
+                        I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">Terms and Conditions</a> and <a href="#" data-toggle="modal" data-target="#privacyModal">Privacy Policy</a>
+                    </label>
                 </div>
-                <div class="d-flex">                
-                    <button type="submit" class="btn btn-primary btn-custom" id="payButton" disabled>Pay</button>
-                    <button class="btn btn-danger btn-custom" onclick="window.location.href='prepaidPlans.html'">Cancel</button>
+                
+                <!-- Payment amount display -->
+                <div class="payment-amount-display p-3 bg-white rounded mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Amount to Pay:</h4>
+                        <h5 class="mb-0 text-primary" id="paymentamount">₹ 0.00</h5>
+                    </div>
                 </div>
-            </form>
+                
+                <!-- Payment Buttons -->
+                <div class="d-flex justify-content-center">                
+                    <button type="button" class="btn btn-primary btn-md mr-3" id="payButton">
+                        <i class="fas fa-credit-card mr-2"></i> Pay Now
+                    </button>
+                    <button class="btn btn-outline-danger btn-md" onclick="window.location.href='prepaidPlans.html'">Cancel</button>
+                </div>
+            </div>
         </div>
+    </div>
 
         <!-- Payment Success Modal -->
         <div class="modal fade" id="paymentSuccessModal" tabindex="-1" role="dialog" aria-labelledby="paymentSuccessModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -177,7 +144,52 @@
             </div>
         </div>
 
-        <div id="FAQ" class="container faq-container mt-4">
+        <!-- Terms Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>By proceeding with the payment, you agree to our terms and conditions.</p>
+                    <p>The plan will be activated immediately after successful payment.</p>
+                    <p>Refunds are subject to our refund policy.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" role="dialog" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>We respect your privacy and are committed to protecting your personal information.</p>
+                    <p>Your payment details are encrypted and securely processed.</p>
+                    <p>We do not store your payment information.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div id="FAQ" class="container faq-container mt-5">
             <div class="faq-card p-4">
                 <h3 class="text-center mb-4">Prepaid Transaction FAQs</h3>
                 <div class="faq-item">
@@ -204,6 +216,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="/Scripts/payment.js"></script>
 
 </body>

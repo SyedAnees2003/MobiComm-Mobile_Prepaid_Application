@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     fetchPlanDetails(planId);
-    setupPaymentListeners();
+    // setupPaymentListeners();
 });
 
 // ✅ Fetch Plan Details from Backend
@@ -46,129 +46,45 @@ function updatePaymentSummary(planPrice) {
     document.getElementById("paymentamount").textContent = `Amount to be paid: ₹${totalAmount.toFixed(2)}`;
 }
 
-function togglePaymentInputs() {
-    var paymentMethod = document.getElementById("paymentMethod").value;
-    document.getElementById("upiOptions").style.display = (paymentMethod === "upi") ? "block" : "none";
-    document.getElementById("cardInputs").style.display = (paymentMethod === "card") ? "block" : "none";
-    document.getElementById("bankOptions").style.display = (paymentMethod === "netbanking") ? "block" : "none";
-    // validatePayment();  // Validate after toggling inputs
-}
 
-// document.addEventListener("DOMContentLoaded", function () {
-    const paymentMethod = document.getElementById("paymentMethod");
-    const upiOptions = document.getElementById("upiOptions");
-    const cardInputs = document.getElementById("cardInputs");
-    const bankOptions = document.getElementById("bankOptions");
-    const payButton = document.querySelector(".btn-primary");
-
-    // Listen to payment method selection
-    paymentMethod.addEventListener("change", function () {
-        upiOptions.style.display = "none";
-        cardInputs.style.display = "none";
-        bankOptions.style.display = "none";
-
-        if (this.value === "upi") upiOptions.style.display = "block";
-        else if (this.value === "card") cardInputs.style.display = "block";
-        else if (this.value === "netbanking") bankOptions.style.display = "block";
-
-        // Reset form fields and classes
-        document.querySelectorAll("input[name='upiProvider'], input[name='bank']").forEach(item => item.checked = false);
-        document.getElementById("cardNumber").value = "";
-        validatePayment();
-    });
-
-    // Listen to UPI provider and Bank selection
-    document.querySelectorAll("input[name='upiProvider']").forEach(item => {
-        item.addEventListener("change", validatePayment);
-    });
-
-    document.querySelectorAll("input[name='bank']").forEach(item => {
-        item.addEventListener("change", validatePayment);
-    });
-
-    // Card number input validation
-    document.getElementById("cardNumber").addEventListener("input", function () {
-        const cardNumber = this.value.trim();
-        const isCardNumberValid = /^\d{16}$/.test(cardNumber);
-        this.classList.toggle("is-invalid", !isCardNumberValid);
-        validatePayment();
-    });
-
-    // Expiry date input validation
-    document.querySelector("input[placeholder='MM/YY']").addEventListener("input", function () {
-        const expiryDate = this.value.trim();
-        const isExpiryDateValid = /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate);
-        this.classList.toggle("is-invalid", !isExpiryDateValid);
-        validatePayment();
-    });
-
-    // CVV input validation
-    document.querySelector("input[placeholder='CVV']").addEventListener("input", function () {
-        const cvv = this.value.trim();
-        const isCvvValid = /^\d{3,4}$/.test(cvv);
-        this.classList.toggle("is-invalid", !isCvvValid);
-        validatePayment();
-    });
-
-    // Initial validation
-    payButton.disabled = true;
-
-function validatePayment() {
-    let isValid = false;
-    const paymentMethod = document.getElementById("paymentMethod").value;
-
-    if (paymentMethod === "upi") {
-        isValid = document.querySelector("input[name='upiProvider']:checked") !== null; // Check if any UPI provider is selected
-    }
-        else if (paymentMethod === "card") {
-        const cardNumber = document.getElementById("cardNumber").value.trim();
-        const expiryDate = document.querySelector("input[placeholder='MM/YY']").value.trim();
-        const cvv = document.querySelector("input[placeholder='CVV']").value.trim();
-
-        // Validate card number (16 digits)
-        const isCardNumberValid = /^\d{16}$/.test(cardNumber);
-
-        // Validate expiry date (MM/YY format)
-        const isExpiryDateValid = /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate);
-
-        // Validate CVV (3 or 4 digits)
-        const isCvvValid = /^\d{3,4}$/.test(cvv);
-
-        isValid = isCardNumberValid && isExpiryDateValid && isCvvValid;  
-    }
-    else if (paymentMethod === "netbanking") {
-        isValid = document.querySelector("input[name='bank']:checked") !== null; // Check if any bank is selected
-        console.log(isValid);
-    }
-
+// ✅ Setup Payment Button
+document.addEventListener("DOMContentLoaded", function() {
+    // Enable pay button by default since external payment is being used
     const payButton = document.getElementById("payButton");
-    payButton.disabled = !isValid;
-}
+    payButton.disabled = false;
+    
+    // Setup click event on pay button
+    payButton.addEventListener("click", function() {
+        // Call your external payment processing function here
+        processPayment();
+    });
+    
+    // Terms checkbox handling (optional)
+    const termsCheck = document.getElementById("termsCheck");
+    termsCheck.addEventListener("change", function() {
+        payButton.disabled = !this.checked;
+    });
+});
 
-// ✅ Handle Payment Submission
 function processPayment() {
     const mobileNumber = sessionStorage.getItem("mobileNumber");
     let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
     const planId = sessionStorage.getItem("selectedPlanId");
-    const paymentMethod = document.getElementById("paymentMethod").value;
-    
+
     if (!token) {
         alert("❌ Session expired. Please log in again.");
         window.location.href = "login.html";
         return;
     }
 
-         // ✅ Remove temp token after successful payment
-         sessionStorage.removeItem("tempToken");
-         sessionStorage.removeItem("quickRechargeMobile");
-
+    // ✅ Fetch User ID First
     fetch(`http://localhost:8083/api/users/${mobileNumber}`, {
         headers: { "Authorization": `Bearer ${token}` }
     })
     .then(response => response.json())
     .then(user => {
-        console.log("UserID: ",user.userId);
-        return createRechargeEntry(user.userId, planId, paymentMethod);
+        console.log("UserID: ", user.userId);
+        createRazorpayOrder(user.userId, planId);
     })
     .catch(error => {
         console.error("❌ Error fetching user ID:", error);
@@ -176,8 +92,50 @@ function processPayment() {
     });
 }
 
-// ✅ Create Recharge Entry in `recharge_history`
-function createRechargeEntry(userId, planId, paymentMethod) {
+// ✅ Step 2: Create Razorpay Order
+function createRazorpayOrder(userId, planId) {
+    const totalAmountMatch = document.getElementById("totalLabel").textContent.match(/₹([\d.]+)/);
+    const amount = totalAmountMatch ? parseFloat(totalAmountMatch[1]) : NaN;
+
+    fetch("http://localhost:8083/api/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken")}`
+         },
+        body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(order => {
+        console.log("✅ Razorpay Order Created:", order);
+        launchRazorpay(order.orderId, amount, userId, planId);
+    })
+    .catch(error => console.error("Error creating Razorpay order:", error));
+}
+
+// ✅ Step 3: Launch Razorpay Checkout
+function launchRazorpay(orderId, amount, userId, planId) {
+    const options = {
+        key: "rzp_test_XHo8QzIJJiKasb",
+        amount: amount * 100, // Convert to paise
+        currency: "INR",
+        name: "MobiComm Recharge",
+        description: "Recharge Payment",
+        order_id: orderId,
+        handler: function (response) {
+            console.log("✅ Razorpay Payment Successful:", response);
+            createRechargeEntry(userId, planId, response.razorpay_payment_id, amount, "razorpay");
+        },
+        theme: { color: "#3399cc" }
+    };
+
+    console.log("✅ Razorpay Key:", options.key);
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+}
+
+// ✅ Step 4: Create Recharge Entry in `recharge_history`
+function createRechargeEntry(userId, planId, paymentId, amount, paymentMethod) {
     let token = sessionStorage.getItem("userToken") || sessionStorage.getItem("tempToken");
     if (!token) {
         alert("❌ Session expired. Please log in again.");
@@ -185,12 +143,8 @@ function createRechargeEntry(userId, planId, paymentMethod) {
         return;
     }
 
-    // ✅ Extract correct amount
-    const totalAmountMatch = document.getElementById("totalLabel").textContent.match(/₹([\d.]+)/);
-    const amount = totalAmountMatch ? parseFloat(totalAmountMatch[1]) : NaN;
-
     if (isNaN(amount)) {
-        console.error("❌ Invalid amount detected:", totalAmountMatch);
+        console.error("❌ Invalid amount detected:", amount);
         alert("❌ Payment amount calculation error. Please try again.");
         return;
     }
@@ -199,12 +153,13 @@ function createRechargeEntry(userId, planId, paymentMethod) {
         userId: userId,
         planId: planId,
         amount: amount,
-        rechargeMode: paymentMethod
+        rechargeMode: paymentMethod,
+        transactionId: paymentId
     };
 
-    console.log("Recharge Request Payload:", rechargePayload);
+    console.log("🔹 Creating Recharge Entry:", rechargePayload);
 
-    return fetch("http://localhost:8083/api/recharge-history", {
+    fetch("http://localhost:8083/api/recharge-history", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -213,19 +168,17 @@ function createRechargeEntry(userId, planId, paymentMethod) {
         body: JSON.stringify(rechargePayload)
     })
     .then(response => {
-        if (response.status === 403) {
-            throw new Error("❌ Unauthorized. Ensure you are logged in.");
-        }
-        if (response.status === 415) {
-            throw new Error("❌ Unsupported Media Type. Check Content-Type.");
-        }
         if (!response.ok) throw new Error("❌ Failed to create recharge entry.");
         return response.json();
     })
     .then(recharge => {
         console.log("✅ Recharge Created:", recharge);
 
-        return createPaymentTransaction(userId, recharge.rechargeId, paymentMethod);
+        // ✅ Remove temp token after successful payment
+        sessionStorage.removeItem("tempToken");
+        sessionStorage.removeItem("quickRechargeMobile");
+
+        return createPaymentTransaction(userId, recharge.rechargeId, paymentId, amount, paymentMethod);
     })
     .catch(error => {
         console.error("❌ Error creating recharge entry:", error);
@@ -233,21 +186,17 @@ function createRechargeEntry(userId, planId, paymentMethod) {
     });
 }
 
-
-// ✅ Create Payment Transaction Entry
-function createPaymentTransaction(userId, rechargeId, paymentMethod) {
-    console.log("🔹 Sending Payment Transaction Request for UserID:", userId, "RechargeID:", rechargeId);
-
-    const totalAmountMatch = document.getElementById("totalLabel").textContent.match(/₹([\d.]+)/);
-    const amount = totalAmountMatch ? parseFloat(totalAmountMatch[1]) : NaN;
+// ✅ Step 5: Create Payment Transaction Entry
+function createPaymentTransaction(userId, rechargeId, paymentId, amount, paymentMethod) {
+    console.log("🔹 Creating Payment Transaction for RechargeID:", rechargeId);
 
     if (isNaN(amount)) {
-        console.error("❌ Invalid amount detected:", totalAmountMatch);
-        alert("Payment amount calculation error. Please try again.");
+        console.error("❌ Invalid amount detected:", amount);
+        alert("❌ Payment amount calculation error. Please try again.");
         return;
     }
 
-    return fetch("http://localhost:8083/api/payments", {
+    fetch("http://localhost:8083/api/payments", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -256,10 +205,9 @@ function createPaymentTransaction(userId, rechargeId, paymentMethod) {
         body: JSON.stringify({
             userId: userId,
             rechargeId: rechargeId,
+            paymentId: paymentId,
             amount: amount,
-            paymentMethod: paymentMethod,
-            transactionType: "Recharge",
-            status: "successful"
+            paymentMethod: paymentMethod
         })
     })
     .then(response => {
@@ -272,6 +220,7 @@ function createPaymentTransaction(userId, rechargeId, paymentMethod) {
     })    
     .then(transaction => {
         console.log("✅ Payment Transaction Created:", transaction);
+        console.log("🔹 Transaction ID:", transaction.transactionId);
         showPaymentSuccess(transaction.transactionId, paymentMethod);
     })
     .catch(error => {
@@ -302,14 +251,6 @@ $('#paymentSuccessModal').on('show.bs.modal', function () {
     successContainer.classList.add('show-success'); // Scale up & fade in
     successTick.classList.add('show-success'); // Make tick visible
 });
-
-// ✅ Setup Payment Listeners
-function setupPaymentListeners() {
-    document.getElementById("payment-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        processPayment();
-    });
-}
 
 document.getElementById("downloadInvoiceBtn").addEventListener("click", generateInvoice);
 
@@ -362,7 +303,6 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
     
         // Load Logo (Replace 'logo.png' with your actual logo URL or Base64 string)
         const logoPath = "mobi-comm.png"; // Replace with your logo URL or base64
-        const imgWidth = 40, imgHeight = 20;
 
         const loadImage = new Image();
         loadImage.src = logoPath;
@@ -374,8 +314,16 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
             ctx.drawImage(loadImage, 0, 0);
             const base64Logo = canvas.toDataURL("image/png");
 
-        // Add Logo
-        doc.addImage(base64Logo, "PNG", 90, 10, imgWidth, imgHeight);
+                // Add Logo
+                const imgWidth = 70; // Adjust width as needed
+                const imgHeight = 15; // Adjust height as needed
+                const pageWidth = doc.internal.pageSize.getWidth(); // Get page width
+
+                
+        // Centering the logo
+        const centerX = (pageWidth - imgWidth) / 2;
+        
+        doc.addImage(base64Logo, "PNG", centerX, 10, imgWidth, imgHeight);
     
         // Invoice Title
         doc.setFontSize(16);
@@ -404,19 +352,21 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
             ["Plan", plan]
         ];
     
-        // AutoTable - Creating Table
+            // AutoTable - Creating Table
         doc.autoTable({
-            startY: 60, // Position below date & time
-            head: [["Title", "Details"]], // Table Header
-            body: tableData,
-            theme: "grid", // Table style
-            styles: { fontSize: 10 },
-            headStyles: { fillColor: [0, 122, 255] }, // Header Color
-            columnStyles: {
-                0: { fontStyle: "bold", cellWidth: 100 }, // First Column - Bold Titles
-                1: { cellWidth: 100 } // Second Column - Data
-            }
-        });
+        startY: 60, // Position below date & time
+        head: [["Title", "Details"]],
+        body: tableData,
+        theme: "grid",
+        styles: { fontSize: 10 },
+        margin: { left: 20, right: 20 }, // Ensure left & right spacing
+        headStyles: { fillColor: [0, 122, 255] },
+        tableWidth: "auto", // Ensures table does not extend to full width
+        columnStyles: {
+            0: { fontStyle: "bold", cellWidth: 70 }, // Title column
+            1: { cellWidth: 90 } // Details column
+        }
+    }); 
     
         // Save the PDF
         doc.save(`Invoice_${transactionId}.pdf`);

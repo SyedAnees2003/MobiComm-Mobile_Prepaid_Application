@@ -348,8 +348,6 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
     
         // Load Logo (Replace 'logo.png' with your actual logo URL or Base64 string)
         const logoPath = "mobi-comm.png"; // Replace with your logo URL or base64
-        const imgWidth = 40, imgHeight = 20;
-
         const loadImage = new Image();
         loadImage.src = logoPath;
         loadImage.onload = function () {
@@ -361,8 +359,15 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
             const base64Logo = canvas.toDataURL("image/png");
 
         // Add Logo
-        doc.addImage(base64Logo, "PNG", 90, 10, imgWidth, imgHeight);
-    
+        const imgWidth = 70; // Adjust width as needed
+        const imgHeight = 15; // Adjust height as needed
+        const pageWidth = doc.internal.pageSize.getWidth(); // Get page width
+        
+        // Centering the logo
+        const centerX = (pageWidth - imgWidth) / 2;
+        
+        doc.addImage(base64Logo, "PNG", centerX, 10, imgWidth, imgHeight);
+            
         // Invoice Title
         doc.setFontSize(16);
         doc.setFont("helvetica", "bold");
@@ -392,17 +397,19 @@ function downloadInvoice(transactionId, userName, userMobile, date, time, price,
     
         // AutoTable - Creating Table
         doc.autoTable({
-            startY: 60, // Position below date & time
-            head: [["Title", "Details"]], // Table Header
-            body: tableData,
-            theme: "grid", // Table style
-            styles: { fontSize: 10 },
-            headStyles: { fillColor: [0, 122, 255] }, // Header Color
-            columnStyles: {
-                0: { fontStyle: "bold", cellWidth: 100 }, // First Column - Bold Titles
-                1: { cellWidth: 100 } // Second Column - Data
-            }
-        });
+        startY: 60, // Position below date & time
+        head: [["Title", "Details"]],
+        body: tableData,
+        theme: "grid",
+        styles: { fontSize: 10 },
+        margin: { left: 20, right: 20 }, // Ensure left & right spacing
+        headStyles: { fillColor: [0, 122, 255] },
+        tableWidth: "auto", // Ensures table does not extend to full width
+        columnStyles: {
+            0: { fontStyle: "bold", cellWidth: 70 }, // Title column
+            1: { cellWidth: 90 } // Details column
+        }
+    });    
     
         // Save the PDF
         doc.save(`Invoice_${transactionId}.pdf`);
