@@ -56,12 +56,10 @@
         <div class="profile-header d-flex justify-content-between align-items-center">
             <h1 class="display-5 section-title" id="profileHeading">User Profile</h1>
             <div class="position-relative">
-                <div class="profile-pic rounded-circle d-flex justify-content-center align-items-center" style="width: 100px; height: 100px;">
-                    <i class="fas fa-user fa-3x"></i>
-                </div>
-                <div class="camera-icon rounded-circle d-flex justify-content-center align-items-center position-absolute" style="width: 24px; height: 24px; bottom: 0; right: 0;">
-                    <i class="fas fa-camera"></i>
-                </div>
+                <div id="profileInitials" class="profile-initials rounded-circle d-flex justify-content-center align-items-center text-white fw-bold"
+            style="width: 100px; height: 100px; background-color: #007bffb4; font-size: 36px;">
+            <!-- Initials will be inserted dynamically here -->
+        </div>
             </div>
         </div>
         <span class="text-muted" id="lastLogin" style="color: #419af9 !important; background-color: rgb(217, 236, 252);padding: 0.2rem;"></span>
@@ -159,7 +157,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="fw-bold">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
-                    <div class="faq-answer">Yes, you can recharge any mobile operator, including Airtel, Jio, Vodafone Idea, and more. Choose your operator and plan during the recharge process.</div>
+                    <div class="faq-answer">Only MobiComm users can perform recharges. You need to be a registered user to access our recharge services.</div>
                 </div>
                 <div class="faq-item">
                     <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>

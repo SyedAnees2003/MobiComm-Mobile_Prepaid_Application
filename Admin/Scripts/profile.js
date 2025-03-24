@@ -24,6 +24,11 @@ function loadAdminProfile() {
         // ✅ Populate Admin Info
         document.querySelector(".user-name").textContent = `Hi, ${adminData.firstName}`;
         document.getElementById("profileHeading").textContent = `${adminData.firstName} ${adminData.lastName}`;
+
+        // ✅ Extract initials
+        let initials = adminData.firstName.charAt(0).toUpperCase() + adminData.lastName.charAt(0).toUpperCase();
+        document.getElementById("profileInitials").textContent = initials;
+
         document.getElementById("mobileNumberText").textContent = adminData.mobileNumber;
         document.getElementById("emailText").textContent = adminData.email;
         const lastLoginDate = new Date(adminData.lastLogin);

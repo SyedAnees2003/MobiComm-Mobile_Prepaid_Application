@@ -146,7 +146,7 @@ function displayAllNotifications(notifications) {
 
 function getNotificationIcon(type) {
     const iconMap = {
-        "Recharge Success": `<i class="bi bi-check-circle-fill"></i>`,  // ✅ Green check icon
+        "Recharge Success": `<i class="bi bi-check-circle-fill text-primary"></i>`,  // ✅ Green check icon
         "Offer": `<i class="bi bi-gift-fill"></i>`,  // 🎁 Gift icon
         "Reminder": `<i class="bi bi-clock-fill"></i>`,  // ⏰ Clock reminder
         "Alert": `<i class="bi bi-exclamation-triangle-fill text-danger"></i>`,  // ⚠️ Red Warning

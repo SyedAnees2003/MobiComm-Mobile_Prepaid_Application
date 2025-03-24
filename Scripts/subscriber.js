@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Add "Show All" button if more than 5 notifications
-        if (notifications.length >= 3) {
+        if (notifications.length >= 2) {
             let showAllItem = document.createElement("div");
             showAllItem.classList.add("text-center", "mt-2");
             showAllItem.innerHTML = `<a href="notifications.html" class="btn btn-link">Show All</a>`;

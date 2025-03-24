@@ -12,15 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     showSlide(currentSlide);
 });
 
-// $(document).ready(function () {
-//     $('#plansCarousel').carousel({
-//         interval: 3000, // 3 seconds per slide
-//         ride: 'carousel',
-//         pause: 'hover', // Pause on hover
-//         wrap: true // Loop back to first slide after last
-//     });
-// });
-
 document.getElementById("Recharge").addEventListener("click", function() {
     window.location.href = "login.html";  // Change this to your login page URL
 });

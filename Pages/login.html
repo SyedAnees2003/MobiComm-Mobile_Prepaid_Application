@@ -87,7 +87,14 @@
                             <span id="otpError" class="text-danger" style="display: none;">Please enter a valid 4-digit OTP.</span>
                 
                             <!-- Verify OTP Button (Newly Added) -->
-                            <button id="verifyOtpButton" class="btn btn-success w-100 mt-4 mb-4" type="button" disabled onclick="verifyOTP()">Verify OTP</button>
+                            <div class="d-flex justify-content-evenly">
+
+                            <button id="verifyOtpButton" class="btn btn-success w-50 mt-4 mb-4" type="button" disabled onclick="verifyOTP()">Verify OTP</button>
+
+                            <!-- Resend OTP Button -->
+                            <button id="resendOtpButton" class="btn btn-primary w-50 mt-4 mb-4" type="button" style="display: none;" onclick="resendOTP()">Resend OTP</button>
+                            <span id="resendCountdown" class="text-muted mt-4" style="display: none; font-size: smaller;"></span>
+                            </div>
                         </div>
             
                         <!-- Login Button -->
@@ -166,7 +173,7 @@
                 </div>
                 <div class="faq-item">
                     <div class="fw-bold">Can I recharge for any mobile operator? <span class="faq-icon">+</span></div>
-                    <div class="faq-answer">Yes, you can recharge any mobile operator, including Airtel, Jio, Vodafone Idea, and more. Choose your operator and plan during the recharge process.</div>
+                    <div class="faq-answer">Only MobiComm users can perform recharges. You need to be a registered user to access our recharge services.</div>
                 </div>
                 <div class="faq-item">
                     <div class="fw-bold">What happens if I run out of balance before my plan expires? <span class="faq-icon">+</span></div>

@@ -58,6 +58,12 @@ body {
     border:solid 1px #007BFF;
 }
 
+button:disabled {
+    pointer-events: none; /* Prevents clicks */
+    opacity: 0.7; /* Makes it visually disabled */
+    cursor: not-allowed; /* Changes cursor */
+}
+
 .btn{
     border-radius: 10px;
 }

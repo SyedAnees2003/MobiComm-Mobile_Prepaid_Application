@@ -38,6 +38,11 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(user => {
             document.getElementById("profileHeading").textContent = `${user.firstName} ${user.lastName}`;
+
+            // ✅ Extract initials
+            let initials = user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
+            document.getElementById("profileInitials").textContent = initials;
+            
             const lastLoginDate = new Date(user.lastLogin);
             const formattedLastLogin = lastLoginDate.toLocaleString("en-IN", { 
                 weekday: "short", 

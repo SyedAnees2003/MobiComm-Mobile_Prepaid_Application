@@ -222,6 +222,9 @@ function createPaymentTransaction(userId, rechargeId, paymentId, amount, payment
         console.log("✅ Payment Transaction Created:", transaction);
         console.log("🔹 Transaction ID:", transaction.transactionId);
         showPaymentSuccess(transaction.transactionId, paymentMethod);
+        const mobileNumber = sessionStorage.getItem("mobileNumber");
+
+        sendPaymentNotification(mobileNumber, amount, transaction.transactionId, paymentMethod);
     })
     .catch(error => {
         console.error("❌ Error creating payment transaction:", error);
@@ -239,6 +242,30 @@ function showPaymentSuccess(transactionId, paymentMethod) {
     document.getElementById('transactionTime').textContent = now.toLocaleTimeString();
 
     $('#paymentSuccessModal').modal('show');
+}
+
+function sendPaymentNotification(mobile, amount, transactionId, paymentMethod) {
+    console.log("🔹 Sending Payment Notification to:", mobile);
+
+    let message = `Your payment of Rs. ${amount} was successful. Transaction ID: ${transactionId}. Payment Method: ${paymentMethod}.`;
+
+    fetch("http://localhost:8083/api/notifications/recharge", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mobile: mobile,
+            message: message
+        })
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("✅ Notification sent successfully:", data);
+    })
+    .catch(error => {
+        console.error("❌ Error sending payment notification:", error);
+    });
 }
 
 $('#paymentSuccessModal').on('show.bs.modal', function () {

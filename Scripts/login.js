@@ -83,10 +83,12 @@ function checkMobileInDB(mobileNumber) {
 }
 
 // Send OTP (Simulated Here)
+let otpResendTimer = 30; // Initial countdown value (30 seconds)
+let otpResendInterval; // Variable for countdown interval
 // Enable OTP Fields and Send OTP
 function sendOTP() {
     const mobileNumber = document.getElementById("mobile").value.trim();
-
+    const resendOTPButton = document.getElementById("resendOTP");
     const sendOTPButton = document.getElementById("sendOTPMobile");
 
     // Disable button and show spinner
@@ -110,6 +112,8 @@ function sendOTP() {
          // Open the OTP Sent Modal
          let otpSentModal = new bootstrap.Modal(document.getElementById("otpSentModal"));
          otpSentModal.show();
+
+         showResendOTPButton();
 
           // Wait 2 seconds before resetting button text
         setTimeout(() => {
@@ -151,6 +155,102 @@ function validateOTP() {
         verifyOTPButton.disabled = true;
     }
 }
+
+// Update Resend OTP Button Text
+function updateResendText() {
+    document.getElementById("resendOTP").innerHTML = `Resend OTP (${otpResendTimer}s)`;
+}
+
+let otpExpired = false; // Global flag to track OTP expiry
+
+function showResendOTPButton() {
+    const resendOtpButton = document.getElementById("resendOtpButton");
+    const resendCountdown = document.getElementById("resendCountdown");
+    const otpInputs = document.querySelectorAll(".otp-input");
+
+    let timeLeft = 30; // 30 seconds cooldown
+
+    // Hide the button initially
+    resendOtpButton.style.display = "none";
+    resendCountdown.style.display = "inline";
+    resendCountdown.innerHTML = `You can resend OTP in ${timeLeft} sec`;
+
+    let countdown = setInterval(() => {
+        timeLeft--;
+        resendCountdown.innerHTML = `You can resend OTP in ${timeLeft} sec`;
+
+        if (timeLeft === 0) {
+            clearInterval(countdown);
+            resendCountdown.style.display = "none";
+            resendOtpButton.style.display = "block"; // Show Resend OTP button
+            resendOtpButton.disabled = false;
+
+            // 🔴 Mark OTP as expired
+            otpExpired = true;
+
+            // Disable OTP inputs
+            otpInputs.forEach(input => {
+                input.disabled = true;
+                input.value = ""; // Clear old OTP
+            });
+
+            const verifyOTPButton = document.getElementById("verifyOtpButton");
+            verifyOTPButton.disabled = true;
+
+            showToast("Your OTP has expired. Please request a new OTP.", false);
+        }
+    }, 1000);
+}
+
+
+
+// Function to Resend OTP
+function resendOTP() {
+    const mobileNumber = document.getElementById("mobile").value.trim();
+    const resendOtpButton = document.getElementById("resendOtpButton");
+
+    // Disable Resend OTP button and show loading text
+    resendOtpButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Resending OTP...`;
+    resendOtpButton.disabled = true;
+
+    fetch("http://localhost:8083/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile_number: mobileNumber }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("✅ OTP Resent:", data);
+        
+        // Ensure OTP section remains visible
+        document.getElementById("otpSection").style.display = "block";
+
+        const verifyOTPButton = document.getElementById("verifyOtpButton");
+        verifyOTPButton.disabled = false;
+
+        const otpInputs = document.querySelectorAll(".otp-input");
+        otpInputs.forEach(input => {
+            input.disabled = false;
+        });
+
+
+        // Reset button text after 2 seconds
+        setTimeout(() => {
+            resendOtpButton.innerHTML = "Resend OTP";
+            resendOtpButton.disabled = true;
+            showResendOTPButton(); // Restart the timer
+        }, 2000);
+
+        showToast("OTP Resent Successfully!", true);
+    })
+    .catch(error => {
+        console.error("❌ Resend OTP Error:", error);
+        resendOtpButton.innerHTML = "Resend OTP";
+        resendOtpButton.disabled = false;
+        showToast("Failed to resend OTP. Try again!", false);
+    });
+}
+
 
 // Verify OTP and Proceed to Login
 function verifyOTP() {
@@ -210,7 +310,6 @@ function showToast(message, isSuccess) {
 
     // Update message & styles
     toastMessage.textContent = message;
-    toastIcon.innerHTML = isSuccess ? " ✅" : " ❌"; // Checkmark for success, Cross for error
 
     // Show toast
     toastContainer.style.opacity = "1";
