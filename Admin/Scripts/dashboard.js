@@ -329,12 +329,65 @@ function populateExpiringSubscriptions(subscribers) {
                 <td>${user.planName}</td>
                 <td>${formattedExpiry}</td>
                 <td><button class="btn btn-primary view-button" onclick="viewNewSubscriber('${user.mobileNumber}')">View</button></td>
-                <td><button class="btn btn-warning notify-button" onclick="showSnackbar('${user.mobileNumber}', 'Notification has been sent!')">Notify</button></td>
+                <td><button class="btn btn-warning notify-button" onclick="sendNotification('${user.mobileNumber}', '${user.planName}', '${formattedExpiry}')">Notify</button></td>
             </tr>
         `;
         tableBody.innerHTML += row;
     });
 }
+
+function sendNotification(mobile, plan, expiryDate) {
+    const message = `🔔 Your ${plan} plan is expiring on ${expiryDate}. Recharge soon to continue uninterrupted service.`;
+
+    let requestBody = {
+        mobile: mobile,
+        message: message
+    };
+
+    fetch("http://localhost:8083/api/notifications", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Failed to send notification");
+        return response.text();
+    })
+    .then(data => {
+        sendEmailAlert(mobile, expiryDate, plan);
+        // showSnackbar(mobile, "✅ Notification sent successfully!");
+    })
+    .catch(error => console.error("❌ Error sending notification:", error));
+}
+
+function sendEmailAlert(mobile, expiryDate, plan){
+    const message = `🔔 Your ${plan} plan is expiring on ${expiryDate}. Recharge soon to continue uninterrupted service.`;
+
+    let requestBody = {
+        mobile: mobile,
+        message: message
+    };
+    fetch("http://localhost:8083/api/notifications/email", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Failed to send notification");
+        return response.text();
+    })
+    .then(data => {
+        showSnackbar(mobile, "✅ Notification sent successfully!");
+    })
+    .catch(error => console.error("❌ Error sending notification:", error));
+
+
+}
+
 
 function viewNewSubscriber(mobileNumber) {
     const token = sessionStorage.getItem("adminToken");
@@ -536,62 +589,6 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href="login.html";
     }
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Add event listeners to all Notify buttons
-    const notifyButtons = document.querySelectorAll(".notify-button");
-    notifyButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            // Get the table row containing the clicked button
-            const row = button.closest("tr");
-
-            // Extract the mobile number and plan expiry date from the row
-            const mobileNumber = row.querySelector("td:nth-child(2)").textContent.trim();
-            const planExpiry = row.querySelector("td:nth-child(3)").textContent.trim();
-
-            // Calculate days left until plan expiry
-            const daysLeft = calculateDaysLeft(planExpiry);
-
-            // Compose the notification message
-            const notificationMessage = `Recharge is expiring soon (${daysLeft} days left)`;
-
-            // Add the notification to the user's notifications
-            addNotificationToUser(mobileNumber, notificationMessage);
-
-            // Show a confirmation snackbar
-            showSnackbar("Notification sent successfully!");
-        });
-    });
-});
-
-// Function to add a notification to the user's notifications
-function addNotificationToUser(mobileNumber, message) {
-    // Find the user in the users array
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(u => u.mobile === mobileNumber);
-
-    if (user) {
-        // Create a new notification
-        const newNotification = {
-            id: `N${Date.now()}`, // Generate a unique ID
-            text: message,
-            seen: false,
-            link: "notifications.html",
-            timestamp: new Date().toISOString() // Add timestamp
-        };
-
-        // Add the notification to the user's notifications
-        const notificationKey = `notifications_${user.mobile}`; // Unique key for user-specific notifications
-        const notifications = JSON.parse(localStorage.getItem(notificationKey)) || [];
-        notifications.push(newNotification);
-
-        // Save the updated notifications back to localStorage
-        localStorage.setItem(notificationKey, JSON.stringify(notifications));
-        console.log(notifications);
-    } else {
-        console.error("User not found.");
-    }
-}
 
 // Function to show a snackbar
 function showSnackbar(mobileNumber, message) {

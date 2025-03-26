@@ -29,7 +29,7 @@ const ottIcons = {
 };
 // Function to create the OTT benefit section with expandable details
 function getOttIcons(benefits, validity) {
-    console.log("OTT Benefits:", benefits);
+    // console.log("OTT Benefits:", benefits);
 
     if (!benefits || !Array.isArray(benefits)) return ""; // Ensure benefits is an array
 
@@ -252,35 +252,32 @@ function populateCategories(categories) {
             });
         });
 
-
-    setTimeout(() => {
-        console.log("Calling sortPlans...");
-        sortPlans("asc"); // or "desc" based on default sorting order
-    }, 500);
-
     console.log("✅ Categories populated successfully.");
 }
 
 // Populate Plans under respective categories
 function populatePlans(plans) {
+
+    document.querySelectorAll(".tab-pane .row").forEach(row => row.innerHTML = "");
+
     plans.forEach(plan => {
         let benefits = "{}";
-    try {
-        benefits = JSON.parse(plan.additionalBenefits || "{}");
-    } catch (e) {
-        console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
+        try {
+            benefits = JSON.parse(plan.additionalBenefits || "{}");
+        } catch (e) {
+            console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
     }
 
     // console.log("OTTs: ", benefits.OTT);
-
+    
     let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
-
+    
         const categoryDiv = document.getElementById(`pills-${plan.categoryId}`);
         if (!categoryDiv) {
             console.warn(`Category div not found for categoryId: ${plan.categoryId}`);
             return;
         }
-
+        
         const planHTML = `
             <div class="feature-card card p-3 mt-2 plan-item" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" data-category="${plan.categoryId}" data-benefits='${JSON.stringify(benefits.OTT)}'>
                 <div class="card-body">
@@ -322,54 +319,174 @@ function populatePlans(plans) {
     console.log("✅ Plans populated successfully.");
 }
 
-// 🔍 Search Plans by Price, Data, SMS, or Calls
+
 function searchPlans() {
     let query = document.getElementById("searchInput").value.toLowerCase();
-    console.log(document.getElementById("searchInput"));
 
-    document.querySelectorAll(".plan-item").forEach(plan => {
-        let price = plan.getAttribute("data-price").toLowerCase();
-        let data = plan.getAttribute("data-data").toLowerCase();
-        let sms = plan.getAttribute("data-sms").toLowerCase();
-        let calls = plan.getAttribute("data-calls").toLowerCase();
+    fetch(`http://localhost:8083/api/plans/search?query=${query}`)
+        .then(response => response.json())
+        .then(plans => {
+            console.log("🔍 Search Results:", plans);
 
-        if (price.includes(query) || data.includes(query) || sms.includes(query) || calls.includes(query)) {
-            plan.style.display = "block";
-        } else {
-            plan.style.display = "none";
-        }
-    });
+            // If search is cleared, reload all plans in categories
+            if (!query.trim()) {
+                fetchPlans();  // Reload all plans from API
+                return;
+            }
+
+            // Clear only the plans inside each category, keeping the categories intact
+            document.querySelectorAll(".tab-pane .row").forEach(row => row.innerHTML = "");
+
+            // Organize plans by category
+            let categorizedPlans = {};
+            plans.forEach(plan => {
+                if (!categorizedPlans[plan.categoryId]) {
+                    categorizedPlans[plan.categoryId] = [];
+                }
+                categorizedPlans[plan.categoryId].push(plan);
+            });
+
+            // Iterate through all category tabs
+            document.querySelectorAll(".tab-pane").forEach(tabPane => {
+                let categoryId = tabPane.id.replace("pills-", "");
+                let categoryRow = tabPane.querySelector(".row");
+
+                if (categorizedPlans[categoryId]) {
+                    // Populate plans for this category
+                    categorizedPlans[categoryId].forEach(plan => {
+                        let benefits = "{}";
+                        try {
+                            benefits = JSON.parse(plan.additionalBenefits || "{}");
+                        } catch (e) {
+                            console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
+                        }
+
+                        let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
+
+                        categoryRow.innerHTML += `
+                            <div class="feature-card card p-3 mt-2 plan-item" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" data-category="${plan.categoryId}" data-benefits='${JSON.stringify(benefits.OTT)}'>
+                                <div class="card-body">
+                                    <div class="row first-row">
+                                        <p class="price text-center fw-bold fs-4">₹${plan.price}</p>
+                                    </div>
+                                    <div class="row text-center d-flex flex-md-row flex-column">
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.data}</p>
+                                            <p class="text-muted small">Data</p>
+                                        </div>
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.sms}</p>
+                                            <p class="text-muted small">SMS</p>
+                                        </div>
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.calls}</p>
+                                            <p class="text-muted small">Calls</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold text-muted mb-0 validity">${plan.validityDays} Days</p>
+                                        <p class="text-muted small">Validity</p>
+                                    </div>
+                                    ${benefitsHtml} 
+                                </div>
+                                <div class="row text-center mt-3">
+                                    <button class="btn btn-primary w-50 mx-auto" onclick="showPlanDetails(${plan.planId})">Recharge</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    // If no matching plans found for this category, show a "No Plans Found" message
+                    categoryRow.innerHTML = `<div class="alert alert-warning text-center">No plans found for "${query}"</div>`;
+                }
+            });
+
+            console.log("✅ Search results categorized correctly.");
+        })
+        .catch(error => console.error("❌ Error fetching search results:", error));
 }
 
-// 🔽 Sort Plans by Price
+
 function sortPlans(order) {
-    let plansArray = Array.from(document.querySelectorAll(".plan-item"));
-    console.log("plansArray: ", plansArray);
+    fetch(`http://localhost:8083/api/plans/sort?order=${order}`)
+        .then(response => response.json())
+        .then(plans => {
+            console.log("🔄 Sorted Plans:", plans);
 
-    plansArray.sort((a, b) => {
-        let priceA = parseInt(a.getAttribute("data-price").replace("₹", ""));
-        let priceB = parseInt(b.getAttribute("data-price").replace("₹", ""));
-        return order === "asc" ? priceA - priceB : priceB - priceA;
-    });
+            // Clear only the plans inside each category, keeping the categories intact
+            document.querySelectorAll(".tab-pane .row").forEach(row => row.innerHTML = "");
 
-    // Reorder plans in the DOM
-    plansArray.forEach(plan => {
-        let categoryId = plan.getAttribute("data-category");
-        let targetDiv = document.getElementById(`pills-${categoryId}`);
+            // Organize sorted plans by category
+            let categorizedPlans = {};
+            plans.forEach(plan => {
+                if (!categorizedPlans[plan.categoryId]) {
+                    categorizedPlans[plan.categoryId] = [];
+                }
+                categorizedPlans[plan.categoryId].push(plan);
+            });
 
-        if (!targetDiv) {
-            console.error(`❌ Element with ID pills-${categoryId} not found`);
-            return;
-        }
+            // Iterate through all category tabs
+            document.querySelectorAll(".tab-pane").forEach(tabPane => {
+                let categoryId = tabPane.id.replace("pills-", "");
+                let categoryRow = tabPane.querySelector(".row");
 
-        let planContainer = targetDiv.querySelector(".row");
-        if (!planContainer) {
-            console.error(`❌ Row container missing inside #pills-${categoryId}`);
-            return;
-        }
+                if (categorizedPlans[categoryId]) {
+                    // Populate plans for this category
+                    categorizedPlans[categoryId].forEach(plan => {
+                        let benefits = "{}";
+                        try {
+                            benefits = JSON.parse(plan.additionalBenefits || "{}");
+                        } catch (e) {
+                            console.warn("Invalid JSON in additionalBenefits:", plan.additionalBenefits);
+                        }
 
-        planContainer.appendChild(plan);
-    });
+                        let benefitsHtml = benefits.OTT ? getOttIcons(benefits.OTT, plan.validityDays) : "";
+
+                        categoryRow.innerHTML += `
+                            <div class="feature-card card p-3 mt-2 plan-item" data-price="₹${plan.price}" data-data="${plan.data}" data-sms="${plan.sms}" data-calls="${plan.calls}" data-category="${plan.categoryId}" data-benefits='${JSON.stringify(benefits.OTT)}'>
+                                <div class="card-body">
+                                    <div class="row first-row">
+                                        <p class="price text-center fw-bold fs-4">₹${plan.price}</p>
+                                    </div>
+                                    <div class="row text-center d-flex flex-md-row flex-column">
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.data}</p>
+                                            <p class="text-muted small">Data</p>
+                                        </div>
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.sms}</p>
+                                            <p class="text-muted small">SMS</p>
+                                        </div>
+                                        <div class="col d-flex flex-column align-items-center">
+                                            <p class="fw-bold text-muted mb-0">${plan.calls}</p>
+                                            <p class="text-muted small">Calls</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col d-flex flex-column align-items-center">
+                                        <p class="fw-bold text-muted mb-0 validity">${plan.validityDays} Days</p>
+                                        <p class="text-muted small">Validity</p>
+                                    </div>
+                                    ${benefitsHtml} 
+                                </div>
+                                <div class="row text-center mt-3">
+                                    <button class="btn btn-primary w-50 mx-auto" onclick="showPlanDetails(${plan.planId})">Recharge</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    // If no plans found for this category, show a "No Plans Found" message
+                    categoryRow.innerHTML = `<div class="alert alert-warning text-center">No plans available</div>`;
+                }
+            });
+
+            console.log("✅ Sorted plans categorized correctly.");
+        })
+        .catch(error => console.error("❌ Error sorting plans:", error));
 }
 
 // Function to toggle filter selection and apply filtering
@@ -386,65 +503,47 @@ function toggleFilter(button) {
     applyFilters(); // Apply filters when selection changes
 }
 
-// Function to filter plans based on selected filters
 function applyFilters() {
-    let selectedFilters = [];
+    let params = new URLSearchParams();
 
-    // Get all active filter pills
+    // Add filters based on selected pills
     document.querySelectorAll(".filter-pill.active").forEach(activePill => {
-        selectedFilters.push(activePill.dataset.filter);
-    });
-
-    document.querySelectorAll(".plan-item").forEach(plan => {
-        let price = parseInt(plan.getAttribute("data-price").replace("₹", "").trim());
-let data = plan.getAttribute("data-data").toLowerCase();
-let calls = plan.getAttribute("data-calls").toLowerCase();
-let validity = parseInt(plan.querySelector(".validity").innerText.replace(" Days", "").trim());
-let benefits = plan.getAttribute("data-benefits") ? plan.getAttribute("data-benefits").toLowerCase() : ""; // For OTT plans
-
-let showPlan = true; // Default to show the plan
-
-selectedFilters.forEach(filter => {
-    switch (filter) {
-        case "under299":
-            if (price > 299) showPlan = false;
-            break;
-        case "under499":
-            if (price > 499) showPlan = false;
-            break;
-        case "data":
-            if (!(data.includes("gb") || data.includes("unlimited"))) showPlan = false;
-            console.log(data);
-            break;
-        case "calls":
-            let callsFormatted = calls.toLowerCase().trim(); // Normalize text
-            if (callsFormatted === "0" || callsFormatted === "0 mins") {
-                showPlan = false; // Hide only if calls are 0
-            }
-            console.log("Filtered Calls:", callsFormatted, "Show Plan:", showPlan);
-            break;
+        switch (activePill.dataset.filter) {
+            case "under299":
+                params.append("maxPrice", "299");
+                break;
+            case "under499":
+                params.append("maxPrice", "499");
+                break;
+            case "data":
+                params.append("dataOnly", "true");
+                break;
+            case "calls":
+                params.append("callsOnly", "true");
+                break;
             case "ott":
-                if(!(benefits && benefits.length > 2 && benefits!='undefined')) showPlan = false;
-                console.log("Filtered OTT:", benefits, "Show Plan:", showPlan, "length : ", benefits.length);
-                break;            
-        case "unlimited":
-            if (!calls.includes("unlimited") && !data.includes("unlimited")) showPlan = false;
-            console.log("Filtered Unlimited:", calls, data, "Show Plan:", showPlan);
-            break;
-        case "28days":
-            if (validity !== 28) showPlan = false;
-            console.log(validity);
-            break;
-        case "yearly":
-            if (validity < 365) showPlan = false;
-            console.log(validity);
-            break;
-    }
-
-        });
-
-        plan.style.display = showPlan ? "block" : "none";
+                params.append("ottOnly", "true");
+                break;
+            case "unlimited":
+                params.append("unlimited", "true");
+                break;
+            case "28days":
+                params.append("validity", "28");
+                break;
+            case "yearly":
+                params.append("validity", "365");
+                break;
+        }
     });
+
+    // Fetch filtered plans from backend
+    fetch(`http://localhost:8083/api/plans/filter?${params.toString()}`)
+        .then(response => response.json())
+        .then(plans => {
+            console.log("Filtered plans: ", plans);
+            populatePlans(plans); // Update UI with filtered results
+        })
+        .catch(error => console.error("❌ Error filtering plans:", error));
 }
 
 

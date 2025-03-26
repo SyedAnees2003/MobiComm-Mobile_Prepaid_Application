@@ -156,11 +156,6 @@ function validateOTP() {
     }
 }
 
-// Update Resend OTP Button Text
-function updateResendText() {
-    document.getElementById("resendOTP").innerHTML = `Resend OTP (${otpResendTimer}s)`;
-}
-
 let otpExpired = false; // Global flag to track OTP expiry
 
 function showResendOTPButton() {

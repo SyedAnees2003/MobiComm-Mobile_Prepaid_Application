@@ -463,7 +463,7 @@ function populatePlan(plan) {
 
 function rechargeNow(planId) {
     console.log("Selected Plan ID:", planId);
-    window.location.href = `recharge.html?planId=${planId}`;
+    window.location.href = `prepaidPlans.html`;
 }
 
 let lastScrollTop = 0;

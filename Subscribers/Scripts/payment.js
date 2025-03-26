@@ -196,6 +196,9 @@ function createPaymentTransaction(userId, rechargeId, paymentId, amount, payment
         return;
     }
 
+    // Show the processing overlay
+    document.getElementById("processScreen").style.display = "flex";
+
     fetch("http://localhost:8083/api/payments", {
         method: "POST",
         headers: {
@@ -221,6 +224,11 @@ function createPaymentTransaction(userId, rechargeId, paymentId, amount, payment
     .then(transaction => {
         console.log("✅ Payment Transaction Created:", transaction);
         console.log("🔹 Transaction ID:", transaction.transactionId);
+
+        setTimeout(() => {
+            // Hide the processing overlay after 2 seconds
+            document.getElementById("processScreen").style.display = "none";
+        }, 1500);
         showPaymentSuccess(transaction.transactionId, paymentMethod);
         const mobileNumber = sessionStorage.getItem("mobileNumber");
 
@@ -229,6 +237,7 @@ function createPaymentTransaction(userId, rechargeId, paymentId, amount, payment
     .catch(error => {
         console.error("❌ Error creating payment transaction:", error);
         alert("❌ Payment failed.");
+        document.getElementById("processScreen").style.display = "none"; // Hide on error
     });
 }
 
