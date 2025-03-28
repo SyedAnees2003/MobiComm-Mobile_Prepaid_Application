@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/plans")
@@ -154,6 +155,49 @@ public class RechargePlanController {
         rechargePlanService.savePlan(plan);
 
         return ResponseEntity.ok("✅ Recharge plan marked as inactive.");
+    }
+    
+ // 🔍 Search API
+    @GetMapping("/search")
+    public ResponseEntity<List<RechargePlan>> searchPlans(@RequestParam String query) {
+        List<RechargePlan> results = rechargePlanService.searchPlans(query);
+        return ResponseEntity.ok(results);
+    }
+
+    // 🔽 Sort by Price API
+    @GetMapping("/sort")
+    public ResponseEntity<List<RechargePlan>> sortPlans(@RequestParam(defaultValue = "asc") String order) {
+        List<RechargePlan> sortedPlans = rechargePlanService.getPlansSortedByPrice(order);
+        return ResponseEntity.ok(sortedPlans);
+    }
+    
+    @GetMapping("/filter")
+    public ResponseEntity<List<RechargePlan>> filterPlans(
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false) Boolean dataOnly,
+        @RequestParam(required = false) Boolean callsOnly,
+        @RequestParam(required = false) Boolean ottOnly,
+        @RequestParam(required = false) Boolean unlimited,
+        @RequestParam(required = false) Integer validity) {
+
+        // Fetch only active plans
+        List<RechargePlan> activePlans = rechargePlanRepository.findByStatus("active");
+
+        // Apply filters
+        List<RechargePlan> filteredPlans = activePlans.stream()
+            .filter(plan -> (maxPrice == null || plan.getPrice() <= maxPrice))  // Price Filter
+            .filter(plan -> (dataOnly == null || (plan.getData().toLowerCase().contains("gb") || plan.getData().toLowerCase().contains("unlimited")))) // Data Plans
+            .filter(plan -> (callsOnly == null || !plan.getCalls().equalsIgnoreCase("0") && !plan.getCalls().equalsIgnoreCase("0 mins"))) // Calls Plans
+            .filter(plan -> (ottOnly == null || (
+            	    plan.getAdditionalBenefits() != null && 
+            	    plan.getAdditionalBenefits().contains("\"OTT\": [") && 
+            	    !plan.getAdditionalBenefits().contains("\"OTT\": []") // Exclude empty OTT arrays
+            	)))
+            .filter(plan -> (unlimited == null || (plan.getCalls().toLowerCase().contains("unlimited") || plan.getData().toLowerCase().contains("unlimited")))) // Unlimited Plans
+            .filter(plan -> (validity == null || plan.getValidityDays()==validity)) // Validity Filter
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(filteredPlans);
     }
 
 }

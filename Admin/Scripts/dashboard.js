@@ -285,7 +285,7 @@ function fetchExpiringSubscriptions() {
                     let daysLeft = getDaysUntilExpiry(expiryDate);
                     
                     // ✅ Add to expiringUsers if the plan expires in 7 days
-                    if (daysLeft <= 7) {
+                    if (daysLeft <= 7 && daysLeft>0) {
                         expiringUsers.push({
                             name: `${user.firstName} ${user.lastName}`,
                             mobileNumber: user.mobileNumber,

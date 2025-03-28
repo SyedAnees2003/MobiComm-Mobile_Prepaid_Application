@@ -17,6 +17,10 @@ public class NotificationService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired 
+    private EmailService emailService;
+    
 
     // Fetch all notifications
     public List<Notifications> getAllNotifications() {
@@ -79,6 +83,29 @@ public class NotificationService {
             notification.setReadStatus("unread");
 
             notificationRepository.save(notification);
+            return "Notification sent successfully!";
+        } else {
+            return "User not found!";
+        }
+	}
+
+	public String sendEmailNotification(String mobile, String message) {
+		
+		Optional<User> userOptional = userRepository.findByMobileNumber(mobile);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Notifications notification = new Notifications();
+            notification.setUser(user);
+            notification.setNotifyType("Support Message");
+            notification.setMessage(message);
+            notification.setStatus("active");
+            notification.setPreferenceStatus("enabled");
+            notification.setReadStatus("unread");
+            
+            
+
+            emailService.sendExpiryAlertEmail(user.getEmail(), user.getFirstName(), user.getMobileNumber(), user.getRechargeHistoryList());      
             return "Notification sent successfully!";
         } else {
             return "User not found!";

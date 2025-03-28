@@ -11,6 +11,7 @@ import com.boot.demo.Repository.RechargeHistoryRepository;
 import com.boot.demo.Repository.StatusTypeRepository;
 import com.boot.demo.Repository.UserRepository;
 import com.boot.demo.Security.JwtUtil;
+import com.boot.demo.Service.EmailService;
 import com.boot.demo.Service.RechargeHistoryService;
 import com.boot.demo.Service.UserService;
 
@@ -52,20 +53,29 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     
     @Autowired
+    private EmailService emailService;
+    
+    @Autowired
     private StatusTypeRepository statusTypeRepository;
 
     // UPDATE ADMIN PASSWORD
     @PutMapping("/update-password")
-    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String newPassword = request.get("newPassword");
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
+        String newPassword = requestBody.get("newPassword");
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        if (email == null || newPassword == null) {
+            return ResponseEntity.badRequest().body("❌ Email and new password are required!");
+        }
 
-        user.setPasswordHash(passwordEncoder.encode(newPassword));  // Hash the new password
-        userRepository.save(user);
-        return ResponseEntity.ok("✅ Password updated successfully!");
+        boolean isUpdated = userService.updatePassword(email, newPassword);
+        if (!isUpdated) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ User not found!");
+        }
+
+        // Send Reset Password Email
+        emailService.sendResetPasswordEmail(email, newPassword);
+        return ResponseEntity.ok("✅ Password reset successfully! Email sent.");
     }
     
  // Get User Details

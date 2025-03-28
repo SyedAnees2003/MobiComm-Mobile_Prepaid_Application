@@ -37,4 +37,16 @@ public class RechargePlanService {
     public void deletePlan(int planId) {
         rechargePlanRepository.deleteById(planId);
     }
+    
+    // 🔍 Search for plans
+    public List<RechargePlan> searchPlans(String query) {
+        return rechargePlanRepository.searchPlans(query);
+    }
+
+    // 🔽 Sort plans by price
+    public List<RechargePlan> getPlansSortedByPrice(String order) {
+        return order.equalsIgnoreCase("asc") ? 
+               rechargePlanRepository.findAllByOrderByPriceAsc() : 
+               rechargePlanRepository.findAllByOrderByPriceDesc();
+    }
 }

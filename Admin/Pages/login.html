@@ -26,11 +26,11 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ml-auto">
-                            <li class="nav-item"><a class="nav-link" href="/Pages/prepaidPlans.html">Prepaid Plans</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/Pages/index.html#quick-recharge">Quick Recharge</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Subscribers/Pages/prepaidPlans.html">Prepaid Plans</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Subscribers/Pages/index.html#quick-recharge">Quick Recharge</a></li>
                             <li class="nav-item"><a id="Offers" class="nav-link">Offers</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/Pages/support.html">Help</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/Pages/login.html">Subscriber Login</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Subscribers/Pages/support.html">Help</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Subscribers/Pages/login.html">Subscriber Login</a></li>
                         </ul>
                     </div>
                 </nav>                
@@ -45,6 +45,10 @@
     <div id="customFailToast" class="toast-container">
         <div class="toast-icon"></div>
         <div class="toast-message">❌ Login Failed !</div>
+    </div>
+    <div id="resetPasswordModal" class="toast-container">
+        <div class="toast-icon"></div>
+        <div class="toast-message">✅ Reset Password sent to your Email id</div>
     </div>
 
     <main class="container mt-5">
@@ -97,7 +101,7 @@
                                 <label class="form-label" for="resetEmail">Email:</label>
                                 <input class="form-control" id="resetEmail" placeholder="Enter your email" type="text" />
                             </div>
-                            <button class="btn btn-primary mt-3" onclick="sendResetPassword()">Reset Password</button>
+                            <button class="btn btn-primary mt-3" id="resetPassword" onclick="sendResetPassword()">Reset Password</button>
                         </div>
                     </div>
                 </div>
@@ -134,9 +138,9 @@
                 <div class="col-md-4">
                     <h3 class="h5 font-weight-bold mb-3">Our Services</h3>
                     <ul class="list-unstyled">
-                        <li><a class="text-white" href="prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
-                        <li><a class="text-white" href="prepaidPlans.html"><p>Data Plans</p></a></li>
-                        <li><a class="text-white" href="prepaidPlans.html"><p>International Roaming</p></a></li>
+                        <li><a class="text-white" href="/Subscribers/Pages/prepaidPlans.html"><p>Prepaid Recharge</p></a></li>
+                        <li><a class="text-white" href="/Subscribers/Pages/prepaidPlans.html"><p>Data Plans</p></a></li>
+                        <li><a class="text-white" href="/Subscribers/Pages/prepaidPlans.html"><p>International Roaming</p></a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">

@@ -149,6 +149,9 @@ function sendResetPassword() {
         return;
     }
 
+    const resetPasswordBtn = document.getElementById("resetPassword");
+    resetPasswordBtn.innerHTML = "Sending new password..."
+
     const newPassword = generateValidPassword(); // Generate new password
 
     fetch(`${API_BASE_URL}/api/users/update-password`, {
@@ -161,8 +164,16 @@ function sendResetPassword() {
         return response.text();
     })
     .then(() => {
-        alert(`✅ Password reset successful! Your new password: ${newPassword}`);
+
+        setTimeout(() => {
+            resetPasswordBtn.innerHTML = "Send OTP";
+        }, 2000);
+
+        console.log(`✅ Password reset successful! Your new password: ${newPassword}`);
         $('#forgotPasswordModal').modal('hide');
+
+        showResetSuccess();
+
     })
     .catch(error => {
         console.error("❌ Password Reset Error:", error);
@@ -170,6 +181,17 @@ function sendResetPassword() {
     });
 }
 
+function showResetSuccess(){
+    let toastElement = document.getElementById("resetPasswordModal");
+
+    // Show toast
+    toastElement.classList.add("toast-show");
+
+    // Hide after 2 seconds
+    setTimeout(() => {
+        toastElement.classList.remove("toast-show");
+    }, 2000);
+}
 // **Logout Function**
 function adminLogout() {
     fetch(`${API_BASE_URL}/auth/logout`, {

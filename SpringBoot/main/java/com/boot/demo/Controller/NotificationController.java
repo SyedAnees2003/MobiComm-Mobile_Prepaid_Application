@@ -63,6 +63,19 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
     
+    @PostMapping("/email")
+    public ResponseEntity<String> sendEmailNotification(@RequestBody Map<String, String> requestBody) {
+        String mobile = requestBody.get("mobile");
+        String message = requestBody.get("message");
+
+        if (mobile == null || message == null) {
+            return ResponseEntity.badRequest().body("Mobile number and message are required!");
+        }
+
+        String response = notificationService.sendEmailNotification(mobile, message);
+        return ResponseEntity.ok(response);
+    }
+    
     @PostMapping("/recharge")
     public ResponseEntity<String> sendRechargeNotification(@RequestBody Map<String, String> requestBody) {
         String mobile = requestBody.get("mobile");

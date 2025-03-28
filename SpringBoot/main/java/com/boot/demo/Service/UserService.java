@@ -31,4 +31,17 @@ public class UserService {
         }
         return userRepository.save(user);
     }
+    
+
+    // ✅ Update Password in Database
+    public boolean updatePassword(String email, String newPassword) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPasswordHash(passwordEncoder.encode(newPassword)); // Encrypt new password
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
 }

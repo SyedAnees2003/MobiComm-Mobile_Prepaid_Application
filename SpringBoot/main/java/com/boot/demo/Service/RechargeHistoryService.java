@@ -10,6 +10,9 @@ import com.boot.demo.Repository.RechargePlanRepository;
 import com.boot.demo.Repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,6 +38,14 @@ public class RechargeHistoryService {
         return rechargeHistoryRepository.findAll();
     }
 
+    public Page<RechargeHistory> getRechargeHistory(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (search != null && !search.isEmpty()) {
+            return rechargeHistoryRepository.searchRechargeHistory(search, pageable);
+        }
+        return rechargeHistoryRepository.findAll(pageable);
+    }
+    
     public List<RechargeHistory> getRechargeHistoryByUser(int userId) {
         return rechargeHistoryRepository.findByUser_UserId(userId);
     }

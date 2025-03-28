@@ -3,10 +3,12 @@ package com.boot.demo.Controller;
 import com.boot.demo.Model.RechargeHistory;
 import com.boot.demo.Service.RechargeHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +27,25 @@ public class RechargeHistoryController {
     public ResponseEntity<List<RechargeHistory>> getAllRecharges() {
         return ResponseEntity.ok(rechargeHistoryService.getAllRechargeHistory());
     }
+    
+    @GetMapping("/paginate")
+    public Map<String, Object> getRechargeHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search) {
+
+        Page<RechargeHistory> historyPage = rechargeHistoryService.getRechargeHistory(search, page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", historyPage.getContent());
+        response.put("recordsTotal", historyPage.getTotalElements()); // ✅ Total records in DB
+        response.put("recordsFiltered", historyPage.getTotalElements()); // ✅ Total after filtering
+        response.put("totalPages", historyPage.getTotalPages());
+        response.put("currentPage", historyPage.getNumber());
+
+        return response;
+    }
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<RechargeHistory>> getUserRechargeHistory(@PathVariable int userId) {
