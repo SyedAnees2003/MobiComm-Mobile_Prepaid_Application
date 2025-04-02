@@ -106,7 +106,7 @@ function fetchRecentRecharge(mobileNumber) {
 
     if (!token) {
         console.error("❌ No authentication token found.");
-        alert("❌ Session expired. Please log in again.");
+        // alert("❌ Session expired. Please log in again.");
         window.location.href = "login.html";
         return;
     }
@@ -129,7 +129,7 @@ function fetchRecentRecharge(mobileNumber) {
 
         if (!recharge.plan) {
             console.error("❌ Plan details missing in recent recharge.");
-            alert("❌ Recharge fetched, but plan details are missing.");
+            // alert("❌ Recharge fetched, but plan details are missing.");
             return;
         }
 

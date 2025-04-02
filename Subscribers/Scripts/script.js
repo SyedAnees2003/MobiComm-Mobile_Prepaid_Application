@@ -36,34 +36,54 @@ document.getElementById("offers").addEventListener("click", function() {
     alert("No offers available at the moment.");
 });
 
-//Quick - Recharge 
 document.getElementById('RechargeBtn').addEventListener('click', function() {
-var mobileNumber = document.getElementById('mobile-number').value;
-var promoCode = document.getElementById('promo-code').value;
-var mobileNumberPattern = /^[0-9]{10}$/;
-var mobileNumberError = document.getElementById('mobile-number-error');
+    var mobileNumber = document.getElementById('mobile-number').value;
+    var promoCode = document.getElementById('promo-code').value;
+    var mobileNumberPattern = /^[0-9]{10}$/;
+    var mobileNumberError = document.getElementById('mobile-number-error');
 
-if (!mobileNumberPattern.test(mobileNumber)) {
-    if (!mobileNumberError) {
-        mobileNumberError = document.createElement('span');
-        mobileNumberError.id = 'mobile-number-error';
-        mobileNumberError.style.color = 'red';
-        mobileNumberError.innerText = 'Please enter a valid 10-digit mobile number.';
-        document.getElementById('mobile-number').parentNode.appendChild(mobileNumberError);
+    // Validate Mobile Number
+    if (!mobileNumberPattern.test(mobileNumber)) {
+        if (!mobileNumberError) {
+            mobileNumberError = document.createElement('span');
+            mobileNumberError.id = 'mobile-number-error';
+            mobileNumberError.style.color = 'red';
+            mobileNumberError.innerText = 'Please enter a valid 10-digit mobile number.';
+            document.getElementById('mobile-number').parentNode.appendChild(mobileNumberError);
+        }
+        return;
+    } else {
+        if (mobileNumberError) {
+            mobileNumberError.remove();
+        }
     }
-    return;
-} 
-else {
-    if (mobileNumberError) {
-        mobileNumberError.remove();
-    }
-    const tempToken = "temp_" + Math.random().toString(36).substr(2, 10);
-    sessionStorage.setItem("tempToken", tempToken);
-    sessionStorage.setItem("quickRechargeMobile", mobileNumber);
-    sessionStorage.setItem("mobileNumber",mobileNumber);
-    window.location.href = 'prepaidPlans.html';
-}
+
+    // ✅ Step 1: User Login via OTP API to get JWT Token
+    fetch("http://localhost:8083/auth/user-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile_number: mobileNumber }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Invalid OTP.");
+        }
+        return response.json(); // ✅ Get JWT token from response
+    })
+    .then(data => {
+        console.log("✅ Login Successful:", data);
+        sessionStorage.setItem("tempToken", data.accessToken); // ✅ Store token
+        sessionStorage.setItem("userRole", data.role); // ✅ Store role
+        sessionStorage.setItem("mobileNumber", mobileNumber); // ✅ Correct key
+
+        // ✅ Redirect to prepaid plans
+        window.location.href = 'prepaidPlans.html';
+    })
+    .catch(error => {
+        alert("Login failed: " + error.message);
+    });
 });
+
 
 document.getElementById('mobile-number').addEventListener('input', function() {
 var mobileNumber = this.value;

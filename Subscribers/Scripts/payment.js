@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log(mobileNumber, token, planId);
 
     if (!mobileNumber || !token || !planId) {
-        alert("❌ Session expired or plan not selected. Redirecting to homepage.");
+        // alert("❌ Session expired or plan not selected. Redirecting to homepage.");
         window.location.href = "prepaidPlans.html";
         return;
     }
@@ -173,10 +173,6 @@ function createRechargeEntry(userId, planId, paymentId, amount, paymentMethod) {
     })
     .then(recharge => {
         console.log("✅ Recharge Created:", recharge);
-
-        // ✅ Remove temp token after successful payment
-        sessionStorage.removeItem("tempToken");
-        sessionStorage.removeItem("quickRechargeMobile");
 
         return createPaymentTransaction(userId, recharge.rechargeId, paymentId, amount, paymentMethod);
     })
@@ -424,3 +420,8 @@ window.onscroll = function() {
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+document.getElementById("leaveBtn").addEventListener("click", function(){
+            sessionStorage.removeItem("tempToken");
+            sessionStorage.removeItem("quickRechargeMobile");
+});

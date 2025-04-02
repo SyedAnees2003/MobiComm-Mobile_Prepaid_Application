@@ -50,14 +50,6 @@ document.querySelector(".form-fill").addEventListener("submit", function (event)
 
     const successModal = new bootstrap.Modal(document.getElementById("successModal"));
 
-
-    // const token = sessionStorage.getItem("userToken");
-    // if (!token) {
-    //     alert("❌ Session expired. Please log in again.");
-    //     window.location.href = "login.html";
-    //     return;
-    // }
-
     fetch("http://localhost:8083/api/support-tickets", {
         method: "POST",
         headers: {
