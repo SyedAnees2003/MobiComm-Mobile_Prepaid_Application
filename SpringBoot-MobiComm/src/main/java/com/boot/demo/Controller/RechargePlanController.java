@@ -26,7 +26,7 @@ public class RechargePlanController {
     private RechargePlanService rechargePlanService;
 
     @Autowired
-    private CategoryRepository categoryRepository;  // ✅ Correctly Autowired
+    private CategoryRepository categoryRepository;  // Correctly Autowired
     
     @Autowired
     private RechargePlanRepository rechargePlanRepository;
@@ -56,7 +56,7 @@ public class RechargePlanController {
             planData.put("price", plan.getPrice());
             planData.put("sms", plan.getSms());
             
-            // ✅ Include Category Details
+            // Include Category Details
             if (plan.getCategory() != null) {
                 Map<String, Object> categoryData = new HashMap<>();
                 categoryData.put("categoryId", plan.getCategory().getCategoryId());

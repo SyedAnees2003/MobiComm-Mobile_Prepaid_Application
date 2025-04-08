@@ -359,3 +359,11 @@ header::before {
 #scrollToTopBtn:hover {
     background-color: #005fa3;
 }
+
+footer .list-unstyled li a:hover {
+    color: #007BFF !important;
+}
+
+footer .list-unstyled li a{
+    text-decoration: none;
+}

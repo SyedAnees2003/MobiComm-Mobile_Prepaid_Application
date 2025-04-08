@@ -39,7 +39,7 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ✅ USER LOGIN (Mobile Number - NO Password)
+    //USER LOGIN (Mobile Number - NO Password)
     @PostMapping("/user-login")
     public ResponseEntity<?> userLogin(@RequestBody Map<String, String> loginRequest) {
         String mobileNumber = loginRequest.get("mobile_number");
@@ -58,7 +58,7 @@ public class AuthController {
     }
     
 
-    // ✅ ADMIN LOGIN (Email & Password)
+    // ADMIN LOGIN (Email & Password)
     @PostMapping("/admin-login")
     public ResponseEntity<?> adminLogin(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
@@ -74,7 +74,7 @@ public class AuthController {
     }
     
     
- // ✅ LOGOUT & TOKEN REVOCATION
+ // LOGOUT & TOKEN REVOCATION
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         if (token == null || !token.startsWith("Bearer ")) {
@@ -96,12 +96,12 @@ public class AuthController {
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> request) {
         String mobileNumber = request.get("mobile_number");
 
-        try {
+        
             String response = otpService.sendOtp(mobileNumber);
             return ResponseEntity.ok(Map.of("message", response));
-        } catch (Exception ex) {
-            throw new RuntimeException("❌ Failed to send OTP. Try again.");
-        }
+//        } catch (Exception ex) {
+//            throw new RuntimeException("❌ Failed to send OTP. Try again.");
+//        }
     }
 
     // ✅ Verify OTP and Log in

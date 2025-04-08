@@ -31,6 +31,7 @@ public interface RechargePlanRepository extends JpaRepository<RechargePlan, Inte
 	    List<RechargePlan> searchPlans(@Param("query") String query);
 	    
 	    // 🔽 Sort by price
+	   // Derived Query Methods.
 	    List<RechargePlan> findAllByOrderByPriceAsc();
 	    List<RechargePlan> findAllByOrderByPriceDesc();
 }

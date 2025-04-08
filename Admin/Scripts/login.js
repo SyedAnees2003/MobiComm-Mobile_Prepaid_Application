@@ -208,3 +208,23 @@ function adminLogout() {
     })
     .catch(error => console.error("❌ Logout Error:", error));
 }
+
+// Function to toggle password visibility
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.getElementById('password-icon');
+    
+    if (passwordInput.type === 'password') {
+        // Change to text to make password visible
+        passwordInput.type = 'text';
+        // Change icon to eye-slash
+        passwordIcon.classList.remove('fa-eye');
+        passwordIcon.classList.add('fa-eye-slash');
+    } else {
+        // Change back to password to hide
+        passwordInput.type = 'password';
+        // Change icon back to eye
+        passwordIcon.classList.remove('fa-eye-slash');
+        passwordIcon.classList.add('fa-eye');
+    }
+}

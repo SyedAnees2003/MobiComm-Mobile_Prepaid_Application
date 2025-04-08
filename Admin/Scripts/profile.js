@@ -6,7 +6,7 @@ function loadAdminProfile() {
     const token = sessionStorage.getItem("adminToken");
     if (!token) {
         // alert("❌ Session expired. Please log in again.");
-        window.location.href = "admin-login.html";
+        window.location.href = "login.html";
         return;
     }
 

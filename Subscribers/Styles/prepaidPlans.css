@@ -399,3 +399,11 @@ button {
 #searchInput, #sortSelect{
     border-color:rgba(120, 203, 254, 0.501);
 }
+
+footer .list-unstyled li a:hover {
+    color: #007BFF !important;
+}
+
+footer .list-unstyled li a{
+    text-decoration: none;
+}

@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String mobileNumber = jwtUtil.getUsernameFromToken(token); 
             String role = jwtUtil.getRoleFromToken(token);
 
-            Optional<User> user = userRepository.findByMobileNumber(mobileNumber); // ✅ Mobile number login
+            Optional<User> user = userRepository.findByMobileNumber(mobileNumber);
 
             if (user.isPresent()) {
                 List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));

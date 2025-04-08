@@ -42,7 +42,7 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
     
- // ✅ POST (Create a New Category)
+ // POST (Create a New Category)
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         try {
@@ -58,7 +58,7 @@ public class CategoryController {
     	 Category category = categoryRepository.findById(categoryId)
                  .orElseThrow(() -> new CategoryNotFoundException("❌ Category with ID " + categoryId + " not found."));
 
-         // ✅ Set associated plans as inactive before deletion
+         // Set associated plans as inactive before deletion
          List<RechargePlan> plans = rechargePlanRepository.findByCategory_CategoryId(categoryId);
          for (RechargePlan plan : plans) {
              plan.setStatus("inactive");
@@ -66,7 +66,7 @@ public class CategoryController {
              rechargePlanRepository.save(plan);
          }
 
-        // ✅ Delete the category
+        // Delete the category
         categoryRepository.deleteById(categoryId);
 
         return ResponseEntity.ok("Category deleted & plans set to inactive");

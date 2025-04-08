@@ -224,7 +224,7 @@ public class UserController {
 	    }
 
 	    List<RechargeHistory> rechargeHistory = rechargeHistoryRepository.findByUserOrderByRechargeDateDesc(user.get());
-	 // ✅ Convert to JSON response with plan details
+	 // Convert to JSON response with plan details
 	    List<Map<String, Object>> formattedHistory = rechargeHistory.stream().map(recharge -> {
 	        Map<String, Object> historyItem = new HashMap<>();
 	        historyItem.put("rechargeId", recharge.getRechargeId());
@@ -253,7 +253,7 @@ public class UserController {
 	    return ResponseEntity.ok(formattedHistory);
 	}
  
-//✅ Fetch All Users with Status Name
+// Fetch All Users with Status Name
 @GetMapping
 public ResponseEntity<?> getAllUsers() {
   List<User> users = userRepository.findAll();
@@ -279,7 +279,7 @@ public ResponseEntity<?> getAllUsers() {
   return ResponseEntity.ok(userList);
 }
 
-//✅ Update User Status
+// Update User Status
 @PutMapping("/{mobileNumber}/update-status")
 public ResponseEntity<?> updateUserStatus(
         @PathVariable String mobileNumber,
