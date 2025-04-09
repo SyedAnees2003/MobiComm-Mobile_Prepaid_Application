@@ -60,7 +60,11 @@ Currently, customers rely on third-party platforms for mobile recharges, which l
 - RESTful API design
 
 ## Database Design
-MobiComm maintains a well-structured relational database to ensure scalability, modularity, and maintainability. Below are the key entities used in the system:
+MobiComm maintains a well-structured relational database to ensure scalability, modularity, and maintainability. 
+
+![Database Design](Assets/MobiComm_DB.png)
+
+**Below are the key entities used in the system:**
 
 | Entity | Description |
 |--------|-------------|
